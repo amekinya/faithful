@@ -40,3 +40,13 @@ def test_number_words_follow_language():
 def test_reordered_numbers_noted():
     f = diff("Take 2.5 milligrams on Mondays and 5 milligrams on other days.", "Tome 5 miligramos los lunes y 2.5 miligramos los demás días.", "en", "es")
     assert any(x.kind == "order" for x in f)
+
+
+def test_speech_recognition_slips_are_tolerated():
+    assert kinds("Le puedo seguir dando el Tylenol también.", "Le puedo seguir dando el telenol también.", "es", "es") == []
+    assert kinds("Take 2.5 milligrams.", "Take two point five milligrams.", "en", "en") == []
+    assert kinds("llame al 911", "llame al novecientos once", "es", "es") == []
+
+
+def test_real_drug_swap_still_flagged():
+    assert ("substitution", "drug") in kinds("He is allergic to penicillin.", "Es alérgico a la amoxicilina.", "en", "es")

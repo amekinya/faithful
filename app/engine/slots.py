@@ -153,6 +153,11 @@ def _num_tokens(t: str, lang: str = "en") -> list[tuple[float, str, int, int]]:
                     val, j = 1, i + 1
             elif w in ("media", "medio") and prv(i - 1) not in ("y",) and (re.fullmatch(DOSE_NOUNS, nxt(i + 1)) or re.fullmatch(TIME_NOUNS, nxt(i + 1))):
                 val, j = 0.5, i + 1
+        if val is not None and nxt(j) in ("point", "punto") and nxt(j + 1) and (nxt(j + 1) in EN_UNITS or nxt(j + 1) in ES_UNITS):
+            # spoken decimals: "two point five", "dos punto cinco"
+            frac = EN_UNITS.get(W[j + 1], ES_UNITS.get(W[j + 1], 0))
+            val = val + frac / (10 ** len(str(frac)))
+            j += 2
         if val is not None:
             s0, e0 = words[i].start(), words[j - 1].end()
             out.append((float(val), t[s0:e0], s0, e0))
@@ -196,11 +201,11 @@ DRUGS = {
     "blood thinner": r"blood thinners?|anticoagulantes?", "inhaler": r"inhaler|inhalador",
 }
 WARNINGS = {
-    "emergency": r"emergency(?: room)?|\ber\b|urgencias|sala de emergencias?|emergencias?", "911": r"911|nine one one|nueve uno uno",
+    "emergency": r"emergency(?: room)?|\ber\b|urgencias|sala de emergencias?|emergencias?", "911": r"911|nine one one|nueve uno uno|novecientos once",
     "call": r"\bcall (?:us|your doctor|the doctor|the clinic|back)|\bllame|\bllamenos|\bllamar al", "return": r"come back|return|regrese|vuelva|regresar|volver",
     "breathing": r"(?:trouble|difficulty|hard time|problems?) breathing|can'?t breathe|short(?:ness)? of breath|dificultad para respirar|no puede respirar|le falta el aire|falta de aire",
     "chest pain": r"chest pain|pain in (?:the|his|her|your) chest|dolor (?:de|en el) pecho", "fever": r"fever|temperature|fiebre|calentura",
-    "bleeding": r"bleed(?:ing|s)?|blood in|sangr(?:ado|a|e|ando)", "rash": r"rash|hives|sarpullido|ronchas|erupcion",
+    "bleeding": r"bleed(?:ing|s)?|blood in|sangr(?:ado|a|e|ando)", "rash": r"rash|hives|[sz]arpullido|ronchas|erupcion",
     "swelling": r"swell(?:ing|ed|s)?|hinchaz[oó]n|hinchad[oa]|inflamad[oa]", "vomiting": r"vomit(?:ing|s)?|throw(?:ing)? up|vomit(?:o|a|ando|os)|devolv",
     "dizzy": r"dizz(?:y|iness)|faint(?:ing|ed)?|pass(?:es|ed)? out|mare(?:o|ad[oa]|os)|desmay", "seizure": r"seizures?|convulsi(?:on|ones)|ataques?",
     "unresponsive": r"unconscious|won'?t wake|unresponsive|inconsciente|no despierta|no reacciona", "pregnant": r"pregnan(?:t|cy)|embarazad[ao]|embarazo",
@@ -291,6 +296,29 @@ def extract(text: str, lang: str | None = None) -> list[Slot]:
     return slots
 
 
+def _lev(a: str, b: str) -> int:
+    prev = list(range(len(b) + 1))
+    for i, ca in enumerate(a, 1):
+        cur = [i]
+        for j, cb in enumerate(b, 1):
+            cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ca != cb)))
+        prev = cur
+    return prev[-1]
+
+
+def heard_as(canon: str, text: str) -> bool:
+    """Is a near-spelling of this drug in the text (speech recognition slips: 'telenol', 'acitromicina')?
+    Only words that are not themselves a known drug count, so a real sound-alike drug swap is still flagged."""
+    known = re.compile(rf"(?<![a-z])(?:{'|'.join(DRUGS.values())})(?![a-z])")
+    forms = [f for f in DRUGS[canon].split("|") if f.isalpha() and len(f) >= 6]
+    for w in re.findall(r"[a-z]{5,}", fold(text)):
+        if known.fullmatch(w):
+            continue
+        if any(_lev(w, f) <= (1 if len(f) < 8 else 2) and w[0] in (f[0], {"z": "s", "s": "z", "c": "z"}.get(f[0], f[0])) for f in forms):
+            return True
+    return False
+
+
 PRESENCE_KINDS = ("negation", "allergy", "frequency", "timing", "limit")  # compared as present/absent, not counted
 
 
@@ -312,6 +340,9 @@ def diff(source: str, rendition: str, src_lang: str | None = None, ren_lang: str
             miss, extra = set((ca - cb).elements()), set((cb - ca).elements())
             if kind == "warning":  # 'pain' alone is too common to flag as an omission
                 miss.discard("pain"); extra.discard("pain")
+            if kind == "drug":  # a misheard drug name ('acitromicina') is not a missing drug
+                miss = {m for m in miss if not heard_as(m, rendition)}
+                extra = {e for e in extra if not heard_as(e, source)}
         span = lambda xs, v: next((s.span for s in xs if s.value == v), v)  # noqa: E731
         sev = SEVERITY[kind]
         pair_kinds = ("number", "unit", "side", "drug", "duration")
