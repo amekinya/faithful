@@ -1,0 +1,52 @@
+name: Run a pipeline step (live models)
+# Actions tab -> "Run a pipeline step" -> Run workflow.
+#   synth  : write synthetic visits (args e.g. "--n 60 --split trainval" or "--n 20 --split test --generator Qwen/...") then rebuild pairs
+#   tts    : voice the scripted visits with Kokoro (CPU)
+#   demo   : run the scripted visits through speech recognition + checks (needs ENDPOINT_URL for the Nebius endpoint)
+#   eval   : benchmark (args e.g. "--sets synth,aces,visits --methods code,lightning,ultra --n 400")
+on:
+  workflow_dispatch:
+    inputs:
+      task: { description: "synth | tts | demo | eval", required: true, default: "eval", type: choice, options: [synth, tts, demo, eval] }
+      args: { description: "extra arguments", required: false, default: "" }
+permissions:
+  contents: write
+concurrency: { group: run-${{ inputs.task }}, cancel-in-progress: false }
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements.txt
+      - name: Speech tools
+        if: inputs.task == 'tts'
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq espeak-ng ffmpeg
+          pip install "kokoro>=0.9.4" soundfile "misaki[en]"
+      - name: Run
+        env:
+          NEBIUS_API_KEY: ${{ secrets.NEBIUS_API_KEY }}
+          ENDPOINT_URL: ${{ secrets.ENDPOINT_URL }}
+          ENDPOINT_TOKEN: ${{ secrets.ENDPOINT_TOKEN }}
+          DAILY_SPEND_CAP_USD: "20"
+          PYTHONUNBUFFERED: "1"
+        run: |
+          set -o pipefail
+          mkdir -p eval
+          case "${{ inputs.task }}" in
+            synth) python -m scripts.synth ${{ inputs.args }} 2>&1 | tee -a eval/synth_log.txt; python -m scripts.build_pairs | tee -a eval/synth_log.txt ;;
+            tts)   python -m scripts.tts ${{ inputs.args }} 2>&1 | tee eval/tts_log.txt ;;
+            demo)  python -m scripts.build_demo ${{ inputs.args }} 2>&1 | tee eval/demo_log.txt ;;
+            eval)  python -m eval.run_eval ${{ inputs.args }} 2>&1 | tee eval/eval_log.txt; cat eval/RESULTS.md >> "$GITHUB_STEP_SUMMARY" ;;
+          esac
+      - name: Commit results
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for p in eval data app/static/audio; do [ -e "$p" ] && git add "$p"; done
+          git commit -m "Pipeline step: ${{ inputs.task }}" || echo "No changes"
+          for i in 1 2 3 4; do git pull --rebase -q && git push && break; sleep 7; done

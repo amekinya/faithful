@@ -1,0 +1,3465 @@
+{
+ "visits": [
+  {
+   "id": "V1",
+   "title": "Fever and ear pain, age 2",
+   "setting": "Emergency department",
+   "patient": "Mother (Spanish)",
+   "clinician": "Dr. Patel (English)",
+   "turns": [
+    {
+     "n": 1,
+     "key": "V1-01",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "Hi, I'm Dr. Patel. What brings you in today?",
+      "rendition": "Hola, soy la doctora Patel. ¿Qué la trae por aquí hoy?"
+     },
+     "heard": {
+      "source": "Hi, I'm Dr. Patel. What brings you in today?",
+      "rendition": "Hola, soy la doctora Patel. ¿Qué la trae por aquí hoy?",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 8.2,
+       "checker": 0.0,
+       "to_decision": 8.2,
+       "total": 8.2
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 2,
+     "key": "V1-02",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "Mi hijo tiene fiebre desde hace dos días, y anoche llegó a treinta y nueve y medio.",
+      "rendition": "My son has had a fever for two days, and last night it got to 39.5."
+     },
+     "heard": {
+      "source": "Mi hijo tiene fiebre desde hace dos días, y anoche llegó a treinta y nueve y medio.",
+      "rendition": "My son has had a fever for two days, and last night it got to 39.5.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 2.1,
+       "checker": 0.0,
+       "to_decision": 2.1,
+       "total": 2.1
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 3,
+     "key": "V1-03",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "Has he had any medicine today?",
+      "rendition": "¿Le ha dado alguna medicina hoy?"
+     },
+     "heard": {
+      "source": "Has he had any medicine today?",
+      "rendition": "¿Le ha dado alguna medicina hoy?",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 4,
+     "key": "V1-04",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "Sí, ya le di dos dosis de Tylenol hoy, la última a las diez. Y es alérgico a la penicilina.",
+      "rendition": "Yes, I gave him Tylenol today."
+     },
+     "heard": {
+      "source": "Sí, ya le di dos dosis de Tylenol hoy, la última a las diez. Y es alérgico a la penicilina.",
+      "rendition": "Yes, I gave him Tylenol today.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "number",
+        "severity": "high",
+        "source": "diez",
+        "rendition": "",
+        "message": "Not in the interpretation: number “diez”"
+       },
+       {
+        "type": "omission",
+        "kind": "number",
+        "severity": "high",
+        "source": "dos",
+        "rendition": "",
+        "message": "Not in the interpretation: number “dos”"
+       },
+       {
+        "type": "omission",
+        "kind": "unit",
+        "severity": "high",
+        "source": "dosis",
+        "rendition": "",
+        "message": "Not in the interpretation: unit “dosis”"
+       },
+       {
+        "type": "omission",
+        "kind": "allergy",
+        "severity": "high",
+        "source": "alergico",
+        "rendition": "",
+        "message": "Not in the interpretation: allergy “alergico”"
+       },
+       {
+        "type": "omission",
+        "kind": "drug",
+        "severity": "high",
+        "source": "penicilina",
+        "rendition": "",
+        "message": "Not in the interpretation: medicine “penicilina”"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "explanation": {
+       "say": "Re-confirm: Not in the interpretation: number “diez”",
+       "source_quote": "diez",
+       "quote_ok": true,
+       "by": "code"
+      },
+      "ms": {
+       "code": 0.6,
+       "checker": 0.0,
+       "to_decision": 0.6,
+       "total": 0.6
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "number",
+        "severity": "high",
+        "source": "diez",
+        "rendition": "",
+        "message": "Not in the interpretation: number “diez”"
+       },
+       {
+        "type": "omission",
+        "kind": "number",
+        "severity": "high",
+        "source": "dos",
+        "rendition": "",
+        "message": "Not in the interpretation: number “dos”"
+       },
+       {
+        "type": "omission",
+        "kind": "unit",
+        "severity": "high",
+        "source": "dosis",
+        "rendition": "",
+        "message": "Not in the interpretation: unit “dosis”"
+       },
+       {
+        "type": "omission",
+        "kind": "allergy",
+        "severity": "high",
+        "source": "alergico",
+        "rendition": "",
+        "message": "Not in the interpretation: allergy “alergico”"
+       },
+       {
+        "type": "omission",
+        "kind": "drug",
+        "severity": "high",
+        "source": "penicilina",
+        "rendition": "",
+        "message": "Not in the interpretation: medicine “penicilina”"
+       }
+      ]
+     },
+     "planted": {
+      "type": "omission",
+      "what": "Dropped the two prior doses, the time of the last dose, and the penicillin allergy."
+     }
+    },
+    {
+     "n": 5,
+     "key": "V1-05",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "Is he having any trouble breathing, a rash, or is he not drinking?",
+      "rendition": "¿Tiene dificultad para respirar, algún sarpullido, o no está tomando líquidos?"
+     },
+     "heard": {
+      "source": "Is he having any trouble breathing, a rash, or is he not drinking?",
+      "rendition": "¿Tiene dificultad para respirar, algún sarpullido, o no está tomando líquidos?",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.5,
+       "checker": 0.0,
+       "to_decision": 0.5,
+       "total": 0.5
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 6,
+     "key": "V1-06",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "No, está tomando bien, pero le duele el oído derecho.",
+      "rendition": "No, he's drinking well, but his left ear hurts."
+     },
+     "heard": {
+      "source": "No, está tomando bien, pero le duele el oído derecho.",
+      "rendition": "No, he's drinking well, but his left ear hurts.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [
+       {
+        "type": "substitution",
+        "kind": "side",
+        "severity": "high",
+        "source": "oido derecho",
+        "rendition": "left ear",
+        "message": "Changed left/right: “oido derecho” became “left ear”"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "explanation": {
+       "say": "Re-confirm: Changed left/right: “oido derecho” became “left ear”",
+       "source_quote": "oido derecho",
+       "quote_ok": true,
+       "by": "code"
+      },
+      "ms": {
+       "code": 0.4,
+       "checker": 0.0,
+       "to_decision": 0.5,
+       "total": 0.5
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "substitution",
+        "kind": "side",
+        "severity": "high",
+        "source": "oido derecho",
+        "rendition": "left ear",
+        "message": "Changed left/right: “oido derecho” became “left ear”"
+       }
+      ]
+     },
+     "planted": {
+      "type": "substitution",
+      "what": "Right ear became left ear."
+     }
+    },
+    {
+     "n": 7,
+     "key": "V1-07",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "He has an ear infection. Give him 5 milliliters of azithromycin once a day for 5 days.",
+      "rendition": "Tiene una infección del oído. Dele 5 mililitros de azitromicina una vez al día por cinco días."
+     },
+     "heard": {
+      "source": "He has an ear infection. Give him 5 milliliters of azithromycin once a day for 5 days.",
+      "rendition": "Tiene una infección del oído. Dele 5 mililitros de azitromicina una vez al día por cinco días.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "frequency",
+        "severity": "medium",
+        "source": "once a day",
+        "rendition": "",
+        "message": "Not in the interpretation: how often “once a day”"
+       },
+       {
+        "type": "addition",
+        "kind": "frequency",
+        "severity": "medium",
+        "source": "",
+        "rendition": "al dia",
+        "message": "Added in the interpretation: how often “al dia”"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "note",
+       "title": "Check later",
+       "why": "code",
+       "p_error": null
+      },
+      "explanation": {
+       "say": "Re-confirm: Not in the interpretation: how often “once a day”",
+       "source_quote": "once a day",
+       "quote_ok": true,
+       "by": "code"
+      },
+      "ms": {
+       "code": 0.5,
+       "checker": 0.0,
+       "to_decision": 0.5,
+       "total": 0.5
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "note",
+       "title": "Check later",
+       "why": "code",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "frequency",
+        "severity": "medium",
+        "source": "once a day",
+        "rendition": "",
+        "message": "Not in the interpretation: how often “once a day”"
+       },
+       {
+        "type": "addition",
+        "kind": "frequency",
+        "severity": "medium",
+        "source": "",
+        "rendition": "al dia",
+        "message": "Added in the interpretation: how often “al dia”"
+       }
+      ]
+     },
+     "planted": null
+    },
+    {
+     "n": 8,
+     "key": "V1-08",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "For the fever you can give ibuprofen, 100 milligrams every 6 hours, but no more than 4 doses in 24 hours.",
+      "rendition": "Para la fiebre le puede dar ibuprofeno, 100 miligramos cada 6 horas."
+     },
+     "heard": {
+      "source": "For the fever you can give ibuprofen, 100 milligrams every 6 hours, but no more than 4 doses in 24 hours.",
+      "rendition": "Para la fiebre le puede dar ibuprofeno, 100 miligramos cada 6 horas.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "number",
+        "severity": "high",
+        "source": "24",
+        "rendition": "",
+        "message": "Not in the interpretation: number “24”"
+       },
+       {
+        "type": "omission",
+        "kind": "number",
+        "severity": "high",
+        "source": "4",
+        "rendition": "",
+        "message": "Not in the interpretation: number “4”"
+       },
+       {
+        "type": "omission",
+        "kind": "unit",
+        "severity": "high",
+        "source": "doses",
+        "rendition": "",
+        "message": "Not in the interpretation: unit “doses”"
+       },
+       {
+        "type": "omission",
+        "kind": "negation",
+        "severity": "high",
+        "source": "no",
+        "rendition": "",
+        "message": "Not in the interpretation: a 'no' / 'not' “no”"
+       },
+       {
+        "type": "omission",
+        "kind": "limit",
+        "severity": "high",
+        "source": "no more than",
+        "rendition": "",
+        "message": "Not in the interpretation: dose limit “no more than”"
+       },
+       {
+        "type": "omission",
+        "kind": "duration",
+        "severity": "high",
+        "source": "6 hours",
+        "rendition": "",
+        "message": "Not in the interpretation: how long “6 hours”"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "explanation": {
+       "say": "Re-confirm: Not in the interpretation: number “24”",
+       "source_quote": "24",
+       "quote_ok": true,
+       "by": "code"
+      },
+      "ms": {
+       "code": 0.7,
+       "checker": 0.0,
+       "to_decision": 0.7,
+       "total": 0.7
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "number",
+        "severity": "high",
+        "source": "24",
+        "rendition": "",
+        "message": "Not in the interpretation: number “24”"
+       },
+       {
+        "type": "omission",
+        "kind": "number",
+        "severity": "high",
+        "source": "4",
+        "rendition": "",
+        "message": "Not in the interpretation: number “4”"
+       },
+       {
+        "type": "omission",
+        "kind": "unit",
+        "severity": "high",
+        "source": "doses",
+        "rendition": "",
+        "message": "Not in the interpretation: unit “doses”"
+       },
+       {
+        "type": "omission",
+        "kind": "negation",
+        "severity": "high",
+        "source": "no",
+        "rendition": "",
+        "message": "Not in the interpretation: a 'no' / 'not' “no”"
+       },
+       {
+        "type": "omission",
+        "kind": "limit",
+        "severity": "high",
+        "source": "no more than",
+        "rendition": "",
+        "message": "Not in the interpretation: dose limit “no more than”"
+       },
+       {
+        "type": "omission",
+        "kind": "duration",
+        "severity": "high",
+        "source": "6 hours",
+        "rendition": "",
+        "message": "Not in the interpretation: how long “6 hours”"
+       }
+      ]
+     },
+     "planted": {
+      "type": "omission",
+      "what": "Dropped the dose limit: no more than 4 doses in 24 hours."
+     }
+    },
+    {
+     "n": 9,
+     "key": "V1-09",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "¿Le puedo seguir dando el Tylenol también?",
+      "rendition": "Can I keep giving him the Tylenol too?"
+     },
+     "heard": {
+      "source": "¿Le puedo seguir dando el Tylenol también?",
+      "rendition": "Can I keep giving him the Tylenol too?",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.4,
+       "total": 0.4
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 10,
+     "key": "V1-10",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "Yes, but don't give the Tylenol and the ibuprofen at the same time. Alternate them.",
+      "rendition": "Sí, le puede dar el Tylenol y el ibuprofeno al mismo tiempo."
+     },
+     "heard": {
+      "source": "Yes, but don't give the Tylenol and the ibuprofen at the same time. Alternate them.",
+      "rendition": "Sí, le puede dar el Tylenol y el ibuprofeno al mismo tiempo.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "negation",
+        "severity": "high",
+        "source": "don't",
+        "rendition": "",
+        "message": "Not in the interpretation: a 'no' / 'not' “don't”"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "explanation": {
+       "say": "Re-confirm: Not in the interpretation: a 'no' / 'not' “don't”",
+       "source_quote": "don't",
+       "quote_ok": true,
+       "by": "code"
+      },
+      "ms": {
+       "code": 0.4,
+       "checker": 0.0,
+       "to_decision": 0.4,
+       "total": 0.4
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "negation",
+        "severity": "high",
+        "source": "don't",
+        "rendition": "",
+        "message": "Not in the interpretation: a 'no' / 'not' “don't”"
+       }
+      ]
+     },
+     "planted": {
+      "type": "substitution",
+      "what": "'Don't give them at the same time, alternate them' became 'you can give them at the same time'."
+     }
+    },
+    {
+     "n": 11,
+     "key": "V1-11",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "Come back right away if he has trouble breathing, a stiff neck, or won't wake up.",
+      "rendition": "Regrese de inmediato si tiene dificultad para respirar."
+     },
+     "heard": {
+      "source": "Come back right away if he has trouble breathing, a stiff neck, or won't wake up.",
+      "rendition": "Regrese de inmediato si tiene dificultad para respirar.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "negation",
+        "severity": "high",
+        "source": "won't",
+        "rendition": "",
+        "message": "Not in the interpretation: a 'no' / 'not' “won't”"
+       },
+       {
+        "type": "omission",
+        "kind": "warning",
+        "severity": "high",
+        "source": "won't wake",
+        "rendition": "",
+        "message": "Not in the interpretation: warning sign “won't wake”"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "explanation": {
+       "say": "Re-confirm: Not in the interpretation: a 'no' / 'not' “won't”",
+       "source_quote": "won't",
+       "quote_ok": true,
+       "by": "code"
+      },
+      "ms": {
+       "code": 0.5,
+       "checker": 0.0,
+       "to_decision": 0.5,
+       "total": 0.5
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "negation",
+        "severity": "high",
+        "source": "won't",
+        "rendition": "",
+        "message": "Not in the interpretation: a 'no' / 'not' “won't”"
+       },
+       {
+        "type": "omission",
+        "kind": "warning",
+        "severity": "high",
+        "source": "won't wake",
+        "rendition": "",
+        "message": "Not in the interpretation: warning sign “won't wake”"
+       }
+      ]
+     },
+     "planted": {
+      "type": "omission",
+      "what": "Dropped two warning signs: stiff neck, won't wake up."
+     }
+    },
+    {
+     "n": 12,
+     "key": "V1-12",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "Muchas gracias, doctora.",
+      "rendition": "Thank you so much, doctor."
+     },
+     "heard": {
+      "source": "Muchas gracias, doctora.",
+      "rendition": "Thank you so much, doctor.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    }
+   ],
+   "review": []
+  },
+  {
+   "id": "V2",
+   "title": "Diabetes follow-up",
+   "setting": "Primary care clinic",
+   "patient": "Patient (Spanish)",
+   "clinician": "Dr. Okafor (English)",
+   "turns": [
+    {
+     "n": 1,
+     "key": "V2-01",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "How have your sugars been since the last visit?",
+      "rendition": "¿Cómo ha tenido el azúcar desde la última consulta?"
+     },
+     "heard": {
+      "source": "How have your sugars been since the last visit?",
+      "rendition": "¿Cómo ha tenido el azúcar desde la última consulta?",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.4,
+       "checker": 0.0,
+       "to_decision": 0.4,
+       "total": 0.4
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 2,
+     "key": "V2-02",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "En la mañana sale como en ciento cuarenta, pero en la noche a veces baja a sesenta y me pongo temblorosa.",
+      "rendition": "In the morning it's around 140, and at night it sometimes goes down."
+     },
+     "heard": {
+      "source": "En la mañana sale como en ciento cuarenta, pero en la noche a veces baja a sesenta y me pongo temblorosa.",
+      "rendition": "In the morning it's around 140, and at night it sometimes goes down.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "number",
+        "severity": "high",
+        "source": "sesenta",
+        "rendition": "",
+        "message": "Not in the interpretation: number “sesenta”"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "explanation": {
+       "say": "Re-confirm: Not in the interpretation: number “sesenta”",
+       "source_quote": "sesenta",
+       "quote_ok": true,
+       "by": "code"
+      },
+      "ms": {
+       "code": 0.6,
+       "checker": 0.0,
+       "to_decision": 0.6,
+       "total": 0.6
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "number",
+        "severity": "high",
+        "source": "sesenta",
+        "rendition": "",
+        "message": "Not in the interpretation: number “sesenta”"
+       }
+      ]
+     },
+     "planted": {
+      "type": "omission",
+      "what": "Dropped the low reading (60) and the shakiness: a sign of low blood sugar."
+     }
+    },
+    {
+     "n": 3,
+     "key": "V2-03",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "How much insulin are you taking at night?",
+      "rendition": "¿Cuánta insulina se pone en la noche?"
+     },
+     "heard": {
+      "source": "How much insulin are you taking at night?",
+      "rendition": "¿Cuánta insulina se pone en la noche?",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 4,
+     "key": "V2-04",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "Me pongo veinte unidades antes de dormir.",
+      "rendition": "I take twelve units before bed."
+     },
+     "heard": {
+      "source": "Me pongo veinte unidades antes de dormir.",
+      "rendition": "I take twelve units before bed.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [
+       {
+        "type": "substitution",
+        "kind": "number",
+        "severity": "high",
+        "source": "veinte",
+        "rendition": "twelve",
+        "message": "Changed number: “veinte” became “twelve”"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "explanation": {
+       "say": "Re-confirm: Changed number: “veinte” became “twelve”",
+       "source_quote": "veinte",
+       "quote_ok": true,
+       "by": "code"
+      },
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "substitution",
+        "kind": "number",
+        "severity": "high",
+        "source": "veinte",
+        "rendition": "twelve",
+        "message": "Changed number: “veinte” became “twelve”"
+       }
+      ]
+     },
+     "planted": {
+      "type": "substitution",
+      "what": "Twenty units became twelve."
+     }
+    },
+    {
+     "n": 5,
+     "key": "V2-05",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "Let's lower it to 16 units at bedtime, and keep taking metformin 500 milligrams twice a day with food.",
+      "rendition": "Vamos a bajarla a 16 unidades antes de dormir, y siga tomando la metformina de 500 miligramos dos veces al día con comida."
+     },
+     "heard": {
+      "source": "Let's lower it to 16 units at bedtime, and keep taking metformin 500 milligrams twice a day with food.",
+      "rendition": "Vamos a bajarla a 16 unidades antes de dormir, y siga tomando la metformina de 500 miligramos dos veces al día con comida.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.6,
+       "checker": 0.0,
+       "to_decision": 0.6,
+       "total": 0.6
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 6,
+     "key": "V2-06",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "¿Y si me siento mareada otra vez?",
+      "rendition": "And what if I feel dizzy again?"
+     },
+     "heard": {
+      "source": "¿Y si me siento mareada otra vez?",
+      "rendition": "And what if I feel dizzy again?",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 7,
+     "key": "V2-07",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "If you feel shaky or sweaty, drink half a cup of juice and check your sugar again in 15 minutes.",
+      "rendition": "Si se siente temblorosa o sudorosa, tómese media taza de jugo y vuelva a medirse el azúcar en 15 minutos."
+     },
+     "heard": {
+      "source": "If you feel shaky or sweaty, drink half a cup of juice and check your sugar again in 15 minutes.",
+      "rendition": "Si se siente temblorosa o sudorosa, tómese media taza de jugo y vuelva a medirse el azúcar en 15 minutos.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [
+       {
+        "type": "addition",
+        "kind": "warning",
+        "severity": "medium",
+        "source": "",
+        "rendition": "vuelva",
+        "message": "Added in the interpretation: warning sign “vuelva”"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "note",
+       "title": "Check later",
+       "why": "code",
+       "p_error": null
+      },
+      "explanation": {
+       "say": "Re-confirm: Added in the interpretation: warning sign “vuelva”",
+       "source_quote": "",
+       "quote_ok": true,
+       "by": "code"
+      },
+      "ms": {
+       "code": 0.5,
+       "checker": 0.0,
+       "to_decision": 0.5,
+       "total": 0.5
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "note",
+       "title": "Check later",
+       "why": "code",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "addition",
+        "kind": "warning",
+        "severity": "medium",
+        "source": "",
+        "rendition": "vuelva",
+        "message": "Added in the interpretation: warning sign “vuelva”"
+       }
+      ]
+     },
+     "planted": null
+    },
+    {
+     "n": 8,
+     "key": "V2-08",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "También tomo una aspirina diaria que me dio otro doctor.",
+      "rendition": "I also take an aspirin every day, another doctor gave it to me."
+     },
+     "heard": {
+      "source": "También tomo una aspirina diaria que me dio otro doctor.",
+      "rendition": "I also take an aspirin every day, another doctor gave it to me.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [
+       {
+        "type": "addition",
+        "kind": "frequency",
+        "severity": "medium",
+        "source": "",
+        "rendition": "every day",
+        "message": "Added in the interpretation: how often “every day”"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "note",
+       "title": "Check later",
+       "why": "code",
+       "p_error": null
+      },
+      "explanation": {
+       "say": "Re-confirm: Added in the interpretation: how often “every day”",
+       "source_quote": "",
+       "quote_ok": true,
+       "by": "code"
+      },
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "note",
+       "title": "Check later",
+       "why": "code",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "addition",
+        "kind": "frequency",
+        "severity": "medium",
+        "source": "",
+        "rendition": "every day",
+        "message": "Added in the interpretation: how often “every day”"
+       }
+      ]
+     },
+     "planted": null
+    },
+    {
+     "n": 9,
+     "key": "V2-09",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "Okay. Don't skip dinner on the days you take insulin.",
+      "rendition": "Muy bien. No se salte la cena los días que se ponga insulina."
+     },
+     "heard": {
+      "source": "Okay. Don't skip dinner on the days you take insulin.",
+      "rendition": "Muy bien. No se salte la cena los días que se ponga insulina.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 10,
+     "key": "V2-10",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "Y tengo una herida en el pie izquierdo que no se me cierra.",
+      "rendition": "And I have a sore on my foot."
+     },
+     "heard": {
+      "source": "Y tengo una herida en el pie izquierdo que no se me cierra.",
+      "rendition": "And I have a sore on my foot.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "negation",
+        "severity": "high",
+        "source": "no",
+        "rendition": "",
+        "message": "Not in the interpretation: a 'no' / 'not' “no”"
+       },
+       {
+        "type": "omission",
+        "kind": "side",
+        "severity": "high",
+        "source": "pie izquierdo",
+        "rendition": "",
+        "message": "Not in the interpretation: left/right “pie izquierdo”"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "explanation": {
+       "say": "Re-confirm: Not in the interpretation: a 'no' / 'not' “no”",
+       "source_quote": "no",
+       "quote_ok": true,
+       "by": "code"
+      },
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "negation",
+        "severity": "high",
+        "source": "no",
+        "rendition": "",
+        "message": "Not in the interpretation: a 'no' / 'not' “no”"
+       },
+       {
+        "type": "omission",
+        "kind": "side",
+        "severity": "high",
+        "source": "pie izquierdo",
+        "rendition": "",
+        "message": "Not in the interpretation: left/right “pie izquierdo”"
+       }
+      ]
+     },
+     "planted": {
+      "type": "omission",
+      "what": "Dropped which foot (left) and that the wound is not healing."
+     }
+    },
+    {
+     "n": 11,
+     "key": "V2-11",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "I want to look at that foot today, before you leave.",
+      "rendition": "Quiero revisarle ese pie hoy, antes de que se vaya."
+     },
+     "heard": {
+      "source": "I want to look at that foot today, before you leave.",
+      "rendition": "Quiero revisarle ese pie hoy, antes de que se vaya.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    }
+   ],
+   "review": []
+  },
+  {
+   "id": "V3",
+   "title": "Asthma check, age 7",
+   "setting": "Pediatrics",
+   "patient": "Father (Spanish)",
+   "clinician": "Dr. Lindqvist (English)",
+   "turns": [
+    {
+     "n": 1,
+     "key": "V3-01",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "How often is she using her albuterol inhaler?",
+      "rendition": "¿Qué tan seguido está usando el inhalador de albuterol?"
+     },
+     "heard": {
+      "source": "How often is she using her albuterol inhaler?",
+      "rendition": "¿Qué tan seguido está usando el inhalador de albuterol?",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 2,
+     "key": "V3-02",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "Como cuatro veces al día esta semana, y la tos la despierta en la noche.",
+      "rendition": "About four times a day this week."
+     },
+     "heard": {
+      "source": "Como cuatro veces al día esta semana, y la tos la despierta en la noche.",
+      "rendition": "About four times a day this week.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "timing",
+        "severity": "low",
+        "source": "en la noche",
+        "rendition": "",
+        "message": "Not in the interpretation: when to take it “en la noche”"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "timing",
+        "severity": "low",
+        "source": "en la noche",
+        "rendition": "",
+        "message": "Not in the interpretation: when to take it “en la noche”"
+       }
+      ]
+     },
+     "planted": {
+      "type": "omission",
+      "what": "Dropped that the cough wakes her at night."
+     }
+    },
+    {
+     "n": 3,
+     "key": "V3-03",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "Use two puffs every four hours as needed, and start this steroid inhaler every morning and every night, even when she feels fine.",
+      "rendition": "Use dos inhalaciones cada cuatro horas si las necesita, y empiece este inhalador de esteroide cada mañana y cada noche."
+     },
+     "heard": {
+      "source": "Use two puffs every four hours as needed, and start this steroid inhaler every morning and every night, even when she feels fine.",
+      "rendition": "Use dos inhalaciones cada cuatro horas si las necesita, y empiece este inhalador de esteroide cada mañana y cada noche.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "frequency",
+        "severity": "medium",
+        "source": "as needed",
+        "rendition": "",
+        "message": "Not in the interpretation: how often “as needed”"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "note",
+       "title": "Check later",
+       "why": "code",
+       "p_error": null
+      },
+      "explanation": {
+       "say": "Re-confirm: Not in the interpretation: how often “as needed”",
+       "source_quote": "as needed",
+       "quote_ok": true,
+       "by": "code"
+      },
+      "ms": {
+       "code": 0.5,
+       "checker": 0.0,
+       "to_decision": 0.5,
+       "total": 0.5
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "note",
+       "title": "Check later",
+       "why": "code",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "frequency",
+        "severity": "medium",
+        "source": "as needed",
+        "rendition": "",
+        "message": "Not in the interpretation: how often “as needed”"
+       }
+      ]
+     },
+     "planted": {
+      "type": "omission",
+      "what": "Dropped 'even when she feels fine' (the controller must not be stopped)."
+     }
+    },
+    {
+     "n": 4,
+     "key": "V3-04",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "¿Y el nuevo, cuántas veces se lo doy?",
+      "rendition": "And the new one, how many times do I give it to her?"
+     },
+     "heard": {
+      "source": "¿Y el nuevo, cuántas veces se lo doy?",
+      "rendition": "And the new one, how many times do I give it to her?",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 5,
+     "key": "V3-05",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "One puff, two times a day. Have her rinse her mouth afterwards.",
+      "rendition": "Una inhalación, tres veces al día. Que se enjuague la boca después."
+     },
+     "heard": {
+      "source": "One puff, two times a day. Have her rinse her mouth afterwards.",
+      "rendition": "Una inhalación, tres veces al día. Que se enjuague la boca después.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [
+       {
+        "type": "substitution",
+        "kind": "number",
+        "severity": "high",
+        "source": "two",
+        "rendition": "tres",
+        "message": "Changed number: “two” became “tres”"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "explanation": {
+       "say": "Re-confirm: Changed number: “two” became “tres”",
+       "source_quote": "two",
+       "quote_ok": true,
+       "by": "code"
+      },
+      "ms": {
+       "code": 0.4,
+       "checker": 0.0,
+       "to_decision": 0.4,
+       "total": 0.4
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "substitution",
+        "kind": "number",
+        "severity": "high",
+        "source": "two",
+        "rendition": "tres",
+        "message": "Changed number: “two” became “tres”"
+       }
+      ]
+     },
+     "planted": {
+      "type": "substitution",
+      "what": "Two times a day became three."
+     }
+    },
+    {
+     "n": 6,
+     "key": "V3-06",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "Está bien. Ella no es alérgica a nada.",
+      "rendition": "Okay. She's not allergic to anything."
+     },
+     "heard": {
+      "source": "Está bien. Ella no es alérgica a nada.",
+      "rendition": "Okay. She's not allergic to anything.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.2,
+       "checker": 0.0,
+       "to_decision": 0.2,
+       "total": 0.2
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 7,
+     "key": "V3-07",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "If her lips turn blue or she can't speak in full sentences, call 911.",
+      "rendition": "Si se le ponen los labios morados o no puede terminar una frase, llame al 911."
+     },
+     "heard": {
+      "source": "If her lips turn blue or she can't speak in full sentences, call 911.",
+      "rendition": "Si se le ponen los labios morados o no puede terminar una frase, llame al 911.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [
+       {
+        "type": "addition",
+        "kind": "warning",
+        "severity": "medium",
+        "source": "",
+        "rendition": "llame",
+        "message": "Added in the interpretation: warning sign “llame”"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "note",
+       "title": "Check later",
+       "why": "code",
+       "p_error": null
+      },
+      "explanation": {
+       "say": "Re-confirm: Added in the interpretation: warning sign “llame”",
+       "source_quote": "",
+       "quote_ok": true,
+       "by": "code"
+      },
+      "ms": {
+       "code": 0.4,
+       "checker": 0.0,
+       "to_decision": 0.4,
+       "total": 0.4
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "note",
+       "title": "Check later",
+       "why": "code",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "addition",
+        "kind": "warning",
+        "severity": "medium",
+        "source": "",
+        "rendition": "llame",
+        "message": "Added in the interpretation: warning sign “llame”"
+       }
+      ]
+     },
+     "planted": null
+    },
+    {
+     "n": 8,
+     "key": "V3-08",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "Gracias, doctor.",
+      "rendition": "Thank you, doctor."
+     },
+     "heard": {
+      "source": "Gracias, doctor.",
+      "rendition": "Thank you, doctor.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.2,
+       "checker": 0.0,
+       "to_decision": 0.2,
+       "total": 0.2
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    }
+   ],
+   "review": []
+  },
+  {
+   "id": "V4",
+   "title": "Warfarin dose change",
+   "setting": "Anticoagulation clinic",
+   "patient": "Patient (Spanish)",
+   "clinician": "Pharmacist Reyes-Hall (English)",
+   "turns": [
+    {
+     "n": 1,
+     "key": "V4-01",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "Your INR is high today, so we're changing your warfarin dose.",
+      "rendition": "Su INR salió alto hoy, así que vamos a cambiarle la dosis de warfarina."
+     },
+     "heard": {
+      "source": "Your INR is high today, so we're changing your warfarin dose.",
+      "rendition": "Su INR salió alto hoy, así que vamos a cambiarle la dosis de warfarina.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.4,
+       "checker": 0.0,
+       "to_decision": 0.4,
+       "total": 0.4
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 2,
+     "key": "V4-02",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "Take 2.5 milligrams on Mondays and Fridays, and 5 milligrams on the other days.",
+      "rendition": "Tome 5 miligramos los lunes y viernes, y 2.5 miligramos los demás días."
+     },
+     "heard": {
+      "source": "Take 2.5 milligrams on Mondays and Fridays, and 5 milligrams on the other days.",
+      "rendition": "Tome 5 miligramos los lunes y viernes, y 2.5 miligramos los demás días.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [
+       {
+        "type": "substitution",
+        "kind": "order",
+        "severity": "medium",
+        "source": "2.5 / 5",
+        "rendition": "5 / 2.5",
+        "message": "Same numbers in a different order: 2.5, 5 became 5, 2.5"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "note",
+       "title": "Check later",
+       "why": "code",
+       "p_error": null
+      },
+      "explanation": {
+       "say": "Re-confirm: Same numbers in a different order: 2.5, 5 became 5, 2.5",
+       "source_quote": "2.5 / 5",
+       "quote_ok": true,
+       "by": "code"
+      },
+      "ms": {
+       "code": 0.4,
+       "checker": 0.0,
+       "to_decision": 0.4,
+       "total": 0.4
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "note",
+       "title": "Check later",
+       "why": "code",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "substitution",
+        "kind": "order",
+        "severity": "medium",
+        "source": "2.5 / 5",
+        "rendition": "5 / 2.5",
+        "message": "Same numbers in a different order: 2.5, 5 became 5, 2.5"
+       }
+      ]
+     },
+     "planted": {
+      "type": "substitution",
+      "what": "The two doses were swapped between the days."
+     }
+    },
+    {
+     "n": 3,
+     "key": "V4-03",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "Ayer me salió sangre de la nariz y no paraba como por media hora.",
+      "rendition": "Yesterday my nose bled."
+     },
+     "heard": {
+      "source": "Ayer me salió sangre de la nariz y no paraba como por media hora.",
+      "rendition": "Yesterday my nose bled.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "number",
+        "severity": "high",
+        "source": "media",
+        "rendition": "",
+        "message": "Not in the interpretation: number “media”"
+       },
+       {
+        "type": "omission",
+        "kind": "negation",
+        "severity": "high",
+        "source": "no",
+        "rendition": "",
+        "message": "Not in the interpretation: a 'no' / 'not' “no”"
+       },
+       {
+        "type": "omission",
+        "kind": "warning",
+        "severity": "high",
+        "source": "sangre",
+        "rendition": "",
+        "message": "Not in the interpretation: warning sign “sangre”"
+       },
+       {
+        "type": "omission",
+        "kind": "duration",
+        "severity": "high",
+        "source": "media hora",
+        "rendition": "",
+        "message": "Not in the interpretation: how long “media hora”"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "explanation": {
+       "say": "Re-confirm: Not in the interpretation: number “media”",
+       "source_quote": "media",
+       "quote_ok": true,
+       "by": "code"
+      },
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "number",
+        "severity": "high",
+        "source": "media",
+        "rendition": "",
+        "message": "Not in the interpretation: number “media”"
+       },
+       {
+        "type": "omission",
+        "kind": "negation",
+        "severity": "high",
+        "source": "no",
+        "rendition": "",
+        "message": "Not in the interpretation: a 'no' / 'not' “no”"
+       },
+       {
+        "type": "omission",
+        "kind": "warning",
+        "severity": "high",
+        "source": "sangre",
+        "rendition": "",
+        "message": "Not in the interpretation: warning sign “sangre”"
+       },
+       {
+        "type": "omission",
+        "kind": "duration",
+        "severity": "high",
+        "source": "media hora",
+        "rendition": "",
+        "message": "Not in the interpretation: how long “media hora”"
+       }
+      ]
+     },
+     "planted": {
+      "type": "omission",
+      "what": "Dropped that the bleeding would not stop for about half an hour."
+     }
+    },
+    {
+     "n": 4,
+     "key": "V4-04",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "Any blood in your urine or black stools?",
+      "rendition": "¿Ha visto sangre en la orina o el excremento negro?"
+     },
+     "heard": {
+      "source": "Any blood in your urine or black stools?",
+      "rendition": "¿Ha visto sangre en la orina o el excremento negro?",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 5,
+     "key": "V4-05",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "No, nada de eso.",
+      "rendition": "No, nothing like that."
+     },
+     "heard": {
+      "source": "No, nada de eso.",
+      "rendition": "No, nothing like that.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.2,
+       "checker": 0.0,
+       "to_decision": 0.2,
+       "total": 0.2
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 6,
+     "key": "V4-06",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "Para el dolor de rodilla me tomo ibuprofeno.",
+      "rendition": "For my knee pain I take Tylenol."
+     },
+     "heard": {
+      "source": "Para el dolor de rodilla me tomo ibuprofeno.",
+      "rendition": "For my knee pain I take Tylenol.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [
+       {
+        "type": "substitution",
+        "kind": "drug",
+        "severity": "high",
+        "source": "ibuprofeno",
+        "rendition": "tylenol",
+        "message": "Changed medicine: “ibuprofeno” became “tylenol”"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "explanation": {
+       "say": "Re-confirm: Changed medicine: “ibuprofeno” became “tylenol”",
+       "source_quote": "ibuprofeno",
+       "quote_ok": true,
+       "by": "code"
+      },
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "substitution",
+        "kind": "drug",
+        "severity": "high",
+        "source": "ibuprofeno",
+        "rendition": "tylenol",
+        "message": "Changed medicine: “ibuprofeno” became “tylenol”"
+       }
+      ]
+     },
+     "planted": {
+      "type": "substitution",
+      "what": "Ibuprofen became Tylenol (ibuprofen raises bleeding risk with warfarin)."
+     }
+    },
+    {
+     "n": 7,
+     "key": "V4-07",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "Please stop the ibuprofen. It raises your bleeding risk with warfarin. You can use acetaminophen instead.",
+      "rendition": "Por favor deje el ibuprofeno, porque con la warfarina aumenta el riesgo de sangrado. En su lugar puede usar acetaminofén."
+     },
+     "heard": {
+      "source": "Please stop the ibuprofen. It raises your bleeding risk with warfarin. You can use acetaminophen instead.",
+      "rendition": "Por favor deje el ibuprofeno, porque con la warfarina aumenta el riesgo de sangrado. En su lugar puede usar acetaminofén.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.5,
+       "checker": 0.0,
+       "to_decision": 0.5,
+       "total": 0.5
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 8,
+     "key": "V4-08",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "Come back in one week for another blood test.",
+      "rendition": "Regrese en una semana para otro análisis de sangre."
+     },
+     "heard": {
+      "source": "Come back in one week for another blood test.",
+      "rendition": "Regrese en una semana para otro análisis de sangre.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [
+       {
+        "type": "addition",
+        "kind": "warning",
+        "severity": "medium",
+        "source": "",
+        "rendition": "sangre",
+        "message": "Added in the interpretation: warning sign “sangre”"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "note",
+       "title": "Check later",
+       "why": "code",
+       "p_error": null
+      },
+      "explanation": {
+       "say": "Re-confirm: Added in the interpretation: warning sign “sangre”",
+       "source_quote": "",
+       "quote_ok": true,
+       "by": "code"
+      },
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "note",
+       "title": "Check later",
+       "why": "code",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "addition",
+        "kind": "warning",
+        "severity": "medium",
+        "source": "",
+        "rendition": "sangre",
+        "message": "Added in the interpretation: warning sign “sangre”"
+       }
+      ]
+     },
+     "planted": null
+    }
+   ],
+   "review": []
+  },
+  {
+   "id": "V5",
+   "title": "Sprained ankle",
+   "setting": "Urgent care",
+   "patient": "Patient (Spanish)",
+   "clinician": "PA Moreau (English)",
+   "turns": [
+    {
+     "n": 1,
+     "key": "V5-01",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "Which ankle did you twist?",
+      "rendition": "¿Cuál tobillo se torció?"
+     },
+     "heard": {
+      "source": "Which ankle did you twist?",
+      "rendition": "¿Cuál tobillo se torció?",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.2,
+       "checker": 0.0,
+       "to_decision": 0.2,
+       "total": 0.2
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 2,
+     "key": "V5-02",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "El izquierdo. Me caí en la escalera el sábado.",
+      "rendition": "The left one. I fell on the stairs on Saturday."
+     },
+     "heard": {
+      "source": "El izquierdo. Me caí en la escalera el sábado.",
+      "rendition": "The left one. I fell on the stairs on Saturday.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 3,
+     "key": "V5-03",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "Me tomé dos pastillas de ibuprofeno de ochocientos.",
+      "rendition": "I took two ibuprofen pills."
+     },
+     "heard": {
+      "source": "Me tomé dos pastillas de ibuprofeno de ochocientos.",
+      "rendition": "I took two ibuprofen pills.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "number",
+        "severity": "high",
+        "source": "ochocientos",
+        "rendition": "",
+        "message": "Not in the interpretation: number “ochocientos”"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "explanation": {
+       "say": "Re-confirm: Not in the interpretation: number “ochocientos”",
+       "source_quote": "ochocientos",
+       "quote_ok": true,
+       "by": "code"
+      },
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "number",
+        "severity": "high",
+        "source": "ochocientos",
+        "rendition": "",
+        "message": "Not in the interpretation: number “ochocientos”"
+       }
+      ]
+     },
+     "planted": {
+      "type": "omission",
+      "what": "Dropped the strength: 800 mg each."
+     }
+    },
+    {
+     "n": 4,
+     "key": "V5-04",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "It's a sprain, not a fracture. Ice it for 20 minutes three times a day.",
+      "rendition": "Es un esguince, no una fractura. Póngase hielo 20 minutos tres veces al día y tome ibuprofeno con cada comida."
+     },
+     "heard": {
+      "source": "It's a sprain, not a fracture. Ice it for 20 minutes three times a day.",
+      "rendition": "Es un esguince, no una fractura. Póngase hielo 20 minutos tres veces al día y tome ibuprofeno con cada comida.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [
+       {
+        "type": "addition",
+        "kind": "drug",
+        "severity": "high",
+        "source": "",
+        "rendition": "ibuprofeno",
+        "message": "Added in the interpretation: medicine “ibuprofeno”"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "explanation": {
+       "say": "Re-confirm: Added in the interpretation: medicine “ibuprofeno”",
+       "source_quote": "",
+       "quote_ok": true,
+       "by": "code"
+      },
+      "ms": {
+       "code": 0.5,
+       "checker": 0.0,
+       "to_decision": 0.5,
+       "total": 0.5
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "addition",
+        "kind": "drug",
+        "severity": "high",
+        "source": "",
+        "rendition": "ibuprofeno",
+        "message": "Added in the interpretation: medicine “ibuprofeno”"
+       }
+      ]
+     },
+     "planted": {
+      "type": "addition",
+      "what": "Added 'take ibuprofen with every meal', which was not said."
+     }
+    },
+    {
+     "n": 5,
+     "key": "V5-05",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "You can take ibuprofen 400 milligrams every 8 hours with food, no more than 3 times a day.",
+      "rendition": "Puede tomar ibuprofeno de 400 miligramos cada 8 horas con comida, no más de 3 veces al día."
+     },
+     "heard": {
+      "source": "You can take ibuprofen 400 milligrams every 8 hours with food, no more than 3 times a day.",
+      "rendition": "Puede tomar ibuprofeno de 400 miligramos cada 8 horas con comida, no más de 3 veces al día.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.5,
+       "checker": 0.0,
+       "to_decision": 0.5,
+       "total": 0.5
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 6,
+     "key": "V5-06",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "¿Puedo ir a trabajar? Trabajo parado todo el día.",
+      "rendition": "Can I go to work? I'm on my feet all day."
+     },
+     "heard": {
+      "source": "¿Puedo ir a trabajar? Trabajo parado todo el día.",
+      "rendition": "Can I go to work? I'm on my feet all day.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 7,
+     "key": "V5-07",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "Not this week. Keep your weight off it for 3 days and use the crutches.",
+      "rendition": "Esta semana sí puede. No se apoye en el pie por 3 días y use las muletas."
+     },
+     "heard": {
+      "source": "Not this week. Keep your weight off it for 3 days and use the crutches.",
+      "rendition": "Esta semana sí puede. No se apoye en el pie por 3 días y use las muletas.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.4,
+       "checker": 0.0,
+       "to_decision": 0.4,
+       "total": 0.4
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": {
+      "type": "substitution",
+      "what": "'Not this week' became 'this week you can'."
+     }
+    },
+    {
+     "n": 8,
+     "key": "V5-08",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "If your toes get numb or cold, go to the emergency room.",
+      "rendition": "Si se le duermen los dedos o se le ponen fríos, vaya a emergencias."
+     },
+     "heard": {
+      "source": "If your toes get numb or cold, go to the emergency room.",
+      "rendition": "Si se le duermen los dedos o se le ponen fríos, vaya a emergencias.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    }
+   ],
+   "review": []
+  },
+  {
+   "id": "V6",
+   "title": "After appendix surgery, age 15",
+   "setting": "Hospital discharge",
+   "patient": "Mother (Spanish)",
+   "clinician": "Nurse Abebe (English)",
+   "turns": [
+    {
+     "n": 1,
+     "key": "V6-01",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "Keep the incision dry for 48 hours, then he can shower.",
+      "rendition": "Mantenga la herida seca por 48 horas, y después se puede bañar."
+     },
+     "heard": {
+      "source": "Keep the incision dry for 48 hours, then he can shower.",
+      "rendition": "Mantenga la herida seca por 48 horas, y después se puede bañar.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 2,
+     "key": "V6-02",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "No lifting anything over 10 pounds for 2 weeks.",
+      "rendition": "Que no levante nada de más de 10 libras por 2 días."
+     },
+     "heard": {
+      "source": "No lifting anything over 10 pounds for 2 weeks.",
+      "rendition": "Que no levante nada de más de 10 libras por 2 días.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [
+       {
+        "type": "substitution",
+        "kind": "duration",
+        "severity": "high",
+        "source": "2 weeks",
+        "rendition": "2 dias",
+        "message": "Changed how long: “2 weeks” became “2 dias”"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "explanation": {
+       "say": "Re-confirm: Changed how long: “2 weeks” became “2 dias”",
+       "source_quote": "2 weeks",
+       "quote_ok": true,
+       "by": "code"
+      },
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "substitution",
+        "kind": "duration",
+        "severity": "high",
+        "source": "2 weeks",
+        "rendition": "2 dias",
+        "message": "Changed how long: “2 weeks” became “2 dias”"
+       }
+      ]
+     },
+     "planted": {
+      "type": "substitution",
+      "what": "Two weeks became two days."
+     }
+    },
+    {
+     "n": 3,
+     "key": "V6-03",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "¿Y para el dolor qué le doy? Es alérgico a la codeína, le da mucha comezón.",
+      "rendition": "And what do I give him for the pain?"
+     },
+     "heard": {
+      "source": "¿Y para el dolor qué le doy? Es alérgico a la codeína, le da mucha comezón.",
+      "rendition": "And what do I give him for the pain?",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "allergy",
+        "severity": "high",
+        "source": "alergico",
+        "rendition": "",
+        "message": "Not in the interpretation: allergy “alergico”"
+       },
+       {
+        "type": "omission",
+        "kind": "drug",
+        "severity": "high",
+        "source": "codeina",
+        "rendition": "",
+        "message": "Not in the interpretation: medicine “codeina”"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "explanation": {
+       "say": "Re-confirm: Not in the interpretation: allergy “alergico”",
+       "source_quote": "alergico",
+       "quote_ok": true,
+       "by": "code"
+      },
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "allergy",
+        "severity": "high",
+        "source": "alergico",
+        "rendition": "",
+        "message": "Not in the interpretation: allergy “alergico”"
+       },
+       {
+        "type": "omission",
+        "kind": "drug",
+        "severity": "high",
+        "source": "codeina",
+        "rendition": "",
+        "message": "Not in the interpretation: medicine “codeina”"
+       }
+      ]
+     },
+     "planted": {
+      "type": "omission",
+      "what": "Dropped the codeine allergy."
+     }
+    },
+    {
+     "n": 4,
+     "key": "V6-04",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "Give him acetaminophen, 500 milligrams every 6 hours as needed.",
+      "rendition": "Dele acetaminofén, 500 miligramos cada 6 horas si lo necesita."
+     },
+     "heard": {
+      "source": "Give him acetaminophen, 500 milligrams every 6 hours as needed.",
+      "rendition": "Dele acetaminofén, 500 miligramos cada 6 horas si lo necesita.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.4,
+       "checker": 0.0,
+       "to_decision": 0.4,
+       "total": 0.4
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 5,
+     "key": "V6-05",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "Anoche vomitó dos veces.",
+      "rendition": "He threw up last night."
+     },
+     "heard": {
+      "source": "Anoche vomitó dos veces.",
+      "rendition": "He threw up last night.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "number",
+        "severity": "high",
+        "source": "dos",
+        "rendition": "",
+        "message": "Not in the interpretation: number “dos”"
+       },
+       {
+        "type": "omission",
+        "kind": "warning",
+        "severity": "high",
+        "source": "vomit",
+        "rendition": "",
+        "message": "Not in the interpretation: warning sign “vomit”"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "explanation": {
+       "say": "Re-confirm: Not in the interpretation: number “dos”",
+       "source_quote": "dos",
+       "quote_ok": true,
+       "by": "code"
+      },
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "number",
+        "severity": "high",
+        "source": "dos",
+        "rendition": "",
+        "message": "Not in the interpretation: number “dos”"
+       },
+       {
+        "type": "omission",
+        "kind": "warning",
+        "severity": "high",
+        "source": "vomit",
+        "rendition": "",
+        "message": "Not in the interpretation: warning sign “vomit”"
+       }
+      ]
+     },
+     "planted": {
+      "type": "omission",
+      "what": "Dropped how many times (twice)."
+     }
+    },
+    {
+     "n": 6,
+     "key": "V6-06",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "If he has a fever over 101, the wound gets red or leaks pus, or the vomiting keeps up, come back.",
+      "rendition": "Si tiene fiebre de más de 101, si la herida se pone roja o le sale pus, o si sigue vomitando, regrese."
+     },
+     "heard": {
+      "source": "If he has a fever over 101, the wound gets red or leaks pus, or the vomiting keeps up, come back.",
+      "rendition": "Si tiene fiebre de más de 101, si la herida se pone roja o le sale pus, o si sigue vomitando, regrese.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.5,
+       "checker": 0.0,
+       "to_decision": 0.5,
+       "total": 0.5
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 7,
+     "key": "V6-07",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "Muy bien, muchas gracias.",
+      "rendition": "Very good, thank you very much."
+     },
+     "heard": {
+      "source": "Muy bien, muchas gracias.",
+      "rendition": "Very good, thank you very much.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": null,
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.2,
+       "checker": 0.0,
+       "to_decision": 0.2,
+       "total": 0.2
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    }
+   ],
+   "review": []
+  }
+ ],
+ "e2e": {
+  "from_audio": {
+   "caught": 16,
+   "errors": 20,
+   "false_alarms": 0,
+   "faithful_turns": 34,
+   "patient_speech_caught": "10/11",
+   "missed": [
+    "V3-02",
+    "V3-03",
+    "V4-02",
+    "V5-07"
+   ],
+   "false_alarm_turns": []
+  },
+  "from_script_text": {
+   "caught": 16,
+   "errors": 20,
+   "false_alarms": 0,
+   "faithful_turns": 34,
+   "patient_speech_caught": "10/11",
+   "missed": [
+    "V3-02",
+    "V3-03",
+    "V4-02",
+    "V5-07"
+   ],
+   "false_alarm_turns": []
+  },
+  "wer": {
+   "en": null,
+   "es": null
+  },
+  "ms_median_audio_to_card": 0.3,
+  "ms_p95": 0.6,
+  "by_model": {},
+  "cost_usd": 0
+ }
+}

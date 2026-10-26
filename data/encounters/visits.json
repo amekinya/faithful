@@ -1,0 +1,409 @@
+{
+ "about": "Six scripted, fictional English-Spanish visits through a remote interpreter, written for Faithful's end-to-end test and demo. 20 interpreter errors are planted on purpose (omissions, substitutions, additions; 11 in the patient's speech, 9 in the clinician's), following the design of Rabotin et al., JMIR Med Inform 2026;14:e88734 (5 scenarios, 20 planted errors). Every other turn is a faithful interpretation, some re-worded the way interpreters normally do. All names are invented.",
+ "visits": [
+  {
+   "id": "V1",
+   "title": "Fever and ear pain, age 2",
+   "setting": "Emergency department",
+   "patient": "Mother (Spanish)",
+   "clinician": "Dr. Patel (English)",
+   "turns": [
+    {
+     "speaker": "clinician",
+     "source": "Hi, I'm Dr. Patel. What brings you in today?",
+     "rendition": "Hola, soy la doctora Patel. ¿Qué la trae por aquí hoy?"
+    },
+    {
+     "speaker": "patient",
+     "source": "Mi hijo tiene fiebre desde hace dos días, y anoche llegó a treinta y nueve y medio.",
+     "rendition": "My son has had a fever for two days, and last night it got to 39.5."
+    },
+    {
+     "speaker": "clinician",
+     "source": "Has he had any medicine today?",
+     "rendition": "¿Le ha dado alguna medicina hoy?"
+    },
+    {
+     "speaker": "patient",
+     "source": "Sí, ya le di dos dosis de Tylenol hoy, la última a las diez. Y es alérgico a la penicilina.",
+     "rendition": "Yes, I gave him Tylenol today.",
+     "error": {
+      "type": "omission",
+      "what": "Dropped the two prior doses, the time of the last dose, and the penicillin allergy."
+     }
+    },
+    {
+     "speaker": "clinician",
+     "source": "Is he having any trouble breathing, a rash, or is he not drinking?",
+     "rendition": "¿Tiene dificultad para respirar, algún sarpullido, o no está tomando líquidos?"
+    },
+    {
+     "speaker": "patient",
+     "source": "No, está tomando bien, pero le duele el oído derecho.",
+     "rendition": "No, he's drinking well, but his left ear hurts.",
+     "error": {
+      "type": "substitution",
+      "what": "Right ear became left ear."
+     }
+    },
+    {
+     "speaker": "clinician",
+     "source": "He has an ear infection. Give him 5 milliliters of azithromycin once a day for 5 days.",
+     "rendition": "Tiene una infección del oído. Dele 5 mililitros de azitromicina una vez al día por cinco días."
+    },
+    {
+     "speaker": "clinician",
+     "source": "For the fever you can give ibuprofen, 100 milligrams every 6 hours, but no more than 4 doses in 24 hours.",
+     "rendition": "Para la fiebre le puede dar ibuprofeno, 100 miligramos cada 6 horas.",
+     "error": {
+      "type": "omission",
+      "what": "Dropped the dose limit: no more than 4 doses in 24 hours."
+     }
+    },
+    {
+     "speaker": "patient",
+     "source": "¿Le puedo seguir dando el Tylenol también?",
+     "rendition": "Can I keep giving him the Tylenol too?"
+    },
+    {
+     "speaker": "clinician",
+     "source": "Yes, but don't give the Tylenol and the ibuprofen at the same time. Alternate them.",
+     "rendition": "Sí, le puede dar el Tylenol y el ibuprofeno al mismo tiempo.",
+     "error": {
+      "type": "substitution",
+      "what": "'Don't give them at the same time, alternate them' became 'you can give them at the same time'."
+     }
+    },
+    {
+     "speaker": "clinician",
+     "source": "Come back right away if he has trouble breathing, a stiff neck, or won't wake up.",
+     "rendition": "Regrese de inmediato si tiene dificultad para respirar.",
+     "error": {
+      "type": "omission",
+      "what": "Dropped two warning signs: stiff neck, won't wake up."
+     }
+    },
+    {
+     "speaker": "patient",
+     "source": "Muchas gracias, doctora.",
+     "rendition": "Thank you so much, doctor."
+    }
+   ]
+  },
+  {
+   "id": "V2",
+   "title": "Diabetes follow-up",
+   "setting": "Primary care clinic",
+   "patient": "Patient (Spanish)",
+   "clinician": "Dr. Okafor (English)",
+   "turns": [
+    {
+     "speaker": "clinician",
+     "source": "How have your sugars been since the last visit?",
+     "rendition": "¿Cómo ha tenido el azúcar desde la última consulta?"
+    },
+    {
+     "speaker": "patient",
+     "source": "En la mañana sale como en ciento cuarenta, pero en la noche a veces baja a sesenta y me pongo temblorosa.",
+     "rendition": "In the morning it's around 140, and at night it sometimes goes down.",
+     "error": {
+      "type": "omission",
+      "what": "Dropped the low reading (60) and the shakiness: a sign of low blood sugar."
+     }
+    },
+    {
+     "speaker": "clinician",
+     "source": "How much insulin are you taking at night?",
+     "rendition": "¿Cuánta insulina se pone en la noche?"
+    },
+    {
+     "speaker": "patient",
+     "source": "Me pongo veinte unidades antes de dormir.",
+     "rendition": "I take twelve units before bed.",
+     "error": {
+      "type": "substitution",
+      "what": "Twenty units became twelve."
+     }
+    },
+    {
+     "speaker": "clinician",
+     "source": "Let's lower it to 16 units at bedtime, and keep taking metformin 500 milligrams twice a day with food.",
+     "rendition": "Vamos a bajarla a 16 unidades antes de dormir, y siga tomando la metformina de 500 miligramos dos veces al día con comida."
+    },
+    {
+     "speaker": "patient",
+     "source": "¿Y si me siento mareada otra vez?",
+     "rendition": "And what if I feel dizzy again?"
+    },
+    {
+     "speaker": "clinician",
+     "source": "If you feel shaky or sweaty, drink half a cup of juice and check your sugar again in 15 minutes.",
+     "rendition": "Si se siente temblorosa o sudorosa, tómese media taza de jugo y vuelva a medirse el azúcar en 15 minutos."
+    },
+    {
+     "speaker": "patient",
+     "source": "También tomo una aspirina diaria que me dio otro doctor.",
+     "rendition": "I also take an aspirin every day, another doctor gave it to me."
+    },
+    {
+     "speaker": "clinician",
+     "source": "Okay. Don't skip dinner on the days you take insulin.",
+     "rendition": "Muy bien. No se salte la cena los días que se ponga insulina."
+    },
+    {
+     "speaker": "patient",
+     "source": "Y tengo una herida en el pie izquierdo que no se me cierra.",
+     "rendition": "And I have a sore on my foot.",
+     "error": {
+      "type": "omission",
+      "what": "Dropped which foot (left) and that the wound is not healing."
+     }
+    },
+    {
+     "speaker": "clinician",
+     "source": "I want to look at that foot today, before you leave.",
+     "rendition": "Quiero revisarle ese pie hoy, antes de que se vaya."
+    }
+   ]
+  },
+  {
+   "id": "V3",
+   "title": "Asthma check, age 7",
+   "setting": "Pediatrics",
+   "patient": "Father (Spanish)",
+   "clinician": "Dr. Lindqvist (English)",
+   "turns": [
+    {
+     "speaker": "clinician",
+     "source": "How often is she using her albuterol inhaler?",
+     "rendition": "¿Qué tan seguido está usando el inhalador de albuterol?"
+    },
+    {
+     "speaker": "patient",
+     "source": "Como cuatro veces al día esta semana, y la tos la despierta en la noche.",
+     "rendition": "About four times a day this week.",
+     "error": {
+      "type": "omission",
+      "what": "Dropped that the cough wakes her at night."
+     }
+    },
+    {
+     "speaker": "clinician",
+     "source": "Use two puffs every four hours as needed, and start this steroid inhaler every morning and every night, even when she feels fine.",
+     "rendition": "Use dos inhalaciones cada cuatro horas si las necesita, y empiece este inhalador de esteroide cada mañana y cada noche.",
+     "error": {
+      "type": "omission",
+      "what": "Dropped 'even when she feels fine' (the controller must not be stopped)."
+     }
+    },
+    {
+     "speaker": "patient",
+     "source": "¿Y el nuevo, cuántas veces se lo doy?",
+     "rendition": "And the new one, how many times do I give it to her?"
+    },
+    {
+     "speaker": "clinician",
+     "source": "One puff, two times a day. Have her rinse her mouth afterwards.",
+     "rendition": "Una inhalación, tres veces al día. Que se enjuague la boca después.",
+     "error": {
+      "type": "substitution",
+      "what": "Two times a day became three."
+     }
+    },
+    {
+     "speaker": "patient",
+     "source": "Está bien. Ella no es alérgica a nada.",
+     "rendition": "Okay. She's not allergic to anything."
+    },
+    {
+     "speaker": "clinician",
+     "source": "If her lips turn blue or she can't speak in full sentences, call 911.",
+     "rendition": "Si se le ponen los labios morados o no puede terminar una frase, llame al 911."
+    },
+    {
+     "speaker": "patient",
+     "source": "Gracias, doctor.",
+     "rendition": "Thank you, doctor."
+    }
+   ]
+  },
+  {
+   "id": "V4",
+   "title": "Warfarin dose change",
+   "setting": "Anticoagulation clinic",
+   "patient": "Patient (Spanish)",
+   "clinician": "Pharmacist Reyes-Hall (English)",
+   "turns": [
+    {
+     "speaker": "clinician",
+     "source": "Your INR is high today, so we're changing your warfarin dose.",
+     "rendition": "Su INR salió alto hoy, así que vamos a cambiarle la dosis de warfarina."
+    },
+    {
+     "speaker": "clinician",
+     "source": "Take 2.5 milligrams on Mondays and Fridays, and 5 milligrams on the other days.",
+     "rendition": "Tome cinco miligramos los lunes y viernes, y dos y medio miligramos los demás días.",
+     "error": {
+      "type": "substitution",
+      "what": "The two doses were swapped between the days."
+     }
+    },
+    {
+     "speaker": "patient",
+     "source": "Ayer me salió sangre de la nariz y no paraba como por media hora.",
+     "rendition": "Yesterday my nose bled.",
+     "error": {
+      "type": "omission",
+      "what": "Dropped that the bleeding would not stop for about half an hour."
+     }
+    },
+    {
+     "speaker": "clinician",
+     "source": "Any blood in your urine or black stools?",
+     "rendition": "¿Ha visto sangre en la orina o el excremento negro?"
+    },
+    {
+     "speaker": "patient",
+     "source": "No, nada de eso.",
+     "rendition": "No, nothing like that."
+    },
+    {
+     "speaker": "patient",
+     "source": "Para el dolor de rodilla me tomo ibuprofeno.",
+     "rendition": "For my knee pain I take Tylenol.",
+     "error": {
+      "type": "substitution",
+      "what": "Ibuprofen became Tylenol (ibuprofen raises bleeding risk with warfarin)."
+     }
+    },
+    {
+     "speaker": "clinician",
+     "source": "Please stop the ibuprofen. It raises your bleeding risk with warfarin. You can use acetaminophen instead.",
+     "rendition": "Por favor deje el ibuprofeno, porque con la warfarina aumenta el riesgo de sangrado. En su lugar puede usar acetaminofén."
+    },
+    {
+     "speaker": "clinician",
+     "source": "Come back in one week for another blood test.",
+     "rendition": "Regrese en una semana para otro análisis de sangre."
+    }
+   ]
+  },
+  {
+   "id": "V5",
+   "title": "Sprained ankle",
+   "setting": "Urgent care",
+   "patient": "Patient (Spanish)",
+   "clinician": "PA Moreau (English)",
+   "turns": [
+    {
+     "speaker": "clinician",
+     "source": "Which ankle did you twist?",
+     "rendition": "¿Cuál tobillo se torció?"
+    },
+    {
+     "speaker": "patient",
+     "source": "El izquierdo. Me caí en la escalera el sábado.",
+     "rendition": "The left one. I fell on the stairs on Saturday."
+    },
+    {
+     "speaker": "patient",
+     "source": "Me tomé dos pastillas de ibuprofeno de ochocientos.",
+     "rendition": "I took two ibuprofen pills.",
+     "error": {
+      "type": "omission",
+      "what": "Dropped the strength: 800 mg each."
+     }
+    },
+    {
+     "speaker": "clinician",
+     "source": "It's a sprain, not a fracture. Ice it for 20 minutes three times a day.",
+     "rendition": "Es un esguince, no una fractura. Póngase hielo 20 minutos tres veces al día y tome ibuprofeno con cada comida.",
+     "error": {
+      "type": "addition",
+      "what": "Added 'take ibuprofen with every meal', which was not said."
+     }
+    },
+    {
+     "speaker": "clinician",
+     "source": "You can take ibuprofen 400 milligrams every 8 hours with food, no more than 3 times a day.",
+     "rendition": "Puede tomar ibuprofeno de 400 miligramos cada 8 horas con comida, no más de 3 veces al día."
+    },
+    {
+     "speaker": "patient",
+     "source": "¿Puedo ir a trabajar? Trabajo parado todo el día.",
+     "rendition": "Can I go to work? I'm on my feet all day."
+    },
+    {
+     "speaker": "clinician",
+     "source": "Not this week. Keep your weight off it for 3 days and use the crutches.",
+     "rendition": "Esta semana sí puede. No se apoye en el pie por 3 días y use las muletas.",
+     "error": {
+      "type": "substitution",
+      "what": "'Not this week' became 'this week you can'."
+     }
+    },
+    {
+     "speaker": "clinician",
+     "source": "If your toes get numb or cold, go to the emergency room.",
+     "rendition": "Si se le duermen los dedos o se le ponen fríos, vaya a emergencias."
+    }
+   ]
+  },
+  {
+   "id": "V6",
+   "title": "After appendix surgery, age 15",
+   "setting": "Hospital discharge",
+   "patient": "Mother (Spanish)",
+   "clinician": "Nurse Abebe (English)",
+   "turns": [
+    {
+     "speaker": "clinician",
+     "source": "Keep the incision dry for 48 hours, then he can shower.",
+     "rendition": "Mantenga la herida seca por 48 horas, y después se puede bañar."
+    },
+    {
+     "speaker": "clinician",
+     "source": "No lifting anything over 10 pounds for 2 weeks.",
+     "rendition": "Que no levante nada de más de 10 libras por 2 días.",
+     "error": {
+      "type": "substitution",
+      "what": "Two weeks became two days."
+     }
+    },
+    {
+     "speaker": "patient",
+     "source": "¿Y para el dolor qué le doy? Es alérgico a la codeína, le da mucha comezón.",
+     "rendition": "And what do I give him for the pain?",
+     "error": {
+      "type": "omission",
+      "what": "Dropped the codeine allergy."
+     }
+    },
+    {
+     "speaker": "clinician",
+     "source": "Give him acetaminophen, 500 milligrams every 6 hours as needed.",
+     "rendition": "Dele acetaminofén, 500 miligramos cada 6 horas si lo necesita."
+    },
+    {
+     "speaker": "patient",
+     "source": "Anoche vomitó dos veces.",
+     "rendition": "He threw up last night.",
+     "error": {
+      "type": "omission",
+      "what": "Dropped how many times (twice)."
+     }
+    },
+    {
+     "speaker": "clinician",
+     "source": "If he has a fever over 101, the wound gets red or leaks pus, or the vomiting keeps up, come back.",
+     "rendition": "Si tiene fiebre de más de 101, si la herida se pone roja o le sale pus, o si sigue vomitando, regrese."
+    },
+    {
+     "speaker": "patient",
+     "source": "Muy bien, muchas gracias.",
+     "rendition": "Very good, thank you very much."
+    }
+   ]
+  }
+ ]
+}

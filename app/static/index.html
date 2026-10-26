@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Faithful</title>
+<meta name="description" content="A second ear for medical interpreters: checks that doses, allergies, left and right, and every 'no' crossed the language gap, turn by turn.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='9' width='28' height='14' rx='3' fill='%23C8102E'/%3E%3Crect x='9' y='9' width='3' height='14' fill='%23fff'/%3E%3C/svg%3E">
+</head>
+<body>
+<header class="top">
+  <a class="mark" href="#replay" aria-label="Faithful home">
+    <svg viewBox="0 0 40 20" aria-hidden="true"><rect x="1" y="3" width="38" height="14" rx="3"/><rect class="cut" x="11" y="3" width="3" height="14"/></svg>
+    Faithful
+  </a>
+  <nav aria-label="Sections">
+    <a href="#replay">Replay a visit</a>
+    <a href="#try">Check a sentence</a>
+    <a href="#results">Results</a>
+    <a href="#how">How it works</a>
+  </nav>
+</header>
+
+<main>
+  <section class="intro" aria-labelledby="h1">
+    <h1 id="h1">A second ear for the interpreter.</h1>
+    <p class="lede">When a mother says <span lang="es">“es alérgico a la penicilina”</span> and the English never mentions it, nobody in the room can tell. Faithful listens to both sides of an interpreted visit and, about a second after each turn, asks the interpreter to re-confirm any dose, number, allergy, left or right, medicine, warning sign or “no” that didn’t make it across.</p>
+    <p class="note">Flags go to the interpreter and the clinician only. Faithful never speaks to the patient, never scores interpreters, and stores nothing.</p>
+  </section>
+
+  <section id="replay" class="replay" aria-labelledby="replay-h">
+    <div class="replay-head">
+      <h2 id="replay-h">Replay a visit</h2>
+      <p class="sub">Six scripted visits with 20 planted interpreter errors. Voices are synthetic; the words were heard by NVIDIA speech recognition on our Nebius GPU, then checked.</p>
+    </div>
+    <div class="visits" role="tablist" aria-label="Visits" id="visits"></div>
+
+    <div class="transport" id="transport">
+      <button class="primary" id="play" type="button">Play visit</button>
+      <button id="step" type="button">Next turn</button>
+      <button id="all" type="button">Show whole visit</button>
+      <label class="toggle"><input type="checkbox" id="sound" checked> Sound</label>
+      <label class="toggle"><input type="checkbox" id="planted"> Show planted errors</label>
+      <span class="status" id="status" aria-live="polite"></span>
+    </div>
+
+    <div class="stage" id="stage">
+      <div class="lanes-head" aria-hidden="true">
+        <div class="lh en" id="lh-clin">Clinician, English</div>
+        <div class="lh mid">Interpreter</div>
+        <div class="lh es" id="lh-pat">Patient side, Spanish</div>
+      </div>
+      <ol class="turns" id="turns" aria-label="Turns"></ol>
+    </div>
+
+    <aside class="before" id="before" hidden aria-labelledby="before-h">
+      <h3 id="before-h">Confirm before they leave</h3>
+      <p class="sub">Everything Faithful asked to re-confirm in this visit, plus anything Nemotron 3 Ultra found when it re-read the whole conversation afterwards. Tick items as they’re confirmed; nothing is saved.</p>
+      <ul id="before-list"></ul>
+    </aside>
+  </section>
+
+  <section id="try" class="try" aria-labelledby="try-h">
+    <h2 id="try-h">Check a sentence</h2>
+    <p class="sub">Type what was said and how it was interpreted. Faithful runs the same check the replay uses.</p>
+    <form id="tryform" class="tryform">
+      <div class="field">
+        <div class="field-top">
+          <label for="t-src">What was said</label>
+          <div class="seg" role="radiogroup" aria-label="Language of what was said">
+            <label><input type="radio" name="lang" value="en" checked> English</label>
+            <label><input type="radio" name="lang" value="es"> Spanish</label>
+          </div>
+        </div>
+        <textarea id="t-src" rows="3" maxlength="1200" required>Give him 5 milliliters every 6 hours, but no more than 4 doses in 24 hours.</textarea>
+        <button type="button" class="mic" data-for="t-src" hidden>Record</button>
+      </div>
+      <div class="field">
+        <div class="field-top"><label for="t-ren">How it was interpreted</label><span class="lang-out" id="lang-out">Spanish</span></div>
+        <textarea id="t-ren" rows="3" maxlength="1200" required>Dele 5 mililitros cada 6 horas.</textarea>
+        <button type="button" class="mic" data-for="t-ren" hidden>Record</button>
+      </div>
+      <div class="try-actions">
+        <button class="primary" type="submit" id="t-go">Check this turn</button>
+        <span class="status" id="t-status" aria-live="polite"></span>
+      </div>
+    </form>
+    <div id="t-out" class="t-out" aria-live="polite"></div>
+  </section>
+
+  <section id="results" class="results" aria-labelledby="results-h">
+    <h2 id="results-h">Results</h2>
+    <div id="e2e" class="e2e"></div>
+    <div id="bench"></div>
+    <div id="training"></div>
+  </section>
+
+  <section id="how" class="how" aria-labelledby="how-h">
+    <h2 id="how-h">How it works</h2>
+    <p class="sub">Models listen, read and explain. Plain code decides whether a card appears, so every card can point at the exact words.</p>
+    <ol class="steps">
+      <li><h3>Hear both sides</h3><p>Each turn’s audio goes to NVIDIA Parakeet TDT 0.6B v3 on our Nebius Serverless Endpoint. In remote interpreting the interpreter is on the call channel and the room is on the device microphone, so who spoke is known.</p></li>
+      <li><h3>Read the critical content</h3><p>Code pulls numbers, units, how often, how long, dose limits, allergies, left and right, medicine names, warning signs and every “no” out of both languages, and compares them. “Cada seis horas” and “every 6 hours” match; “cada ocho horas” doesn’t.</p></li>
+      <li><h3>Weigh the meaning</h3><p>Our checker, NVIDIA llama-nemotron-rerank-1b-v2 fine-tuned on a Nebius Serverless Job, scores whether the interpretation still means the same thing. It catches what words alone miss, like “not this week” becoming “this week you can”.</p></li>
+      <li><h3>Decide</h3><p>A fixed rule turns both into one of three outcomes: a re-confirm card, a note for after the visit, or nothing. Its two thresholds were picked on held-out practice visits, never on the test sets.</p></li>
+      <li><h3>Say it plainly</h3><p>For cards only, Nemotron 3.5 Lightning writes one line for the interpreter and clinician. Code checks that the words it quotes were really said.</p></li>
+      <li><h3>Re-read after the visit</h3><p>Nemotron 3 Ultra reads the whole conversation once and lists anything the turn checks missed, each tied to a quote that code verifies.</p></li>
+    </ol>
+    <div class="isnt">
+      <h3>What this is not</h3>
+      <ul>
+        <li>Not an interpreter, and no substitute for a qualified one. The human interpreter does every clarification.</li>
+        <li>It never speaks to the patient and never gives medical advice.</li>
+        <li>No scores or reports on interpreters. Nothing is recorded or stored.</li>
+        <li>Spanish and English only. Speakers of Indigenous languages such as Mam or K’iche’ aren’t covered.</li>
+        <li>Built and tested on synthetic and scripted visits. Nebius Serverless isn’t HIPAA-eligible by default, so real patient audio needs a different deployment.</li>
+        <li>A speech-recognition slip can look like an interpreting error, so cards say “re-confirm”, never “wrong”.</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <p>Built for the Nebius × NVIDIA Global AI Hackathon. Models: NVIDIA Parakeet TDT 0.6B v3 and a fine-tuned NVIDIA llama-nemotron-rerank-1b-v2 on Nebius AI Cloud; Nemotron 3.5 Lightning and Nemotron 3 Ultra on Nebius Token Factory. Test voices: Kokoro-82M. Visits are fictional.</p>
+</footer>
+<script src="/static/app.js"></script>
+</body>
+</html>

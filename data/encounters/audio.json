@@ -1,0 +1,434 @@
+{
+ "V1-01": {
+  "src": "audio/V1-01-src.mp3",
+  "ren": "audio/V1-01-ren.mp3",
+  "src_seconds": 3.45,
+  "ren_seconds": 3.3,
+  "src_voice": "af_heart",
+  "ren_voice": "em_santa"
+ },
+ "V1-02": {
+  "src": "audio/V1-02-src.mp3",
+  "ren": "audio/V1-02-ren.mp3",
+  "src_seconds": 4.88,
+  "ren_seconds": 5.88,
+  "src_voice": "ef_dora",
+  "ren_voice": "am_echo"
+ },
+ "V1-03": {
+  "src": "audio/V1-03-src.mp3",
+  "ren": "audio/V1-03-ren.mp3",
+  "src_seconds": 2.27,
+  "ren_seconds": 2.33,
+  "src_voice": "af_heart",
+  "ren_voice": "em_santa"
+ },
+ "V1-04": {
+  "src": "audio/V1-04-src.mp3",
+  "ren": "audio/V1-04-ren.mp3",
+  "src_seconds": 5.42,
+  "ren_seconds": 2.85,
+  "src_voice": "ef_dora",
+  "ren_voice": "am_echo"
+ },
+ "V1-05": {
+  "src": "audio/V1-05-src.mp3",
+  "ren": "audio/V1-05-ren.mp3",
+  "src_seconds": 4.35,
+  "ren_seconds": 4.8,
+  "src_voice": "af_heart",
+  "ren_voice": "em_santa"
+ },
+ "V1-06": {
+  "src": "audio/V1-06-src.mp3",
+  "ren": "audio/V1-06-ren.mp3",
+  "src_seconds": 3.23,
+  "ren_seconds": 3.55,
+  "src_voice": "ef_dora",
+  "ren_voice": "am_echo"
+ },
+ "V1-07": {
+  "src": "audio/V1-07-src.mp3",
+  "ren": "audio/V1-07-ren.mp3",
+  "src_seconds": 6.45,
+  "ren_seconds": 6.28,
+  "src_voice": "af_heart",
+  "ren_voice": "em_santa"
+ },
+ "V1-08": {
+  "src": "audio/V1-08-src.mp3",
+  "ren": "audio/V1-08-ren.mp3",
+  "src_seconds": 8.4,
+  "ren_seconds": 4.3,
+  "src_voice": "af_heart",
+  "ren_voice": "em_santa"
+ },
+ "V1-09": {
+  "src": "audio/V1-09-src.mp3",
+  "ren": "audio/V1-09-ren.mp3",
+  "src_seconds": 2.67,
+  "ren_seconds": 2.95,
+  "src_voice": "ef_dora",
+  "ren_voice": "am_echo"
+ },
+ "V1-10": {
+  "src": "audio/V1-10-src.mp3",
+  "ren": "audio/V1-10-ren.mp3",
+  "src_seconds": 5.5,
+  "ren_seconds": 3.75,
+  "src_voice": "af_heart",
+  "ren_voice": "em_santa"
+ },
+ "V1-11": {
+  "src": "audio/V1-11-src.mp3",
+  "ren": "audio/V1-11-ren.mp3",
+  "src_seconds": 4.88,
+  "ren_seconds": 3.48,
+  "src_voice": "af_heart",
+  "ren_voice": "em_santa"
+ },
+ "V1-12": {
+  "src": "audio/V1-12-src.mp3",
+  "ren": "audio/V1-12-ren.mp3",
+  "src_seconds": 1.9,
+  "ren_seconds": 2.58,
+  "src_voice": "ef_dora",
+  "ren_voice": "am_echo"
+ },
+ "V2-01": {
+  "src": "audio/V2-01-src.mp3",
+  "ren": "audio/V2-01-ren.mp3",
+  "src_seconds": 3.38,
+  "ren_seconds": 3.3,
+  "src_voice": "am_michael",
+  "ren_voice": "em_santa"
+ },
+ "V2-02": {
+  "src": "audio/V2-02-src.mp3",
+  "ren": "audio/V2-02-ren.mp3",
+  "src_seconds": 6.08,
+  "ren_seconds": 5.38,
+  "src_voice": "ef_dora",
+  "ren_voice": "am_echo"
+ },
+ "V2-03": {
+  "src": "audio/V2-03-src.mp3",
+  "ren": "audio/V2-03-ren.mp3",
+  "src_seconds": 3.25,
+  "ren_seconds": 2.45,
+  "src_voice": "am_michael",
+  "ren_voice": "em_santa"
+ },
+ "V2-04": {
+  "src": "audio/V2-04-src.mp3",
+  "ren": "audio/V2-04-ren.mp3",
+  "src_seconds": 2.73,
+  "ren_seconds": 2.8,
+  "src_voice": "ef_dora",
+  "ren_voice": "am_echo"
+ },
+ "V2-05": {
+  "src": "audio/V2-05-src.mp3",
+  "ren": "audio/V2-05-ren.mp3",
+  "src_seconds": 8.32,
+  "ren_seconds": 8.47,
+  "src_voice": "am_michael",
+  "ren_voice": "em_santa"
+ },
+ "V2-06": {
+  "src": "audio/V2-06-src.mp3",
+  "ren": "audio/V2-06-ren.mp3",
+  "src_seconds": 2.2,
+  "ren_seconds": 2.75,
+  "src_voice": "ef_dora",
+  "ren_voice": "am_echo"
+ },
+ "V2-07": {
+  "src": "audio/V2-07-src.mp3",
+  "ren": "audio/V2-07-ren.mp3",
+  "src_seconds": 7.0,
+  "ren_seconds": 6.95,
+  "src_voice": "am_michael",
+  "ren_voice": "em_santa"
+ },
+ "V2-08": {
+  "src": "audio/V2-08-src.mp3",
+  "ren": "audio/V2-08-ren.mp3",
+  "src_seconds": 3.4,
+  "ren_seconds": 4.72,
+  "src_voice": "ef_dora",
+  "ren_voice": "am_echo"
+ },
+ "V2-09": {
+  "src": "audio/V2-09-src.mp3",
+  "ren": "audio/V2-09-ren.mp3",
+  "src_seconds": 4.03,
+  "ren_seconds": 3.9,
+  "src_voice": "am_michael",
+  "ren_voice": "em_santa"
+ },
+ "V2-10": {
+  "src": "audio/V2-10-src.mp3",
+  "ren": "audio/V2-10-ren.mp3",
+  "src_seconds": 3.45,
+  "ren_seconds": 2.58,
+  "src_voice": "ef_dora",
+  "ren_voice": "am_echo"
+ },
+ "V2-11": {
+  "src": "audio/V2-11-src.mp3",
+  "ren": "audio/V2-11-ren.mp3",
+  "src_seconds": 3.6,
+  "ren_seconds": 3.27,
+  "src_voice": "am_michael",
+  "ren_voice": "em_santa"
+ },
+ "V3-01": {
+  "src": "audio/V3-01-src.mp3",
+  "ren": "audio/V3-01-ren.mp3",
+  "src_seconds": 3.67,
+  "ren_seconds": 3.5,
+  "src_voice": "af_bella",
+  "ren_voice": "em_santa"
+ },
+ "V3-02": {
+  "src": "audio/V3-02-src.mp3",
+  "ren": "audio/V3-02-ren.mp3",
+  "src_seconds": 4.38,
+  "ren_seconds": 2.92,
+  "src_voice": "em_alex",
+  "ren_voice": "am_echo"
+ },
+ "V3-03": {
+  "src": "audio/V3-03-src.mp3",
+  "ren": "audio/V3-03-ren.mp3",
+  "src_seconds": 8.72,
+  "ren_seconds": 7.28,
+  "src_voice": "af_bella",
+  "ren_voice": "em_santa"
+ },
+ "V3-04": {
+  "src": "audio/V3-04-src.mp3",
+  "ren": "audio/V3-04-ren.mp3",
+  "src_seconds": 2.42,
+  "ren_seconds": 3.65,
+  "src_voice": "em_alex",
+  "ren_voice": "am_echo"
+ },
+ "V3-05": {
+  "src": "audio/V3-05-src.mp3",
+  "ren": "audio/V3-05-ren.mp3",
+  "src_seconds": 4.62,
+  "ren_seconds": 4.3,
+  "src_voice": "af_bella",
+  "ren_voice": "em_santa"
+ },
+ "V3-06": {
+  "src": "audio/V3-06-src.mp3",
+  "ren": "audio/V3-06-ren.mp3",
+  "src_seconds": 2.58,
+  "ren_seconds": 3.08,
+  "src_voice": "em_alex",
+  "ren_voice": "am_echo"
+ },
+ "V3-07": {
+  "src": "audio/V3-07-src.mp3",
+  "ren": "audio/V3-07-ren.mp3",
+  "src_seconds": 5.95,
+  "ren_seconds": 5.58,
+  "src_voice": "af_bella",
+  "ren_voice": "em_santa"
+ },
+ "V3-08": {
+  "src": "audio/V3-08-src.mp3",
+  "ren": "audio/V3-08-ren.mp3",
+  "src_seconds": 1.48,
+  "ren_seconds": 1.98,
+  "src_voice": "em_alex",
+  "ren_voice": "am_echo"
+ },
+ "V4-01": {
+  "src": "audio/V4-01-src.mp3",
+  "ren": "audio/V4-01-ren.mp3",
+  "src_seconds": 6.22,
+  "ren_seconds": 4.7,
+  "src_voice": "af_nicole",
+  "ren_voice": "em_santa"
+ },
+ "V4-02": {
+  "src": "audio/V4-02-src.mp3",
+  "ren": "audio/V4-02-ren.mp3",
+  "src_seconds": 9.1,
+  "ren_seconds": 5.15,
+  "src_voice": "af_nicole",
+  "ren_voice": "em_santa"
+ },
+ "V4-03": {
+  "src": "audio/V4-03-src.mp3",
+  "ren": "audio/V4-03-ren.mp3",
+  "src_seconds": 4.05,
+  "ren_seconds": 2.6,
+  "src_voice": "em_alex",
+  "ren_voice": "am_echo"
+ },
+ "V4-04": {
+  "src": "audio/V4-04-src.mp3",
+  "ren": "audio/V4-04-ren.mp3",
+  "src_seconds": 4.2,
+  "ren_seconds": 3.12,
+  "src_voice": "af_nicole",
+  "ren_voice": "em_santa"
+ },
+ "V4-05": {
+  "src": "audio/V4-05-src.mp3",
+  "ren": "audio/V4-05-ren.mp3",
+  "src_seconds": 1.45,
+  "ren_seconds": 2.27,
+  "src_voice": "em_alex",
+  "ren_voice": "am_echo"
+ },
+ "V4-06": {
+  "src": "audio/V4-06-src.mp3",
+  "ren": "audio/V4-06-ren.mp3",
+  "src_seconds": 2.98,
+  "ren_seconds": 2.88,
+  "src_voice": "em_alex",
+  "ren_voice": "am_echo"
+ },
+ "V4-07": {
+  "src": "audio/V4-07-src.mp3",
+  "ren": "audio/V4-07-ren.mp3",
+  "src_seconds": 10.85,
+  "ren_seconds": 7.35,
+  "src_voice": "af_nicole",
+  "ren_voice": "em_santa"
+ },
+ "V4-08": {
+  "src": "audio/V4-08-src.mp3",
+  "ren": "audio/V4-08-ren.mp3",
+  "src_seconds": 4.22,
+  "ren_seconds": 3.45,
+  "src_voice": "af_nicole",
+  "ren_voice": "em_santa"
+ },
+ "V5-01": {
+  "src": "audio/V5-01-src.mp3",
+  "ren": "audio/V5-01-ren.mp3",
+  "src_seconds": 2.17,
+  "ren_seconds": 1.88,
+  "src_voice": "am_adam",
+  "ren_voice": "em_santa"
+ },
+ "V5-02": {
+  "src": "audio/V5-02-src.mp3",
+  "ren": "audio/V5-02-ren.mp3",
+  "src_seconds": 2.92,
+  "ren_seconds": 3.6,
+  "src_voice": "em_alex",
+  "ren_voice": "am_echo"
+ },
+ "V5-03": {
+  "src": "audio/V5-03-src.mp3",
+  "ren": "audio/V5-03-ren.mp3",
+  "src_seconds": 3.27,
+  "ren_seconds": 2.98,
+  "src_voice": "em_alex",
+  "ren_voice": "am_echo"
+ },
+ "V5-04": {
+  "src": "audio/V5-04-src.mp3",
+  "ren": "audio/V5-04-ren.mp3",
+  "src_seconds": 4.72,
+  "ren_seconds": 7.03,
+  "src_voice": "am_adam",
+  "ren_voice": "em_santa"
+ },
+ "V5-05": {
+  "src": "audio/V5-05-src.mp3",
+  "ren": "audio/V5-05-ren.mp3",
+  "src_seconds": 6.8,
+  "ren_seconds": 6.62,
+  "src_voice": "am_adam",
+  "ren_voice": "em_santa"
+ },
+ "V5-06": {
+  "src": "audio/V5-06-src.mp3",
+  "ren": "audio/V5-06-ren.mp3",
+  "src_seconds": 3.23,
+  "ren_seconds": 3.23,
+  "src_voice": "em_alex",
+  "ren_voice": "am_echo"
+ },
+ "V5-07": {
+  "src": "audio/V5-07-src.mp3",
+  "ren": "audio/V5-07-ren.mp3",
+  "src_seconds": 4.67,
+  "ren_seconds": 4.83,
+  "src_voice": "am_adam",
+  "ren_voice": "em_santa"
+ },
+ "V5-08": {
+  "src": "audio/V5-08-src.mp3",
+  "ren": "audio/V5-08-ren.mp3",
+  "src_seconds": 4.22,
+  "ren_seconds": 4.08,
+  "src_voice": "am_adam",
+  "ren_voice": "em_santa"
+ },
+ "V6-01": {
+  "src": "audio/V6-01-src.mp3",
+  "ren": "audio/V6-01-ren.mp3",
+  "src_seconds": 4.72,
+  "ren_seconds": 4.58,
+  "src_voice": "af_sarah",
+  "ren_voice": "em_santa"
+ },
+ "V6-02": {
+  "src": "audio/V6-02-src.mp3",
+  "ren": "audio/V6-02-ren.mp3",
+  "src_seconds": 3.7,
+  "ren_seconds": 3.62,
+  "src_voice": "af_sarah",
+  "ren_voice": "em_santa"
+ },
+ "V6-03": {
+  "src": "audio/V6-03-src.mp3",
+  "ren": "audio/V6-03-ren.mp3",
+  "src_seconds": 4.3,
+  "ren_seconds": 2.73,
+  "src_voice": "ef_dora",
+  "ren_voice": "am_echo"
+ },
+ "V6-04": {
+  "src": "audio/V6-04-src.mp3",
+  "ren": "audio/V6-04-ren.mp3",
+  "src_seconds": 5.62,
+  "ren_seconds": 4.47,
+  "src_voice": "af_sarah",
+  "ren_voice": "em_santa"
+ },
+ "V6-05": {
+  "src": "audio/V6-05-src.mp3",
+  "ren": "audio/V6-05-ren.mp3",
+  "src_seconds": 1.9,
+  "ren_seconds": 2.3,
+  "src_voice": "ef_dora",
+  "ren_voice": "am_echo"
+ },
+ "V6-06": {
+  "src": "audio/V6-06-src.mp3",
+  "ren": "audio/V6-06-ren.mp3",
+  "src_seconds": 7.7,
+  "ren_seconds": 6.35,
+  "src_voice": "af_sarah",
+  "ren_voice": "em_santa"
+ },
+ "V6-07": {
+  "src": "audio/V6-07-src.mp3",
+  "ren": "audio/V6-07-ren.mp3",
+  "src_seconds": 1.88,
+  "ren_seconds": 2.75,
+  "src_voice": "ef_dora",
+  "ren_voice": "am_echo"
+ }
+}
