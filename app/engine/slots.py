@@ -1,7 +1,14 @@
-"""Critical content in a sentence, in English or Spanish: numbers, units, how often, how long, negation, allergy,
-left/right, drug names and warning signs. Plain code, no AI, so every flag can point at the exact words.
+"""Critical content in a sentence, in English or Spanish: numbers, units, how often, how long, dose limits, negation,
+allergy, left/right, drug names, warning signs and when to take a medicine. Plain code, no AI, so every flag can point
+at the exact words.
 
 extract(text, lang) -> list[Slot];  diff(source, rendition) -> list[Finding]
+
+How it reads numbers: the sentence is split into tokens (punctuation kept, so "quinientos, dos veces" stays two
+numbers), number phrases are parsed with a small grammar per language ("two hundred and fifty", "treinta y nueve",
+"mil quinientos", "one and a half", "cucharadita y media", "0.125", Spanish "1.000"), and then phrases that use a
+number are recognised on a copy of the sentence where each number is a placeholder: "every #0 hours" is a dosing
+interval, "#0 times a day" a frequency, "#0 weeks" a duration (compared in hours, so 48 hours == 2 days).
 """
 from __future__ import annotations
 
@@ -10,18 +17,22 @@ import unicodedata
 from collections import Counter
 from dataclasses import asdict, dataclass
 
-SEVERITY = {"number": "high", "unit": "high", "negation": "high", "allergy": "high", "side": "high", "drug": "high",
-            "warning": "high", "limit": "high", "frequency": "medium", "duration": "high", "order": "medium", "timing": "low"}
+SEVERITY = {"allergy": "high", "negation": "high", "drug": "high", "warning": "high", "limit": "high", "side": "high",
+            "frequency": "high", "number": "high", "unit": "high", "duration": "high", "order": "medium", "timing": "low"}
+# Clinical priority: the order findings are listed on a card.
+PRIORITY = ["allergy", "negation", "drug", "warning", "limit", "side", "frequency", "number", "unit", "duration", "timing", "order"]
 KIND_LABEL = {"number": "number", "unit": "unit", "negation": "a 'no' / 'not'", "allergy": "allergy", "side": "left/right",
-              "drug": "medicine", "warning": "warning sign", "limit": "dose limit", "order": "order of the numbers", "frequency": "how often", "duration": "how long", "timing": "when to take it"}
+              "drug": "medicine", "warning": "warning sign", "limit": "dose limit", "order": "order of the numbers",
+              "frequency": "how often", "duration": "how long", "timing": "when to take it"}
 
 
 @dataclass(frozen=True)
 class Slot:
     kind: str
-    value: str   # canonical, language-neutral ("6", "mg", "acetaminophen", "q6h")
-    span: str    # the words as said
-    ctx: str = ""  # for numbers: what they count ("hour", "mg", "tablet"), used to pair a changed number with its replacement
+    value: str     # canonical, language-neutral ("6", "mg", "acetaminophen", "q6h", "48h")
+    span: str      # the words as said (folded)
+    ctx: str = ""  # for numbers: what they count ("mg", "tablet"); used to pair a changed number with its replacement
+    pos: int = -1  # where the words start in the (NFC) text, so they map back exactly
 
 
 @dataclass(frozen=True)
@@ -41,211 +52,465 @@ def fold(s: str) -> str:
     """lowercase, strip accents (so 'días' == 'dias'), one output character per input character (so spans map back)."""
     out = []
     for ch in unicodedata.normalize("NFC", s):
-        f = "".join(c for c in unicodedata.normalize("NFD", ch.lower()) if unicodedata.category(c) != "Mn").replace("\u2019", "'")
+        f = "".join(c for c in unicodedata.normalize("NFD", ch.lower()) if unicodedata.category(c) != "Mn")
+        f = f.replace("’", "'").replace("‘", "'")
         out.append(f[:1] or ch)
     return "".join(out)
 
 
-def restore(text: str, span: str) -> str:
-    """The original words (accents, capitals) for a folded span found in text."""
+def restore(text: str, span: str, pos: int = -1) -> str:
+    """The original words (accents, capitals) for a folded span: by position when known, else the first whole-word match."""
     t = unicodedata.normalize("NFC", text)
-    i = fold(t).find(span)
-    return t[i:i + len(span)] if i >= 0 and span else span
+    if not span:
+        return span
+    f = fold(t)
+    if 0 <= pos and f[pos:pos + len(span)] == span:
+        return t[pos:pos + len(span)]
+    m = re.search(rf"(?<![a-z0-9]){re.escape(span)}(?![a-z0-9])", f)
+    i = m.start() if m else f.find(span)
+    return t[i:i + len(span)] if i >= 0 else span
 
 
 # ---------------------------------------------------------------------------------------------------------------------
-# Numbers
+# Tokens and number words
 # ---------------------------------------------------------------------------------------------------------------------
-EN_UNITS = {"zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10,
-            "eleven": 11, "twelve": 12, "thirteen": 13, "fourteen": 14, "fifteen": 15, "sixteen": 16, "seventeen": 17, "eighteen": 18,
-            "nineteen": 19}
+TOKEN = re.compile(r"\d+(?:[.,:/]\d+)*|[½¼¾⅓⅔⅛]|[a-z]+(?:'[a-z]+)?|[^\sa-z\d]")
+UNICODE_FRAC = {"½": 0.5, "¼": 0.25, "¾": 0.75, "⅓": 1 / 3, "⅔": 2 / 3, "⅛": 0.125}
+
+EN_SMALL = {"zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10,
+            "eleven": 11, "twelve": 12, "thirteen": 13, "fourteen": 14, "fifteen": 15, "sixteen": 16, "seventeen": 17,
+            "eighteen": 18, "nineteen": 19}
 EN_TENS = {"twenty": 20, "thirty": 30, "forty": 40, "fifty": 50, "sixty": 60, "seventy": 70, "eighty": 80, "ninety": 90}
-ES_UNITS = {"cero": 0, "uno": 1, "una": 1, "un": 1, "dos": 2, "tres": 3, "cuatro": 4, "cinco": 5, "seis": 6, "siete": 7, "ocho": 8,
+EN_FRAC = {"half": 0.5, "halves": 0.5, "quarter": 0.25, "quarters": 0.25, "third": 1 / 3, "thirds": 1 / 3, "eighth": 0.125, "eighths": 0.125}
+ES_SMALL = {"cero": 0, "uno": 1, "una": 1, "un": 1, "dos": 2, "tres": 3, "cuatro": 4, "cinco": 5, "seis": 6, "siete": 7, "ocho": 8,
             "nueve": 9, "diez": 10, "once": 11, "doce": 12, "trece": 13, "catorce": 14, "quince": 15, "dieciseis": 16, "diecisiete": 17,
             "dieciocho": 18, "diecinueve": 19, "veinte": 20, "veintiuno": 21, "veintiuna": 21, "veintiun": 21, "veintidos": 22,
-            "veintitres": 23, "veinticuatro": 24, "veinticinco": 25, "veintiseis": 26, "veintisiete": 27, "veintiocho": 28, "veintinueve": 29}
+            "veintitres": 23, "veinticuatro": 24, "veinticinco": 25, "veintiseis": 26, "veintisiete": 27, "veintiocho": 28,
+            "veintinueve": 29}
 ES_TENS = {"treinta": 30, "cuarenta": 40, "cincuenta": 50, "sesenta": 60, "setenta": 70, "ochenta": 80, "noventa": 90}
 ES_HUNDREDS = {"cien": 100, "ciento": 100, "doscientos": 200, "doscientas": 200, "trescientos": 300, "trescientas": 300,
                "cuatrocientos": 400, "cuatrocientas": 400, "quinientos": 500, "quinientas": 500, "seiscientos": 600, "seiscientas": 600,
                "setecientos": 700, "setecientas": 700, "ochocientos": 800, "ochocientas": 800, "novecientos": 900, "novecientas": 900}
-# Words that make 'a' / 'un' / 'una' a real quantity ("a teaspoon", "una pastilla", "una vez") rather than an article.
-DOSE_NOUNS = r"(tablet|tablets|pill|pills|capsule|capsules|teaspoon|teaspoons|tablespoon|tablespoons|drop|drops|puff|puffs|dose|doses|patch|" \
-             r"cup|cups|glass|time|pastilla|tableta|pildora|comprimido|capsula|cucharadita|cucharada|gota|inhalacion|disparo|dosis|parche|" \
-             r"taza|vaso|vez|sola)"
-TIME_NOUNS = r"(hour|day|week|month|minute|hora|dia|semana|mes|minuto)"
-EN_PRONOUN_BEFORE_ONE = {"the", "this", "that", "which", "new", "other", "another", "each", "any", "every", "no", "old", "right", "left", "last",
-                         "first", "little", "big", "same", "only", "good", "bad", "red", "blue", "white"}
+ES_FRAC = {"medio": 0.5, "media": 0.5, "mitad": 0.5, "cuarto": 0.25, "cuartos": 0.25, "tercio": 1 / 3, "tercios": 1 / 3,
+           "octavo": 0.125, "octavos": 0.125}
+DIGIT_WORDS = {**{k: v for k, v in EN_SMALL.items() if v < 10}, **{k: v for k, v in ES_SMALL.items() if v < 10}, "oh": 0}
+
+# What a number can count. Words map to a canonical unit. "dose" and "time" give context but aren't compared as units.
+UNIT_WORDS = {
+    "mg": "mg", "milligram": "mg", "milligrams": "mg", "miligramo": "mg", "miligramos": "mg",
+    "mcg": "mcg", "microgram": "mcg", "micrograms": "mcg", "microgramo": "mcg", "microgramos": "mcg",
+    "g": "g", "gram": "g", "grams": "g", "gramo": "g", "gramos": "g",
+    "ml": "ml", "milliliter": "ml", "milliliters": "ml", "millilitre": "ml", "millilitres": "ml", "mililitro": "ml", "mililitros": "ml", "cc": "ml",
+    "l": "l", "liter": "l", "liters": "l", "litro": "l", "litros": "l",
+    "tablet": "tablet", "tablets": "tablet", "pill": "tablet", "pills": "tablet", "pastilla": "tablet", "pastillas": "tablet",
+    "tableta": "tablet", "tabletas": "tablet", "pildora": "tablet", "pildoras": "tablet", "comprimido": "tablet", "comprimidos": "tablet",
+    "capsule": "capsule", "capsules": "capsule", "capsula": "capsule", "capsulas": "capsule",
+    "teaspoon": "teaspoon", "teaspoons": "teaspoon", "tsp": "teaspoon", "cucharadita": "teaspoon", "cucharaditas": "teaspoon",
+    "tablespoon": "tablespoon", "tablespoons": "tablespoon", "tbsp": "tablespoon", "cucharada": "tablespoon", "cucharadas": "tablespoon",
+    "drop": "drop", "drops": "drop", "gota": "drop", "gotas": "drop",
+    "puff": "puff", "puffs": "puff", "inhalation": "puff", "inhalations": "puff", "inhalacion": "puff", "inhalaciones": "puff",
+    "disparo": "puff", "disparos": "puff",
+    "unit": "unit", "units": "unit", "unidad": "unit", "unidades": "unit",
+    "patch": "patch", "patches": "patch", "parche": "patch", "parches": "patch",
+    "kg": "kg", "kgs": "kg", "kilo": "kg", "kilos": "kg", "kilogram": "kg", "kilograms": "kg", "kilogramo": "kg", "kilogramos": "kg",
+    "lb": "lb", "lbs": "lb", "pound": "lb", "pounds": "lb", "libra": "lb", "libras": "lb",
+    "oz": "oz", "ounce": "oz", "ounces": "oz", "onza": "oz", "onzas": "oz",
+    "degree": "degree", "degrees": "degree", "grado": "degree", "grados": "degree",
+    "fahrenheit": "fahrenheit", "celsius": "celsius", "centigrados": "celsius", "centigrade": "celsius",
+    "percent": "percent", "%": "percent", "por": "",  # 'por ciento' handled below
+    "cup": "cup", "cups": "cup", "taza": "cup", "tazas": "cup", "glass": "glass", "glasses": "glass", "vaso": "glass", "vasos": "glass",
+}
+UNIT_WORDS.pop("por")
+CTX_ONLY = {"dose": "dose", "doses": "dose", "dosis": "dose", "time": "times", "times": "times", "vez": "times", "veces": "times", "x": "times"}
+TIME_WORDS = {"second": "s", "seconds": "s", "segundo": "s", "segundos": "s", "minute": "min", "minutes": "min", "min": "min", "mins": "min",
+              "minuto": "min", "minutos": "min", "hour": "h", "hours": "h", "hr": "h", "hrs": "h", "hora": "h", "horas": "h",
+              "day": "d", "days": "d", "dia": "d", "dias": "d", "week": "w", "weeks": "w", "semana": "w", "semanas": "w",
+              "month": "mo", "months": "mo", "mes": "mo", "meses": "mo", "year": "y", "years": "y", "ano": "y", "anos": "y"}
+HOURS = {"s": 1 / 3600, "min": 1 / 60, "h": 1, "d": 24, "w": 168, "mo": 720, "y": 8760}
+NOUNS = set(UNIT_WORDS) | set(CTX_ONLY) | set(TIME_WORDS)
 
 
-def _num_tokens(t: str, lang: str = "en") -> list[tuple[float, str, int, int]]:
-    """All numbers in folded text -> (value, words, start, end). Digits and fractions in any language; number words
-    in the sentence's language only (Spanish 'once' is 11, English 'once' is 1)."""
-    out: list[tuple[float, str, int, int]] = []
-    taken = [False] * (len(t) + 1)
-    # digits: 500, 2.5, 2,5 (Spanish decimal), 1,000, 1/2
-    for m in re.finditer(r"(?<![\w.])(\d+)\s*/\s*(\d+)(?![\w])|(?<![\w.,])(\d{1,3}(?:,\d{3})+|\d+(?:[.,]\d{1,2})?)(?![\w])", t):
-        if m.group(1):
-            v = int(m.group(1)) / max(int(m.group(2)), 1)
+@dataclass
+class Num:
+    value: float
+    i0: int    # first token
+    i1: int    # one past the last token
+    clock: bool = False
+
+
+def _tok(t: str) -> list[tuple[str, int, int]]:
+    return [(m.group(0), m.start(), m.end()) for m in TOKEN.finditer(t)]
+
+
+def _digits(s: str, lang: str) -> list[float] | None:
+    """A digit token -> one or more values. 0.125, 1,000, 1.000 (Spanish thousands), 2,5 (Spanish decimal), 1/2, 10:30,
+    140/90 (two numbers: a reading, not a fraction)."""
+    if ":" in s:
+        h, _, m = s.partition(":")
+        return [int(h) + int(m[:2] or 0) / 60] if h.isdigit() and m[:2].isdigit() else None
+    if "/" in s:
+        a, _, b = s.partition("/")
+        if a.isdigit() and b.isdigit():
+            a_, b_ = int(a), int(b)
+            return [a_ / b_] if 0 < b_ <= 16 and a_ < b_ else [float(a_), float(b_)]
+        return None
+    if re.fullmatch(r"\d{1,3}(?:,\d{3})+", s):
+        return [float(s.replace(",", ""))]
+    if lang == "es" and re.fullmatch(r"[1-9]\d{0,2}(?:\.\d{3})+", s):
+        return [float(s.replace(".", ""))]       # Spanish 1.000 = one thousand
+    if re.fullmatch(r"\d+,\d{1,2}", s):
+        return [float(s.replace(",", "."))]       # 2,5 = 2.5
+    try:
+        return [float(s)]
+    except ValueError:
+        return None
+
+
+def _cardinal(W: list[str], i: int, lang: str) -> tuple[float, int] | None:
+    """A spelled-out whole number starting at token i -> (value, next index)."""
+    total, cur, j, seen, last = 0.0, 0.0, i, False, ""
+    small, tens = (EN_SMALL, EN_TENS) if lang == "en" else (ES_SMALL, ES_TENS)
+    while j < len(W):
+        w = W[j]
+        if lang == "en":
+            if w in ("a", "an") and not seen and j + 1 < len(W) and W[j + 1] in ("hundred", "thousand"):
+                cur, seen, last = 1, True, "small"
+            elif w in small and (not seen or last in ("tens", "hundred", "and", "thousand", "hyphen")):
+                if last == "tens" and small[w] >= 10:
+                    break
+                cur += small[w]; seen, last = True, "small"
+            elif w in tens and (not seen or last in ("hundred", "and", "thousand")):
+                cur += tens[w]; seen, last = True, "tens"
+            elif w == "hundred" and seen and last != "hundred":
+                cur = (cur or 1) * 100; last = "hundred"
+            elif w == "thousand" and seen:
+                total += (cur or 1) * 1000; cur = 0; last = "thousand"
+            elif w == "and" and last in ("hundred", "thousand") and j + 1 < len(W) and (W[j + 1] in small or W[j + 1] in tens):
+                last = "and"
+            elif w == "-" and last == "tens" and j + 1 < len(W) and W[j + 1] in small and small[W[j + 1]] < 10:
+                last = "hyphen"
+            else:
+                break
         else:
-            raw = m.group(3)
-            v = float(raw.replace(",", "")) if re.fullmatch(r"\d{1,3}(?:,\d{3})+", raw) else float(raw.replace(",", "."))
-        out.append((v, m.group(0), m.start(), m.end()))
-        for i in range(m.start(), m.end()):
-            taken[i] = True
-    words = list(re.finditer(r"[a-z]+(?:-[a-z]+)?", t))
-    W = [w.group(0) for w in words]
-    nxt = lambda k: W[k] if k < len(W) else ""  # noqa: E731
-    prv = lambda k: W[k] if k >= 0 else ""  # noqa: E731
+            if w in ES_HUNDREDS and (not seen or last == "mil"):
+                cur += ES_HUNDREDS[w]; seen, last = True, "hundred"
+            elif w in tens and (not seen or last in ("hundred", "mil")):
+                cur += tens[w]; seen, last = True, "tens"
+            elif w in small and (not seen or last in ("hundred", "mil", "y")):
+                cur += small[w]; seen, last = True, "small"
+            elif w == "y" and last == "tens" and j + 1 < len(W) and W[j + 1] in small and small[W[j + 1]] < 10:
+                last = "y"
+            elif w == "mil" and (not seen or last in ("small", "tens", "hundred")):
+                total += (cur or 1) * 1000; cur = 0; seen, last = True, "mil"
+            elif w in ("millon", "millones") and seen:
+                total += (cur or 1) * 1_000_000; cur = 0; last = "mil"
+            else:
+                break
+        j += 1
+    if not seen:
+        return None
+    if last in ("and", "y", "hyphen"):
+        j -= 1
+    return total + cur, j
+
+
+def _is_noun(w: str) -> bool:
+    return w in NOUNS
+
+
+def numbers(toks: list[tuple[str, int, int]], lang: str) -> list[Num]:
+    W = [x[0] for x in toks]
+    n = len(W)
+    w_ = lambda k: W[k] if 0 <= k < n else ""  # noqa: E731
+    out: list[Num] = []
+    skip: set[int] = set()   # tokens already used by a number ("and a half" after the noun it counts)
     i = 0
-    while i < len(words):
-        w = W[i]
-        if taken[words[i].start()]:
+    while i < n:
+        if i in skip:
             i += 1
             continue
-        val, j = None, i
-        if lang == "en":
-            parts = w.split("-")
-            if all(p in EN_UNITS or p in EN_TENS for p in parts) and not (w == "one" and (prv(i - 1) in EN_PRONOUN_BEFORE_ONE or nxt(i + 1) == "of")):
-                val = sum(EN_UNITS.get(p, 0) + EN_TENS.get(p, 0) for p in parts)
-                j = i + 1
-                while nxt(j) in ("hundred", "thousand"):
-                    val *= 100 if W[j] == "hundred" else 1000
-                    j += 1
-                    if nxt(j) and all(p in EN_UNITS or p in EN_TENS for p in nxt(j).split("-")):
-                        val += sum(EN_UNITS.get(p, 0) + EN_TENS.get(p, 0) for p in W[j].split("-"))
-                        j += 1
-                if nxt(j) == "and" and nxt(j + 1) == "a" and nxt(j + 2) == "half":
-                    val += 0.5
-                    j += 3
-            elif w == "half" and prv(i - 1) not in ("and",):
-                val, j = 0.5, i + 1
-            elif w in ("once", "twice"):
-                val, j = (1 if w == "once" else 2), i + 1
-            elif w in ("a", "an") and prv(i - 1) not in ("half", "quarter", "at", "times", "twice", "once") and \
-                    (re.fullmatch(DOSE_NOUNS, nxt(i + 1)) or (re.fullmatch(TIME_NOUNS, nxt(i + 1)) and prv(i - 1) in ("for", "in", "about", "within", "over", "after"))):
-                val, j = 1, i + 1
-            elif w == "quarter" and prv(i - 1) in ("a", "one"):
-                val, j = 0.25, i + 1
+        w = W[i]
+        got: Num | None = None
+        extra: list[Num] = []
+        if w[0].isdigit():
+            vals = _digits(w, lang)
+            if vals:
+                got = Num(vals[0], i, i + 1, clock=":" in w)
+                extra = [Num(v, i, i + 1) for v in vals[1:]]
+                nxt = w_(i + 1)
+                if len(vals) == 1 and ":" not in w and nxt and (nxt in UNICODE_FRAC or re.fullmatch(r"\d+/\d+", nxt)):  # 2 1/2, 2½
+                    f = UNICODE_FRAC.get(nxt) or (_digits(nxt, lang) or [1])[0]
+                    if f < 1:
+                        got = Num(vals[0] + f, i, i + 2)
+        elif w in UNICODE_FRAC:
+            got = Num(UNICODE_FRAC[w], i, i + 1)
+        elif lang == "en":
+            got = _en_word_number(W, i)
         else:
-            if w in ES_HUNDREDS or w in ES_TENS or (w in ES_UNITS and w not in ("un", "una", "uno")) or w == "mil":
-                val = ES_HUNDREDS.get(w, 0) + ES_TENS.get(w, 0) + ES_UNITS.get(w, 0) + (1000 if w == "mil" else 0)
-                j = i + 1
-                if w in ES_HUNDREDS and (nxt(j) in ES_TENS or nxt(j) in ES_UNITS):
-                    val += ES_TENS.get(W[j], 0) + ES_UNITS.get(W[j], 0)
-                    j += 1
-                if val in ES_TENS.values() or (val >= 100 and val % 100 in ES_TENS.values()):
-                    if nxt(j) == "y" and nxt(j + 1) in ES_UNITS:
-                        val += ES_UNITS[W[j + 1]]
-                        j += 2
-                if nxt(j) == "mil":
-                    val *= 1000
-                    j += 1
-                if nxt(j) == "y" and nxt(j + 1) in ("media", "medio"):
-                    val += 0.5
-                    j += 2
-            elif w in ("un", "una", "uno") and (re.fullmatch(DOSE_NOUNS, nxt(i + 1)) or re.fullmatch(TIME_NOUNS, nxt(i + 1)) or nxt(i + 1) == "cuarto"
-                                                or (nxt(i + 1) == "y" and nxt(i + 2) in ("media", "medio"))):
-                if nxt(i + 1) == "cuarto":
-                    val, j = 0.25, i + 2
-                elif nxt(i + 1) == "y":
-                    val, j = 1.5, i + 3
-                else:
-                    val, j = 1, i + 1
-            elif w in ("media", "medio") and prv(i - 1) not in ("y",) and (re.fullmatch(DOSE_NOUNS, nxt(i + 1)) or re.fullmatch(TIME_NOUNS, nxt(i + 1))):
-                val, j = 0.5, i + 1
-        if val is not None and nxt(j) in ("point", "punto") and nxt(j + 1) and (nxt(j + 1) in EN_UNITS or nxt(j + 1) in ES_UNITS):
-            # spoken decimals: "two point five", "dos punto cinco"
-            frac = EN_UNITS.get(W[j + 1], ES_UNITS.get(W[j + 1], 0))
-            val = val + frac / (10 ** len(str(frac)))
-            j += 2
-        if val is not None:
-            s0, e0 = words[i].start(), words[j - 1].end()
-            out.append((float(val), t[s0:e0], s0, e0))
-            i = j
-        else:
+            got = _es_word_number(W, i)
+        if got is None:
             i += 1
-    out.sort(key=lambda x: x[2])
+            continue
+        j = got.i1
+        # spoken decimals: "two point five", "cero punto uno dos cinco"
+        if w_(j) in ("point", "punto") and w_(j + 1) in DIGIT_WORDS:
+            digits, j = "", j + 1
+            while w_(j) in DIGIT_WORDS:
+                digits += str(DIGIT_WORDS[w_(j)]); j += 1
+            got = Num(got.value + float("0." + digits), got.i0, j)
+            j = got.i1
+        # "... and a half" / "y media" / "y cuarto" right after the number, or right after the noun it counts
+        k = j + 1 if _is_noun(w_(j)) else j
+        half = (w_(k), w_(k + 1), w_(k + 2)) == ("and", "a", "half")
+        ymed = w_(k) == "y" and w_(k + 1) in ("medio", "media")
+        ycuarto = k == j and w_(k) == "y" and w_(k + 1) == "cuarto"
+        if half or ymed or ycuarto:
+            width = 3 if half else 2
+            got = Num(got.value + (0.25 if ycuarto else 0.5), got.i0, got.i1 if k != j else k + width, got.clock)
+            if k != j:
+                skip.update(range(k, k + width))
+        out.append(got)
+        out += extra
+        i = max(got.i1, i + 1)
+    # a noun with no number but "y media": "cucharadita y media" = 1.5 teaspoons
+    for i in range(n - 2):
+        if _is_noun(W[i]) and W[i + 1] == "y" and W[i + 2] in ("media", "medio") and i + 1 not in skip \
+                and not any(nm.i0 <= i < nm.i1 or nm.i1 == i for nm in out):
+            out.append(Num(1.5, i, i + 3))
+    out.sort(key=lambda x: x.i0)
     return out
 
 
+def _en_word_number(W: list[str], i: int) -> Num | None:
+    n = len(W)
+    w = W[i]
+    prv = W[i - 1] if i else ""
+    nxt = W[i + 1] if i + 1 < n else ""
+    nxt2 = W[i + 2] if i + 2 < n else ""
+    if w in ("a", "an", "one"):
+        if nxt in ("half", "quarter", "third", "eighth"):                      # a half, a quarter, one third
+            j = i + 2
+            if W[j:j + 2] in (["of", "a"], ["of", "an"], ["of", "one"]):        # a quarter of a tablet
+                j += 2
+            return Num(EN_FRAC[nxt], i, j)
+        if nxt in ("hundred", "thousand"):
+            r = _cardinal(W, i, "en")
+            return Num(r[0], i, r[1]) if r else None
+    if w in ("a", "an"):
+        per = prv in ("times", "twice", "once", "x", "per") or prv in CTX_ONLY or prv in UNIT_WORDS or (prv and prv[0].isdigit())
+        if prv in ("half", "quarter", "third", "eighth", "of"):
+            return None
+        if (nxt in UNIT_WORDS or nxt in CTX_ONLY) and not per:
+            return Num(1, i, i + 1)
+        if nxt in TIME_WORDS and not per:
+            return Num(1, i, i + 1)
+        return None
+    if w == "half":
+        if prv in ("a", "an", "and", "one"):
+            return None
+        if nxt in ("a", "an"):
+            return Num(0.5, i, i + 2)
+        if _is_noun(nxt):
+            return Num(0.5, i, i + 1)
+        return None
+    if w == "once":
+        return Num(1, i, i + 1) if nxt in ("a", "per", "daily", "every", "each", "weekly", "an") else None
+    if w == "twice":
+        return Num(2, i, i + 1)
+    if w in EN_SMALL or w in EN_TENS:
+        r = _cardinal(W, i, "en")
+        if r is None:
+            return None
+        v, j = r
+        nj = W[j] if j < n else ""
+        if nj in EN_FRAC and v < 10 and nj not in ("half",):                   # three quarters
+            return Num(v * EN_FRAC[nj], i, j + 1)
+        if w == "one" and j == i + 1:
+            # the pronoun "one" ("take one every morning", "the left one") is not a quantity
+            if prv in ("the", "this", "that", "which", "new", "other", "another", "each", "any", "every", "no", "old", "right", "left",
+                       "last", "first", "little", "big", "same", "only", "good", "bad") or nj == "of":
+                return None
+            if not (_is_noun(nj) or (nj == "and" and W[j + 1:j + 3] == ["a", "half"]) or nj in ("point",) or nj in EN_FRAC):
+                return None
+        return Num(v, i, j)
+    return None
+
+
+def _es_word_number(W: list[str], i: int) -> Num | None:
+    n = len(W)
+    w = W[i]
+    prv = W[i - 1] if i else ""
+    nxt = W[i + 1] if i + 1 < n else ""
+    if w in ("un", "una", "uno"):
+        if nxt in ("cuarto", "tercio", "octavo", "medio"):                    # un cuarto (de tableta)
+            j = i + 2
+            if W[j:j + 2] in (["de", "una"], ["de", "un"]):
+                j += 2
+            return Num(ES_FRAC[nxt], i, j)
+        if prv == "de" and i >= 2 and W[i - 2] in ES_FRAC:                     # la mitad de una pastilla
+            return None
+        if nxt == "mil":
+            r = _cardinal(W, i, "es")
+            return Num(r[0], i, r[1]) if r else None
+        if _is_noun(nxt) or (nxt == "y" and W[i + 2:i + 3] in (["medio"], ["media"])):
+            return Num(1, i, i + 1)
+        return None                                                          # an article: "una pregunta", "tome una"
+    if w == "mitad":
+        j = i + 1
+        if W[j:j + 2] in (["de", "una"], ["de", "un"]):
+            j += 2
+        return Num(0.5, i, j)
+    if w in ("medio", "media"):
+        if prv in ("y",):
+            return None
+        return Num(0.5, i, i + 1) if _is_noun(nxt) else None
+    if w in ES_SMALL or w in ES_TENS or w in ES_HUNDREDS or w == "mil":
+        r = _cardinal(W, i, "es")
+        if r is None:
+            return None
+        v, j = r
+        nj = W[j] if j < n else ""
+        if nj in ("cuartos", "tercios", "octavos") and v < 10:              # tres cuartos
+            return Num(v * ES_FRAC[nj], i, j + 1)
+        return Num(v, i, j)
+    return None
+
+
+def _num_tokens(t: str, lang: str = "en") -> list[tuple[float, str, int, int]]:
+    """(value, words, start, end) for every number in folded text (kept for scripts that import it)."""
+    toks = _tok(t)
+    return [(nm.value, t[toks[nm.i0][1]:toks[nm.i1 - 1][2]], toks[nm.i0][1], toks[nm.i1 - 1][2]) for nm in numbers(toks, lang)]
+
+
 def _fmt(v: float) -> str:
-    return str(int(v)) if v == int(v) else f"{v:g}"
+    return str(int(v)) if v == int(v) else f"{v:.4g}"
 
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Lexicons (folded: no accents)
 # ---------------------------------------------------------------------------------------------------------------------
-UNITS = [
-    ("mg", r"mg|milligrams?|miligramos?"), ("mcg", r"mcg|micrograms?|microgramos?"), ("g", r"grams?|gramos?"),
-    ("ml", r"ml|milliliters?|millilitres?|mililitros?|cc"), ("tablet", r"tablets?|pills?|pastillas?|tabletas?|pildoras?|comprimidos?"),
-    ("capsule", r"capsules?|capsulas?"), ("teaspoon", r"teaspoons?|tsp|cucharaditas?"), ("tablespoon", r"tablespoons?|tbsp|cucharadas?"),
-    ("drop", r"drops?|gotas?"), ("puff", r"puffs?|inhalations?|inhalaciones|inhalacion|disparos?"), ("unit", r"units?|unidades|unidad"),
-    ("patch", r"patch(?:es)?|parches?"), ("dose", r"doses?|dosis"),
-]
-TIME_UNITS = [("hour", r"hours?|hrs?|horas?"), ("day", r"days?|dias?"), ("week", r"weeks?|semanas?"), ("month", r"months?|meses|mes"),
-              ("minute", r"minutes?|mins?|minutos?")]
 DRUGS = {
     "acetaminophen": r"acetaminophen|acetaminofen|tylenol|tilenol|paracetamol", "ibuprofen": r"ibuprofen|ibuprofeno|advil|motrin",
     "amoxicillin": r"amoxicillin|amoxicilina|amoxil", "penicillin": r"penicillin|penicilina", "aspirin": r"aspirin|aspirina",
-    "insulin": r"insulin|insulina", "metformin": r"metformin|metformina", "lisinopril": r"lisinopril", "amlodipine": r"amlodipine|amlodipino",
-    "atorvastatin": r"atorvastatin|atorvastatina|lipitor", "warfarin": r"warfarin|warfarina|coumadin", "prednisone": r"prednisone|prednisona",
+    "insulin": r"insulin|insulina", "inulin": r"inulin|inulina", "metformin": r"metformin|metformina", "metronidazole": r"metronidazole|metronidazol|flagyl",
+    "lisinopril": r"lisinopril", "losartan": r"losartan", "amlodipine": r"amlodipine|amlodipino",
+    "atorvastatin": r"atorvastatin|atorvastatina|lipitor", "simvastatin": r"simvastatin|simvastatina",
+    "warfarin": r"warfarin|warfarina|coumadin", "apixaban": r"apixaban|eliquis", "rivaroxaban": r"rivaroxaban|xarelto",
+    "prednisone": r"prednisone|prednisona", "prednisolone": r"prednisolone|prednisolona|orapred",
     "albuterol": r"albuterol|salbutamol|ventolin", "ondansetron": r"ondansetron|zofran", "cephalexin": r"cephalexin|cefalexina|keflex",
-    "azithromycin": r"azithromycin|azitromicina|zithromax", "omeprazole": r"omeprazole|omeprazol|prilosec",
+    "azithromycin": r"azithromycin|azitromicina|zithromax", "doxycycline": r"doxycycline|doxiciclina", "ciprofloxacin": r"ciprofloxacin|ciprofloxacino|cipro",
+    "omeprazole": r"omeprazole|omeprazol|prilosec", "ranitidine": r"ranitidine|ranitidina|zantac", "famotidine": r"famotidine|famotidina|pepcid",
     "sulfa": r"sulfa|sulfas|bactrim|sulfamethoxazole|sulfametoxazol", "codeine": r"codeine|codeina", "morphine": r"morphine|morfina",
-    "oxycodone": r"oxycodone|oxicodona", "hydrocodone": r"hydrocodone|hidrocodona|vicodin|norco", "naproxen": r"naproxen|naproxeno|aleve",
+    "oxycodone": r"oxycodone|oxicodona", "hydrocodone": r"hydrocodone|hidrocodona|vicodin|norco", "tramadol": r"tramadol|ultram",
+    "trazodone": r"trazodone|trazodona", "naproxen": r"naproxen|naproxeno|aleve", "celecoxib": r"celecoxib|celebrex",
+    "citalopram": r"citalopram|celexa", "sertraline": r"sertraline|sertralina|zoloft",
+    "hydroxyzine": r"hydroxyzine|hidroxicina|hidroxizina|atarax", "hydralazine": r"hydralazine|hidralazina",
+    "hydrochlorothiazide": r"hydrochlorothiazide|hidroclorotiazida", "hydroxychloroquine": r"hydroxychloroquine|hidroxicloroquina|plaquenil",
+    "digoxin": r"digoxin|digoxina|lanoxin", "gabapentin": r"gabapentin|gabapentina|neurontin",
     "diphenhydramine": r"diphenhydramine|difenhidramina|benadryl", "cetirizine": r"cetirizine|cetirizina|zyrtec",
     "loratadine": r"loratadine|loratadina|claritin", "furosemide": r"furosemide|furosemida|lasix", "levothyroxine": r"levothyroxine|levotiroxina|synthroid",
     "clopidogrel": r"clopidogrel|plavix", "heparin": r"heparin|heparina", "nitroglycerin": r"nitroglycerin|nitroglicerina",
     "ceftriaxone": r"ceftriaxone|ceftriaxona", "antibiotic": r"antibiotics?|antibioticos?", "latex": r"latex", "peanut": r"peanuts?|cacahuates?|mani|cacahuetes?",
     "shellfish": r"shellfish|mariscos?", "iodine": r"iodine|yodo|contrast dye|medio de contraste", "egg": r"eggs?|huevos?",
-    "blood thinner": r"blood thinners?|anticoagulantes?", "inhaler": r"inhaler|inhalador",
+    "blood thinner": r"blood thinners?|anticoagulantes?|medicinas? para (?:adelgazar|diluir|aguar) la sangre|para la sangre rala",
+    "inhaler": r"inhaler|inhalador",
 }
 WARNINGS = {
-    "emergency": r"emergency(?: room)?|\ber\b|urgencias|sala de emergencias?|emergencias?", "911": r"911|nine one one|nueve uno uno|novecientos once",
-    "call": r"\bcall (?:us|your doctor|the doctor|the clinic|back)|\bllame|\bllamenos|\bllamar al", "return": r"come back|return|regrese|vuelva|regresar|volver",
-    "breathing": r"(?:trouble|difficulty|hard time|problems?) breathing|can'?t breathe|short(?:ness)? of breath|dificultad para respirar|no puede respirar|le falta el aire|falta de aire",
-    "chest pain": r"chest pain|pain in (?:the|his|her|your) chest|dolor (?:de|en el) pecho", "fever": r"fever|temperature|fiebre|calentura",
-    "bleeding": r"bleed(?:ing|s)?|blood in|sangr(?:ado|a|e|ando)", "rash": r"rash|hives|[sz]arpullido|ronchas|erupcion",
-    "swelling": r"swell(?:ing|ed|s)?|hinchaz[oó]n|hinchad[oa]|inflamad[oa]", "vomiting": r"vomit(?:ing|s)?|throw(?:ing)? up|vomit(?:o|a|ando|os)|devolv",
-    "dizzy": r"dizz(?:y|iness)|faint(?:ing|ed)?|pass(?:es|ed)? out|mare(?:o|ad[oa]|os)|desmay", "seizure": r"seizures?|convulsi(?:on|ones)|ataques?",
-    "unresponsive": r"unconscious|won'?t wake|unresponsive|inconsciente|no despierta|no reacciona", "pregnant": r"pregnan(?:t|cy)|embarazad[ao]|embarazo",
+    "emergency": r"emergency(?: room)?|\ber\b|urgencias|sala de emergencias?|emergencias?",
+    "911": r"911|nine one one|nueve uno uno|novecientos once",
+    "call": r"\bcall(?:ing)?\b|(?<!se )\bllam(?:e|enos|ar)\b",
+    "return": r"come back|return (?:to|if|here|right|in|for)|go back to the|regres(?:e|ar|en)\b|vuelva(?! a [a-z]+(?:ar|er|ir)(?:se|lo|la|le)?\b)|volver(?! a [a-z]+(?:ar|er|ir)\b)",
+    "breathing": r"(?:trouble|difficulty|hard time|problems?|struggling) breathing|hard to breathe|can'?t breathe|short(?:ness)? of breath|"
+                 r"dificultad para respirar|no puede respirar|le cuesta respirar|le falta el aire|falta de aire|respira con dificultad",
+    "chest pain": r"chest pain|pain in (?:the|his|her|your) chest|dolor (?:de|en el) pecho", "fever": r"fever|temperature|fiebre|calentura|temperatura",
+    "bleeding": r"bleed(?:ing|s)?|bloody|blood in (?:the |his |her |your )?(?:urine|stool|stools|poop|vomit)|black stools?|"
+                r"sangrado|sangra(?:ndo)?\b|sangre en (?:la |el |las |los )?(?:orina|heces|popo|excremento|vomito)|con sangre|heces negras|excremento negro",
+    "rash": r"rash|hives|[sz]arpullido|ronchas|erupcion", "swelling": r"swell(?:ing|ed|s)?|hinchaz[oó]n|hinchad[oa]|inflamad[oa]",
+    "vomiting": r"vomit(?:ing|s|ed)?|thr(?:ew|ow(?:s|ing)?) up|vomit(?:o|a|ando|os)|devolv",
+    "fainting": r"faint(?:ing|ed|s)?|pass(?:es|ed)? out|black(?:ed)? out|desmay", "dizzy": r"dizz(?:y|iness)|light-?headed|mare(?:o|ad[oa]|os)",
+    "seizure": r"seizures?|convulsi(?:on|ones)|ataques?", "unresponsive": r"unconscious|won'?t wake|unresponsive|inconsciente|no despierta|no reacciona",
+    "pregnant": r"pregnan(?:t|cy)|embarazad[ao]|embarazo",
     "pain": r"\bpain\b|hurts?|\bdolor\b|\bduele\b",
 }
-BODY_EN = r"(?:side|arm|leg|ear|eye|hand|foot|knee|hip|shoulder|kidney|lung|breast|ankle|wrist|elbow|finger|toe|thumb|thigh|flank|lower|upper|chest|wrist)"
-BODY_ES = r"(?:lado|costado|brazo|pierna|oido|oreja|ojo|mano|pie|rodilla|cadera|hombro|rinon|pulmon|seno|pecho|tobillo|muneca|codo|dedo|muslo)"
-NEG_EN = r"\b(?:not|no|never|don'?t|doesn'?t|didn'?t|isn'?t|aren'?t|wasn'?t|can'?t|cannot|won'?t|shouldn'?t|mustn'?t|without|none|nothing|avoid|stop|quit)\b|n't\b"
-NEG_ES = r"\b(?:no|nunca|jamas|ni|sin|nada|ningun|ninguna|ninguno|evite|evitar|deje|dejar|suspenda|suspender|pare de|tampoco)\b"
-FREQ = [
-    (r"every\s+(?P<n>\S+(?:\s+(?:and a half|hundred))?)\s+hours?|cada\s+(?P<m>\S+(?:\s+y\s+media)?)\s+horas?", "every_n_hours"),
-    (r"(?P<n>\S+)\s+times?\s+(?:a|per|each)\s+day|(?P<m>\S+)\s+(?:vez|veces)\s+(?:al|por|cada|a el)\s+dia|(?P<o>once|twice)\s+(?:a|per|each)\s+day|(?P<o2>once|twice)\s+daily", "times_a_day"),
-    (r"\bdaily\b|every day|each day|(?:a|per) day|todos los dias|cada dia|diario|diariamente|al dia|por dia", "daily"),
-    (r"as needed|if needed|when needed|if (?:he|she|you) needs? it|si (?:es|lo) necesari[oa]|cuando lo necesite|segun sea necesario|si (?:le|lo) necesita", "as_needed"),
-]
-LIMIT = r"(?:no|not) more than|never more than|maximum|max(?:imum)? of|up to|at most|no mas de|nunca mas de|maximo|como maximo|hasta un maximo de|hasta"
-TIMING = [
-    (r"with food|with meals|after (?:eating|meals)|con (?:la )?comida|con (?:los )?alimentos|despues de comer", "with_food"),
-    (r"empty stomach|before (?:eating|meals|breakfast)|en ayunas|estomago vacio|antes de comer|antes del desayuno", "empty_stomach"),
-    (r"at bedtime|before bed|at night|before (?:you )?sleep|antes de dormir|antes de acostarse|en la noche|por la noche|de noche", "night"),
-    (r"in the morning|every morning|en la manana|por la manana|cada manana|en las mananas", "morning"),
-]
 ALLERGY = r"allerg(?:y|ies|ic)|alerg(?:ia|ias|ico|ica|icos|icas)"
+NEGATORS_EN = {"not", "no", "never", "without", "none", "nothing", "nobody", "neither", "nor", "cannot", "avoid", "stop", "quit"}
+NEGATORS_ES = {"no", "nunca", "jamas", "sin", "nada", "nadie", "ningun", "ninguna", "ninguno", "ni", "tampoco", "evite", "evitar",
+               "suspenda", "suspender"}
+ES_CONCORD = {"nada", "nunca", "jamas", "nadie", "ningun", "ninguna", "ninguno", "ni", "tampoco"}  # "no ... nada" is one negation
+TIMING = [
+    (r"with (?:food|meals|a meal)|after (?:eating|meals|a meal)|con (?:la |las )?comidas?|con (?:los )?alimentos|despues de comer|con cada comida", "with_food"),
+    (r"(?:on an )?empty stomach|en ayunas|(?:con el )?estomago vacio", "empty_stomach"),
+    (r"before (?:eating|meals|breakfast|lunch|dinner|supper)|antes de (?:comer|desayunar|almorzar|cenar|la cena|la comida|las comidas|el desayuno|el almuerzo)|antes del desayuno|antes del almuerzo", "before_meal"),
+    (r"after (?:breakfast|lunch|dinner|supper)|despues de (?:desayunar|almorzar|cenar|la cena|el desayuno|el almuerzo)|despues del desayuno|despues del almuerzo", "after_meal"),
+    (r"at bedtime|before bed|(?<!at #\d )(?<!at #\d\d )at night|every night|(?<!at #\d )(?<!at #\d\d )in the evening|before (?:you )?(?:go to )?sleep|antes de dormir|antes de acostarse|(?:en|por) la noche|cada noche|todas las noches|(?<!#\d )(?<!#\d\d )de (?:la )?noche", "night"),
+    (r"(?<!at #\d )(?<!at #\d\d )(?<!tomorrow )(?<!this )in the morning|every morning|(?<!manana )(?<!hoy )(?:en|por) la manana|cada manana|todas las mananas|en las mananas|(?<!#\d )(?<!#\d\d )de la manana", "morning"),
+]
+TIMING_CONFLICT = {frozenset(("with_food", "empty_stomach")), frozenset(("before_meal", "after_meal")), frozenset(("morning", "night")),
+                   frozenset(("empty_stomach", "after_meal"))}
+PRN = r"as needed|if needed|when needed|as necessary|if necessary|when necessary|if (?:he|she|you|they) needs? (?:it|them)|when (?:he|she|you|they) needs? (?:it|them)|prn|" \
+      r"si (?:lo |la |los |las |le |les )?necesita|cuando (?:lo |la |los |las |le |les )?necesite|cuando sea necesario|si es necesario|si (?:lo|la) necesita|" \
+      r"segun sea necesario|si hace falta|cuando haga falta"
+LIMIT_MAX = r"(?:no|not) more than|never more than|(?:do not|don't|never|not to) (?:\w+ ){0,2}more than|no (?:\w+ ){0,2}mas de|nunca mas de|maximum(?: of)?|max\b|(?<!got )(?<!get )(?<!gets )(?<!went )(?<!goes )(?<!rose )up to(?= #\d)|at most|como maximo|maximo(?: de)?|hasta un maximo de|hasta(?= #\d)|" \
+            r"(?:do not|don't|no) (?:exceed|pass|go over)|no (?:exceda|pase de|sobrepase)"
+LIMIT_MIN = r"at least|no less than|minimum(?: of)?|por lo menos|al menos|minimo(?: de)?|como minimo"
+BODY_EN = r"(?:side|arm|leg|ear|eye|hand|foot|knee|hip|shoulder|kidney|lung|breast|ankle|wrist|elbow|finger|toe|thumb|thigh|flank|lower|upper|chest|one|quadrant|cheek|temple|heel|calf|shin)"
 
 
 def _side_slots(t: str, lang: str) -> list[Slot]:
-    out = []
+    """left/right said about a body part or a direction. English 'right' is also 'correct' and 'left' is also a verb, so
+    English needs a cue (the/his/on the/to the/turn, or a body part after it); Spanish izquierdo/derecho almost always
+    means a side, except 'derecho a' (a right to) and 'todo derecho' (straight ahead)."""
+    out, seen = [], set()
     if lang == "en":
-        pats = [rf"\b(left|right)\s+(?:\w+\s+)?{BODY_EN}\b", r"\bon (?:the|his|her|your|my) (left|right)\b", r"\bto the (left|right)\b"]
+        pats = [rf"\b(left|right)\s+(?:\w+\s+)?{BODY_EN}\b", r"\b(?:on|to|in|at) (?:the|his|her|your|my|their) (left|right)\b",
+                r"\b(?:the|his|her|your|my|their) (left|right)\b(?!\s*(?:now|away|here|there|thing|answer|time|person|place|way|to\b))",
+                r"\bturn (left|right)\b"]
     else:
-        pats = [rf"\b{BODY_ES}\s+(?:\w+\s+)?(izquierd[oa]|derech[oa])\b", r"\b(?:a|en) la (izquierda|derecha)\b", r"\b(izquierd[oa]|derech[oa])\b(?=.*\b(?:lado|costado)\b)"]
-    seen = set()
+        pats = [r"(?<!todo )\b(izquierd[oa]s?|derech[oa]s?)\b(?! a (?:la|las|los|el|un|una|recibir|tener|ser)\b)"]
     for p in pats:
         for m in re.finditer(p, t):
-            if m.start() in seen:
+            pos = m.start(1)
+            if pos in seen:
                 continue
-            seen.add(m.start())
+            seen.add(pos)
             w = m.group(1)
-            out.append(Slot("side", "left" if w.startswith(("left", "izq")) else "right", m.group(0)))
+            out.append(Slot("side", "left" if w.startswith(("left", "izq")) else "right", m.group(0), pos=m.start()))
     return out
+
+
+def _negations(toks: list[tuple[str, int, int]], lang: str, exclude: list[tuple[int, int]] = ()) -> list[Slot]:
+    """Each negating word, counted. Spanish negative concord ('no tiene nada', 'no ... ni') counts once. 'stop', 'avoid',
+    'deje de' and 'evite' count as negations in both languages, so 'don't stop' (2) vs 'deje de' (1) is caught."""
+    out: list[Slot] = []
+    W = [x[0] for x in toks]
+    clause_has_no, last_no = False, -9
+    for k, (w, s, e) in enumerate(toks):
+        if w in (".", "?", "!", ";", ",") and w != ",":
+            clause_has_no = False
+        if lang == "en":
+            hit = w in NEGATORS_EN or w.endswith("n't")
+        else:
+            hit = w in NEGATORS_ES or (w in ("deje", "deja", "dejar", "dejen") and (
+                (k + 1 < len(W) and W[k + 1] == "de")
+                or (k + 1 < len(W) and W[k + 1] in ("el", "la", "los", "las", "su", "sus", "ese", "esa", "esta", "este")
+                    and any(_is_medicine(x) for x in W[k + 2:k + 4]))
+                or (k and W[k - 1] in ("lo", "la", "los", "las", "le", "les")))) \
+                or (w == "pare" and k + 1 < len(W) and W[k + 1] == "de")
+            if hit and w in ES_CONCORD and clause_has_no and k - last_no >= 2:   # "no tiene nada": one negation
+                continue
+            if hit and w in ("no", "nunca", "jamas", "tampoco") and not (k + 1 < len(W) and W[k + 1] in (",", ".", "!", "?")):
+                clause_has_no, last_no = True, k   # "No, ..." on its own is an answer, not a negated verb
+        if hit and not any(a <= s < b for a, b in exclude):
+            out.append(Slot("negation", "neg", w, pos=s))
+    return out
+
+
+MEDICINE_WORDS = {"medicina", "medicinas", "medicamento", "medicamentos", "pastilla", "pastillas", "tableta", "tabletas", "tratamiento",
+                  "jarabe", "inyecciones", "inhalador", "crema", "gotas"}
+
+
+def _is_medicine(w: str) -> bool:
+    return w in MEDICINE_WORDS or bool(_KNOWN_DRUG.fullmatch(w))
 
 
 def guess_lang(text: str) -> str:
@@ -255,44 +520,131 @@ def guess_lang(text: str) -> str:
     return "es" if es > en else "en"
 
 
+FREQ_UNIT = {"hour": "h", "hours": "h", "hr": "h", "hrs": "h", "hora": "h", "horas": "h", "day": "d", "days": "d", "dia": "d", "dias": "d",
+             "week": "w", "weeks": "w", "semana": "w", "semanas": "w", "minute": "min", "minutes": "min", "minuto": "min", "minutos": "min",
+             "month": "mo", "months": "mo", "mes": "mo", "meses": "mo"}
+_FU = "|".join(sorted(FREQ_UNIT, key=len, reverse=True))
+_TU = "|".join(sorted(TIME_WORDS, key=len, reverse=True))
+
+
 def extract(text: str, lang: str | None = None) -> list[Slot]:
     lang = lang or guess_lang(text)
     t = fold(text)
+    toks = _tok(t)
+    nums = numbers(toks, lang)
+    # A copy of the sentence where each number is a placeholder "#k", with the char offsets of every placeholder token.
+    ns_parts, ns_pos = [], []   # text pieces and (start,end) in t for each piece
+    starts = {nm.i0: k for k, nm in enumerate(nums)}
+    inside = {i for nm in nums for i in range(nm.i0, nm.i1)}
+    seen_first = set()
+    for i, (w, s, e) in enumerate(toks):
+        if i in starts and starts[i] not in seen_first:
+            k = starts[i]
+            seen_first.add(k)
+            nm = nums[k]
+            ns_parts.append(f"#{k}")
+            ns_pos.append((toks[nm.i0][1], toks[nm.i1 - 1][2]))
+        elif i in inside:
+            continue
+        else:
+            ns_parts.append(w)
+            ns_pos.append((s, e))
+    ns, offs, c = "", [], 0
+    for p, (s, e) in zip(ns_parts, ns_pos):
+        if ns:
+            ns += " "; c += 1
+        offs.append((c, c + len(p), s, e))
+        ns += p; c += len(p)
+
+    def span_of(a: int, b: int) -> tuple[str, int]:
+        hit = [(s, e) for (x, y, s, e) in offs if x < b and y > a]
+        if not hit:
+            return "", -1
+        return t[hit[0][0]:hit[-1][1]], hit[0][0]
+
+    used: set[int] = set()
     slots: list[Slot] = []
-    unit_rx = "|".join(f"(?P<u_{c}>{rx})" for c, rx in UNITS + TIME_UNITS)
-    for v, words, _, end in _num_tokens(t, lang):
-        m = re.match(rf"[\s-]*(?:{unit_rx})(?![a-z])", t[end:end + 40])
-        ctx = next((k[2:] for k, val in (m.groupdict().items() if m else []) if val), "")
-        slots.append(Slot("number", _fmt(v), words, ctx))
-        if ctx in dict(TIME_UNITS):
-            slots.append(Slot("duration", ctx, (words + t[end:end + m.end()]).strip()))
-    for canon, rx in UNITS:
-        for m in re.finditer(rf"(?<![a-z])(?:{rx})(?![a-z])", t):
-            slots.append(Slot("unit", canon, m.group(0)))
+
+    def num_ids(m: re.Match) -> list[int]:
+        return [int(x) for x in re.findall(r"#(\d+)", m.group(0))]
+
+    def add(kind: str, value: str, m: re.Match, ctx: str = ""):
+        sp, pos = span_of(m.start(), m.end())
+        slots.append(Slot(kind, value, sp, ctx, pos))
+        used.update(num_ids(m))
+
+    # How often. Dosing intervals and "N times a day" carry their own numbers.
+    for m in re.finditer(rf"(?<![a-z#])(?:every|cada|each)\s+(?:(#\d+)(?:\s*(?:-|to|or|a|o)\s*(#\d+))?\s+)?({_FU})\b", ns):
+        lo = _fmt(nums[int(m.group(1)[1:])].value) if m.group(1) else "1"
+        hi = ("-" + _fmt(nums[int(m.group(2)[1:])].value)) if m.group(2) else ""
+        add("frequency", f"q{lo}{hi}{FREQ_UNIT[m.group(3)]}" if (m.group(1) or FREQ_UNIT[m.group(3)] != "d") else "daily", m)
+    no_neg: list[tuple[int, int]] = []
+    for m in re.finditer(r"(?<![a-z])(?:every other day|every second day|cada tercer dia|every third day|(?:un|1) dia si,? y (?:un dia|otro|1 dia) no|"
+                         r"dia (?:de por medio|por medio)|cada otro dia)", t):
+        slots.append(Slot("frequency", "q3d" if "tercer" in m.group(0) or "third" in m.group(0) else "q2d", m.group(0), pos=m.start()))
+        no_neg.append((m.start(), m.end()))
+        used.update(k for k, nm in enumerate(nums) if m.start() <= toks[nm.i0][1] < m.end())
+    for m in re.finditer(r"(#\d+)\s+(?:times?\s+|x\s*|veces\s+|vez\s+)?(?:(?:a|per|each|al|por|cada|a la|en el|en la)\s+)(day|dia|week|semana|month|mes)\b", ns):
+        k = int(m.group(1)[1:])
+        if k in used:
+            continue
+        unit = {"day": "day", "dia": "day", "week": "week", "semana": "week", "month": "month", "mes": "month"}[m.group(2)]
+        add("frequency", f"{_fmt(nums[k].value)}x/{unit}", m)
+    for m in re.finditer(r"(#\d+)\s+(?:times?\s+|veces\s+)?(daily|diari[oa]s?|weekly|semanal(?:es)?)\b", ns):
+        k = int(m.group(1)[1:])
+        if k not in used:
+            add("frequency", f"{_fmt(nums[k].value)}x/{'day' if m.group(2).startswith(('dai', 'dia')) else 'week'}", m)
+    have_xday = any(s.kind == "frequency" and s.value.endswith("x/day") for s in slots)
+    if not have_xday and not any(s.kind == "frequency" and s.value.startswith("q") and s.value.endswith(("h", "min")) for s in slots):
+        for m in re.finditer(r"(?<![a-z])(?:daily|every day|each day|(?<!#\d )(?<!#\d\d )(?<!times )(?:a|per) day|todos los dias|cada dia|diari[oa]s?|diariamente|"
+                             r"(?<!#\d )(?<!veces )(?:al|por) dia|una vez al dia)\b", ns):
+            if not any(s.kind == "frequency" and s.value == "daily" for s in slots):
+                add("frequency", "daily", m)
+    for m in re.finditer(rf"(?<![a-z])(?:{PRN})\b", ns):
+        add("frequency", "as_needed", m)
+
+    # How long: a number with a time word, compared in hours (48 hours == 2 days). A clock time ("a las 10") isn't one.
+    for m in re.finditer(rf"(#\d+)\s+({_TU})\b", ns):
+        k = int(m.group(1)[1:])
+        if k in used or nums[k].clock:
+            continue
+        hours = nums[k].value * HOURS[TIME_WORDS[m.group(2)]]
+        add("duration", f"{hours:.6g}h", m, ctx=m.group(2))
+
+    # Remaining numbers, with what they count.
+    for k, nm in enumerate(nums):
+        if k in used:
+            continue
+        nxt = toks[nm.i1][0] if nm.i1 < len(toks) else ""
+        nxt2 = toks[nm.i1 + 1][0] if nm.i1 + 1 < len(toks) else ""
+        ctx = UNIT_WORDS.get(nxt) or CTX_ONLY.get(nxt) or ("percent" if (nxt, nxt2) == ("por", "ciento") else "") or \
+            ("clock" if nxt in ("am", "pm") or nm.clock else "")
+        s0, e0 = toks[nm.i0][1], toks[nm.i1 - 1][2]
+        slots.append(Slot("number", _fmt(nm.value), t[s0:e0], ctx, s0))
+
+    # Units (compared on their own, so "por kilo" vs "por libra" is caught even without a number).
+    for i, (w, s, e) in enumerate(toks):
+        u = UNIT_WORDS.get(w)
+        if u and not (w == "g" and i and toks[i - 1][0] in ("vitamin", "vitamina")) and not (w == "l" and not (i and toks[i - 1][0][0].isdigit())):
+            slots.append(Slot("unit", u, w, pos=s))
     for canon, rx in DRUGS.items():
         for m in re.finditer(rf"(?<![a-z])(?:{rx})(?![a-z])", t):
-            slots.append(Slot("drug", canon, m.group(0)))
+            slots.append(Slot("drug", canon, m.group(0), pos=m.start()))
     for canon, rx in WARNINGS.items():
-        for m in re.finditer(rf"(?<![a-z])(?:{rx})", t):
-            slots.append(Slot("warning", canon, m.group(0)))
-            break  # presence is enough
-    for rx, canon in FREQ:
-        for m in re.finditer(rf"(?<![a-z])(?:{rx})", t):
-            slots.append(Slot("frequency", canon, m.group(0)))
+        m = re.search(rf"(?<![a-z])(?:{rx})", t)
+        if m:
+            slots.append(Slot("warning", canon, m.group(0), pos=m.start()))  # presence is enough
     for rx, canon in TIMING:
-        for m in re.finditer(rf"(?<![a-z])(?:{rx})", t):
-            slots.append(Slot("timing", canon, m.group(0)))
-    for m in re.finditer(rf"(?<![a-z])(?:{LIMIT})(?![a-z])", t):
-        slots.append(Slot("limit", "limit", m.group(0)))
+        for m in re.finditer(rf"(?<![a-z])(?:{rx})", ns):
+            add("timing", canon, m)
+    for m in re.finditer(rf"(?<![a-z])(?:{LIMIT_MAX})(?![a-z])", ns):
+        add("limit", "max", m)
+    for m in re.finditer(rf"(?<![a-z])(?:{LIMIT_MIN})(?![a-z])", ns):
+        add("limit", "min", m)
     for m in re.finditer(rf"(?<![a-z])(?:{ALLERGY})", t):
-        slots.append(Slot("allergy", "allergy", m.group(0)))
-    neg = NEG_EN if lang == "en" else NEG_ES
-    for m in re.finditer(neg, t):
-        slots.append(Slot("negation", "neg", m.group(0)))
+        slots.append(Slot("allergy", "allergy", m.group(0), pos=m.start()))
+    slots += _negations(toks, lang, no_neg)
     slots += _side_slots(t, lang)
-    # 'daily' inside 'times a day' / 'al dia' inside 'veces al dia' is the same instruction: keep the specific one.
-    if any(s.value == "times_a_day" for s in slots):
-        slots = [s for s in slots if s.value != "daily"]
     return slots
 
 
@@ -306,74 +658,136 @@ def _lev(a: str, b: str) -> int:
     return prev[-1]
 
 
+_KNOWN_DRUG = re.compile(rf"(?<![a-z])(?:{'|'.join(DRUGS.values())})(?![a-z])")
+
+
 def heard_as(canon: str, text: str) -> bool:
-    """Is a near-spelling of this drug in the text (speech recognition slips: 'telenol', 'acitromicina')?
-    Only words that are not themselves a known drug count, so a real sound-alike drug swap is still flagged."""
-    known = re.compile(rf"(?<![a-z])(?:{'|'.join(DRUGS.values())})(?![a-z])")
+    """Is a one-letter misspelling of this drug in the text (speech recognition slips: 'telenol', 'acitromicina')?
+    Only words that are not themselves a known drug count, so a real look-alike / sound-alike swap (prednisone vs
+    prednisolone, insulin vs inulin, Celebrex vs Celexa) is still flagged."""
     forms = [f for f in DRUGS[canon].split("|") if f.isalpha() and len(f) >= 6]
     for w in re.findall(r"[a-z]{5,}", fold(text)):
-        if known.fullmatch(w):
+        if _KNOWN_DRUG.fullmatch(w):
             continue
-        if any(_lev(w, f) <= (1 if len(f) < 8 else 2) and w[0] in (f[0], {"z": "s", "s": "z", "c": "z"}.get(f[0], f[0])) for f in forms):
+        if any(_lev(w, f) <= 1 and w[0] in (f[0], {"z": "s", "s": "z", "c": "z"}.get(f[0], f[0])) for f in forms):
             return True
     return False
 
 
-PRESENCE_KINDS = ("negation", "allergy", "frequency", "timing", "limit")  # compared as present/absent, not counted
+COUNTED_KINDS = ("number", "unit", "side", "drug", "duration", "frequency", "negation", "warning")
 
 
 def diff(source: str, rendition: str, src_lang: str | None = None, ren_lang: str | None = None) -> list[Finding]:
-    """What critical content changed between a sentence and its interpretation."""
-    a = [Slot(x.kind, x.value, restore(source, x.span), x.ctx) for x in extract(source, src_lang)]
-    b = [Slot(x.kind, x.value, restore(rendition, x.span), x.ctx) for x in extract(rendition, ren_lang)]
+    """What critical content changed between a sentence and its interpretation (listed in clinical priority order)."""
+    a = [Slot(x.kind, x.value, restore(source, x.span, x.pos), x.ctx, x.pos) for x in extract(source, src_lang)]
+    b = [Slot(x.kind, x.value, restore(rendition, x.span, x.pos), x.ctx, x.pos) for x in extract(rendition, ren_lang)]
     out: list[Finding] = []
+    q = lambda x: f"“{x}”"  # noqa: E731
+    leftover: dict[str, tuple[list[Slot], list[Slot]]] = {}
     for kind in SEVERITY:
+        if kind == "order":
+            continue
         sa = [s for s in a if s.kind == kind]
         sb = [s for s in b if s.kind == kind]
-        if kind in PRESENCE_KINDS:
-            va, vb = {s.value for s in sa}, {s.value for s in sb}
-            miss, extra = va - vb, vb - va
-            if kind == "negation":
-                miss, extra = (({"neg"} if sa and not sb else set()), ({"neg"} if sb and not sa else set()))
-        else:
+        if kind in COUNTED_KINDS and kind not in ("warning",):
             ca, cb = Counter(s.value for s in sa), Counter(s.value for s in sb)
-            miss, extra = set((ca - cb).elements()), set((cb - ca).elements())
-            if kind == "warning":  # 'pain' alone is too common to flag as an omission
-                miss.discard("pain"); extra.discard("pain")
-            if kind == "drug":  # a misheard drug name ('acitromicina') is not a missing drug
-                miss = {m for m in miss if not heard_as(m, rendition)}
-                extra = {e for e in extra if not heard_as(e, source)}
-        span = lambda xs, v: next((s.span for s in xs if s.value == v), v)  # noqa: E731
+            miss, extra = list((ca - cb).elements()), list((cb - ca).elements())
+        else:
+            va, vb = {s.value for s in sa}, {s.value for s in sb}
+            miss, extra = sorted(va - vb), sorted(vb - va)
+        if kind == "warning":   # 'pain' alone is too common to flag on its own
+            miss = [m for m in miss if m != "pain"]; extra = [e for e in extra if e != "pain"]
+        if kind == "drug":      # a misheard drug name ('acitromicina') is not a missing drug
+            miss = [m for m in miss if not heard_as(m, rendition)]
+            extra = [e for e in extra if not heard_as(e, source)]
+        if kind == "timing":    # only a contradiction is a substitution; an omitted 'with food' is a low note
+            pass
+        # spans: take slots in order of appearance, one per missing value
+        pool_a, pool_b = list(sa), list(sb)
+
+        def take(pool, v):
+            for s in pool:
+                if s.value == v:
+                    pool.remove(s)
+                    return s
+            return Slot(kind, v, v)
+        ms = [take(pool_a, v) for v in miss]
+        es = [take(pool_b, v) for v in extra]
+        leftover[kind] = (ms, es)
+    # A duration in one sentence and the same count as a bare number in the other ("dos años y medio" / "two and a half"):
+    # the unit was left implicit, not changed.
+    dm, de = leftover["duration"]
+    nm, ne = leftover["number"]
+    for d in list(dm):
+        hit = next((x for x in ne if not x.ctx and abs(float(x.value) - _count(d)) < 1e-6), None)
+        if hit:
+            dm.remove(d); ne.remove(hit)
+    for d in list(de):
+        hit = next((x for x in nm if not x.ctx and abs(float(x.value) - _count(d)) < 1e-6), None)
+        if hit:
+            de.remove(d); nm.remove(hit)
+    # a 'no' that is part of an omitted or added dose limit ("no more than") is reported once, as the limit
+    for side in (0, 1):
+        lims = leftover["limit"][side]
+        negs = leftover["negation"][side]
+        leftover["negation"][side][:] = [g for g in negs if not any(0 <= g.pos - lm.pos < len(lm.span) for lm in lims if lm.pos >= 0)]
+    for kind in PRIORITY:
+        if kind == "order" or kind not in leftover:
+            continue
+        ms, es = leftover[kind]
         sev = SEVERITY[kind]
-        pair_kinds = ("number", "unit", "side", "drug", "duration")
-        miss_l, extra_l = sorted(miss), sorted(extra)
-        if kind == "number":  # pair a dropped number with an added one that counts the same thing ("every 6 hours" -> "every 8 hours")
-            ctx_of = lambda xs, v: next((s.ctx for s in xs if s.value == v), "")  # noqa: E731
-            for m in list(miss_l):
-                e = next((e for e in extra_l if ctx_of(sa, m) and ctx_of(sb, e) == ctx_of(sa, m)), None)
-                if e is not None:
-                    miss_l.remove(m); extra_l.remove(e)
-                    out.append(Finding("substitution", kind, sev, span(sa, m), span(sb, e),
-                                       f"Changed {KIND_LABEL[kind]}: \u201c{span(sa, m)}\u201d became \u201c{span(sb, e)}\u201d"))
-        if kind in pair_kinds:
-            while miss_l and extra_l:
-                m, e = miss_l.pop(0), extra_l.pop(0)
-                out.append(Finding("substitution", kind, sev, span(sa, m), span(sb, e),
-                                   f"Changed {KIND_LABEL[kind]}: “{span(sa, m)}” became “{span(sb, e)}”"))
-        for m in miss_l:
-            out.append(Finding("omission", kind, sev, span(sa, m), "", f"Not in the interpretation: {KIND_LABEL[kind]} “{span(sa, m)}”"))
-        for e in extra_l:
-            # added content is usually lower risk than dropped content, except an added 'no' (flips meaning)
-            s2 = "high" if kind in ("negation", "drug", "number", "side") else "medium"
-            out.append(Finding("addition", kind, s2, "", span(sb, e), f"Added in the interpretation: {KIND_LABEL[kind]} “{span(sb, e)}”"))
-    # Same numbers, different order ("2.5 mg Mon/Fri, 5 mg other days" -> "5 mg Mon/Fri, 2.5 mg other days"): code can't tell
-    # a harmless re-ordering from a swap, so it's a medium note for the checker to weigh.
+        if kind == "timing":
+            for m in list(ms):
+                e = next((e for e in es if frozenset((m.value, e.value)) in TIMING_CONFLICT), None)
+                if e:
+                    ms.remove(m); es.remove(e)
+                    out.append(Finding("substitution", kind, "high", m.span, e.span, f"Changed {KIND_LABEL[kind]}: {q(m.span)} became {q(e.span)}"))
+            for m in ms:
+                out.append(Finding("omission", kind, "low", m.span, "", f"Not in the interpretation: {KIND_LABEL[kind]} {q(m.span)}"))
+            for e in es:
+                out.append(Finding("addition", kind, "medium", "", e.span, f"Added in the interpretation: {KIND_LABEL[kind]} {q(e.span)}"))
+            continue
+        if kind == "negation":
+            if len(ms) > len(es):
+                for m in ms[: len(ms) - len(es)]:
+                    out.append(Finding("omission", kind, sev, m.span, "", f"Not in the interpretation: {KIND_LABEL[kind]} {q(m.span)}"))
+            elif len(es) > len(ms):
+                for e in es[: len(es) - len(ms)]:
+                    out.append(Finding("addition", kind, sev, "", e.span, f"Added in the interpretation: {KIND_LABEL[kind]} {q(e.span)}"))
+            continue
+        if kind == "number":    # pair a changed number with its replacement: same unit first, then in order
+            for m in list(ms):
+                e = next((e for e in es if m.ctx and e.ctx == m.ctx), None)
+                if e:
+                    ms.remove(m); es.remove(e)
+                    out.append(Finding("substitution", kind, sev, m.span, e.span, f"Changed {KIND_LABEL[kind]}: {q(m.span)} became {q(e.span)}"))
+        if kind in ("number", "unit", "side", "drug", "duration", "frequency", "limit", "warning"):
+            while ms and es:
+                m, e = ms.pop(0), es.pop(0)
+                out.append(Finding("substitution", kind, sev, m.span, e.span, f"Changed {KIND_LABEL[kind]}: {q(m.span)} became {q(e.span)}"))
+        for m in ms:
+            s_om = sev
+            if kind == "frequency" and m.value in ("daily", "as_needed"):
+                s_om = "medium"
+            out.append(Finding("omission", kind, s_om, m.span, "", f"Not in the interpretation: {KIND_LABEL[kind]} {q(m.span)}"))
+        for e in es:
+            # added content is usually lower risk than dropped content, except an added drug, number or side
+            s_add = "high" if kind in ("drug", "number", "side", "allergy") or (kind == "frequency" and e.value not in ("daily", "as_needed")) else "medium"
+            out.append(Finding("addition", kind, s_add, "", e.span, f"Added in the interpretation: {KIND_LABEL[kind]} {q(e.span)}"))
+    # Same numbers in a different order ("2.5 mg Mon/Fri, 5 mg other days" -> "5 mg Mon/Fri, 2.5 mg other days"): code
+    # can't tell a harmless re-ordering from a swap, so it's a medium note for the checker to weigh.
     na = [s.value for s in a if s.kind == "number"]
     nb = [s.value for s in b if s.kind == "number"]
     if len(na) >= 2 and Counter(na) == Counter(nb) and na != nb:
         out.append(Finding("substitution", "order", SEVERITY["order"], " / ".join(na), " / ".join(nb),
                            "Same numbers in a different order: " + ", ".join(na) + " became " + ", ".join(nb)))
     return out
+
+
+def _count(d: Slot) -> float:
+    """The number said in a duration slot (value is in hours; ctx is the time word)."""
+    unit = TIME_WORDS.get(d.ctx, "h")
+    return float(d.value.rstrip("h")) / HOURS[unit]
 
 
 def worst(findings: list[Finding]) -> str:

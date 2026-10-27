@@ -8,7 +8,10 @@ async function getJSON(url, opts) {
   const r = await fetch(url, opts);
   if (!r.ok) {
     let msg = r.statusText;
-    try { msg = (await r.json()).detail || msg; } catch (_) { /* keep status text */ }
+    try {
+      const d = (await r.json()).detail;
+      msg = Array.isArray(d) ? d.map((x) => x.msg || String(x)).join("; ") : d || msg;
+    } catch (_) { /* keep status text */ }
     throw new Error(msg);
   }
   return r.json();
@@ -16,13 +19,14 @@ async function getJSON(url, opts) {
 
 /* ---------- highlighting: findings carry folded words (lowercase, no accents); map them back onto the original ---------- */
 function fold(text) {
-  return Array.from(text).map((ch) => {
+  return Array.from(text.normalize("NFC")).map((ch) => {
     const f = ch.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().replace("’", "'");
     return f.length ? f[0] : ch;
   }).join("");
 }
 function marked(text, spans) {
-  // spans: [{words, cls}] -> HTML with <mark> around the first match of each
+  // spans: [{words, cls}] -> HTML with <mark> around the first whole-word match of each
+  text = text.normalize("NFC");
   const chars = Array.from(text);
   const f = fold(text);
   const tags = new Array(chars.length + 1).fill("");
@@ -31,8 +35,10 @@ function marked(text, spans) {
     if (!s.words) continue;
     const w = fold(s.words);
     let i = -1, from = 0;
+    const wordy = /[\p{L}\p{N}]/u;
     while ((i = f.indexOf(w, from)) !== -1) {
-      if (!used.slice(i, i + w.length).some(Boolean)) break;
+      const okEdges = !(i > 0 && wordy.test(f[i - 1]) && wordy.test(w[0])) && !(wordy.test(f[i + w.length] || "") && wordy.test(w[w.length - 1]));
+      if (okEdges && !used.slice(i, i + w.length).some(Boolean)) break;
       from = i + 1;
     }
     if (i === -1) continue;
@@ -50,11 +56,11 @@ async function loadVisits() {
   state.visits = await getJSON("/api/visits");
   const box = $("#visits");
   box.innerHTML = state.visits.map((v, i) =>
-    `<button role="tab" aria-selected="${i === 0}" data-id="${v.id}"><span class="t">${esc(v.title)}</span><span class="s">${esc(v.setting)}</span></button>`).join("");
+    `<button type="button" aria-pressed="${i === 0}" data-id="${v.id}"><span class="t">${esc(v.title)}</span><span class="s">${esc(v.setting)}</span></button>`).join("");
   box.addEventListener("click", (e) => {
     const b = e.target.closest("button[data-id]");
     if (!b) return;
-    box.querySelectorAll("button").forEach((x) => x.setAttribute("aria-selected", String(x === b)));
+    box.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
     openVisit(b.dataset.id);
   });
   if (state.visits.length) openVisit(state.visits[0].id);
@@ -85,16 +91,18 @@ function cardHTML(t) {
   const c = t.check, d = c.decision;
   if (d.level === "ok") return "";
   if (d.level === "note") {
-    return `<div class="notecard">Check later: ${esc((c.explanation || {}).say || "a possible change in critical content")}</div>`;
+    const say = ((c.explanation || {}).say || "a possible change in critical content").replace(/^Re-confirm\.\s*/, "");
+    return `<div class="notecard">Check later: ${esc(say)}</div>`;
   }
-  const after = ((t.heard && t.heard.asr_ms) || 0) + (c.ms ? c.ms.to_decision : 0);
+  // "seconds after the turn" only means something when speech recognition actually ran on this turn's audio
+  const after = t.heard && t.heard.asr ? (t.heard.asr_ms || 0) + (c.ms ? c.ms.to_decision : 0) : 0;
   const chips = c.findings.filter((f) => f.severity !== "low").slice(0, 5).map((f) => `<li>${esc(f.message)}</li>`).join("");
   const why = [];
   if (c.p_faithful !== null && c.p_faithful !== undefined) why.push(`<span>Our checker: ${Math.round((1 - c.p_faithful) * 100)}% likely changed</span>`);
   if (c.findings.length) why.push(`<span>Code: ${c.findings.filter((f) => f.severity !== "low").length} word-level change${c.findings.length === 1 ? "" : "s"}</span>`);
   why.push(`<span>Decided by ${esc(d.why)}</span>`);
   return `<div class="card ${d.title === "Possible change" ? "possible" : ""}" role="note">
-    <div class="band"><span>${esc(d.title)}</span>${after ? `<span class="when">${(after / 1000).toFixed(1)} s after the turn</span>` : ""}</div>
+    <div class="band"><span>${esc(d.title)}</span>${after >= 50 ? `<span class="when">${(after / 1000).toFixed(1)} s after the turn</span>` : ""}</div>
     <p class="say">${esc((c.explanation || {}).say || "")}</p>
     ${chips ? `<ul>${chips}</ul>` : ""}
     <p class="why">${why.join("")}</p></div>`;
@@ -133,45 +141,63 @@ function showTurn(i, stage) {
 }
 
 /* ---------- replay ---------- */
-function stop() { state.run++; $("#play").textContent = "Play visit"; }
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+// Every await checks the run token, so Pause, Next turn and switching visits never leave a turn half-shown or skipped.
+function stop() { state.run++; state.busy = false; $("#play").textContent = "Play visit"; }
+function sleep(ms, run) {
+  return new Promise((resolve) => {
+    const t0 = Date.now();
+    const iv = setInterval(() => {
+      if ((run !== undefined && run !== state.run) || Date.now() - t0 >= ms) { clearInterval(iv); resolve(); }
+    }, 50);
+  });
+}
 function playClip(url, fallbackMs, run) {
   return new Promise((resolve) => {
-    if (!url || !$("#sound").checked) { sleep(fallbackMs).then(resolve); return; }
+    if (!url || !$("#sound").checked) { sleep(fallbackMs, run).then(resolve); return; }
     const a = new Audio("/static/" + url);
-    const done = () => resolve();
+    let settled = false;
+    const done = () => { if (!settled) { settled = true; clearInterval(iv); resolve(); } };
+    const iv = setInterval(() => { if (run !== state.run) { a.pause(); done(); } }, 100);
     a.addEventListener("ended", done, { once: true });
-    a.addEventListener("error", () => sleep(fallbackMs).then(done), { once: true });
-    a.play().catch(() => sleep(fallbackMs).then(done));
-    const iv = setInterval(() => { if (run !== state.run) { a.pause(); clearInterval(iv); resolve(); } }, 120);
-    a.addEventListener("ended", () => clearInterval(iv), { once: true });
+    a.addEventListener("error", () => sleep(fallbackMs, run).then(done), { once: true });
+    a.play().catch(() => sleep(fallbackMs, run).then(done));
   });
 }
 async function playFrom(i) {
   const run = ++state.run;
   $("#play").textContent = "Pause";
   for (let k = i; k < state.visit.turns.length; k++) {
-    if (run !== state.run) return;
-    await revealTurn(k, run);
+    if (!(await revealTurn(k, run))) return;
     state.shown = k + 1;
-    await sleep(500);
+    await sleep(500, run);
+    if (run !== state.run) return;
   }
   if (run === state.run) { finish(); stop(); }
 }
 async function revealTurn(k, run) {
+  // -> true when the turn was fully shown; false (and the turn removed, to replay later) when interrupted
   const t = state.visit.turns[k];
   const li = showTurn(k, 1);
+  const visit = state.visit;
+  const gone = () => { if (state.visit === visit) li.remove(); return false; };
   li.scrollIntoView({ block: "nearest", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   $("#status").textContent = `Turn ${k + 1} of ${state.visit.turns.length}`;
   const len = (s) => 600 + 55 * (s || "").length;
   await playClip(t.audio && t.audio.src, len(t.script.source), run);
-  if (run !== undefined && run !== state.run) return;
+  if (run !== state.run) return gone();
   showTurn(k, 2);
   await playClip(t.audio && t.audio.ren, len(t.script.rendition), run);
-  if (run !== undefined && run !== state.run) return;
-  const wait = Math.min(((t.heard && t.heard.asr_ms) || 0) + ((t.check.ms || {}).to_decision || 0), 3000);
-  await sleep(wait);
+  if (run !== state.run) return gone();
+  const wait = t.heard && t.heard.asr ? Math.min((t.heard.asr_ms || 0) + ((t.check.ms || {}).to_decision || 0), 3000) : 300;
+  await sleep(wait, run);
+  if (run !== state.run) return gone();
   showTurn(k, 3);
+  announce(t);
+  return true;
+}
+function announce(t) {
+  const d = t.check.decision;
+  if (d.level === "card") $("#announce").textContent = `${d.title}: ${(t.check.explanation || {}).say || ""}`;
 }
 function finish() {
   const v = state.visit;
@@ -196,10 +222,15 @@ $("#play").addEventListener("click", () => {
   playFrom(state.shown);
 });
 $("#step").addEventListener("click", async () => {
+  if (state.busy) return;  // one turn at a time
   stop();
   if (state.shown >= state.visit.turns.length) return;
   const run = ++state.run;
-  await revealTurn(state.shown, run);
+  state.busy = true;
+  const ok = await revealTurn(state.shown, run);
+  if (run !== state.run) return;
+  state.busy = false;
+  if (!ok) return;
   state.shown++;
   if (state.shown === state.visit.turns.length) finish();
 });
@@ -211,7 +242,7 @@ $("#all").addEventListener("click", () => {
   finish();
 });
 $("#planted").addEventListener("change", () => {
-  for (let i = 0; i < state.shown; i++) showTurn(i, 3);
+  for (let i = 0; i < state.shown; i++) showTurn(i, 3);  // only fully shown turns are re-drawn
   document.querySelectorAll("#turns li").forEach((li) => li.classList.remove("enter"));
 });
 
@@ -292,31 +323,43 @@ async function loadResults() {
   let d;
   try { d = await getJSON("/api/eval"); } catch (_) { return; }
   const e = d.e2e;
-  if (e && e.from_audio) {
-    const a = e.from_audio;
+  if (e && (e.from_audio || e.from_script_text)) {
+    const a = e.from_audio || e.from_script_text;
+    const audio = !!e.from_audio;
     const figs = [
-      [`${a.caught} of ${a.errors}`, "planted errors got a re-confirm card, from audio to card"],
+      [`${a.caught} of ${a.errors}`, audio ? "planted errors got a re-confirm card, from audio to card" : "planted errors got a re-confirm card (from the script text)"],
       [`${a.false_alarms} of ${a.faithful_turns}`, "faithful turns got a card anyway (false alarms)"],
       [`${a.patient_speech_caught}`, "errors in the patient’s own words caught, the ones ambient scribes copy most"],
     ];
-    if (e.ms_median_audio_to_card) figs.push([`${(e.ms_median_audio_to_card / 1000).toFixed(1)} s`, "median from the interpreter finishing to the card"]);
-    $("#e2e").innerHTML = figs.map(([b, s]) => `<div class="fig"><b>${esc(b)}</b><span>${esc(s)}</span></div>`).join("") +
-      `<p class="small" style="grid-column:1/-1">Our six scripted visits, voiced, heard by Parakeet on our Nebius endpoint. Speech recognition word error rate: English ${e.wer && e.wer.en !== null ? pct(e.wer.en) : "n/a"}, Spanish ${e.wer && e.wer.es !== null ? pct(e.wer.es) : "n/a"}. The study we copied the design from (Rabotin et al., JMIR Medical Informatics 2026) found two ambient AI scribes carried 55–60% of planted interpreter errors into the visit note.</p>`;
+    if (audio && e.ms_median_audio_to_card >= 50) figs.push([`${(e.ms_median_audio_to_card / 1000).toFixed(1)} s`, "median from the interpreter finishing to the card"]);
+    const notes = (a.notes_on_faithful_turns || []).length;
+    const how = audio
+      ? `Our six scripted visits, voiced, heard by Parakeet on our Nebius endpoint${e.checker_used ? ", checked with our fine-tuned checker" : ""}. Speech recognition word error rate: English ${e.wer && e.wer.en !== null ? pct(e.wer.en) : "n/a"}, Spanish ${e.wer && e.wer.es !== null ? pct(e.wer.es) : "n/a"}.`
+      : `Our six scripted visits, checked from the script text${e.checker_used ? " with our fine-tuned checker" : " by code alone (our checker wasn’t running)"}. The rules were written while looking at these visits, so this is an optimistic number; the benchmark below is the fair test.`;
+    $("#e2e").innerHTML = figs.map(([b2, s2]) => `<div class="fig"><b>${esc(b2)}</b><span>${esc(s2)}</span></div>`).join("") +
+      `<p class="small" style="grid-column:1/-1">${esc(how)}${notes ? ` ${notes} faithful turn${notes === 1 ? "" : "s"} also got a quiet “check later” note.` : ""} The study we copied the design from (Rabotin et al., JMIR Medical Informatics 2026) found two ambient AI scribes carried 55–60% of planted interpreter errors into the visit note.</p>`;
+  } else {
+    $("#e2e").innerHTML = `<p class="small">End-to-end results haven’t been recorded yet.</p>`;
   }
   const b = d.bench;
   if (b && b.results) {
     let html = "";
     for (const [set, rows] of Object.entries(b.results)) {
-      html += `<div class="bench"><h3>${esc((b.set_names || {})[set] || set)}</h3><div class="tablewrap"><table><thead><tr><th>Method</th><th>Errors caught</th><th>False alarms</th><th>F1</th><th>Time per turn</th><th>Cost per 1,000 turns</th></tr></thead><tbody>`;
+      const mt = (b.meta || {})[set] || {};
+      const size = mt.rows ? `<p class="small">${mt.rows.toLocaleString()} turns${mt.of > mt.rows ? `, a random sample of ${mt.of.toLocaleString()}; every method scored on the same turns` : ""}.</p>` : "";
+      html += `<div class="bench"><h3>${esc((b.set_names || {})[set] || set)}</h3>${size}<div class="tablewrap"><table><thead><tr><th>Method</th><th>Errors caught</th><th>False alarms</th><th>F1</th><th>Time per turn</th><th>Cost per 1,000 turns</th></tr></thead><tbody>`;
       for (const [m, r] of Object.entries(rows)) {
         html += `<tr class="${m === "faithful" ? "ours" : ""}"><td>${esc((b.names || {})[m] || m)}</td>
           <td><span class="bar" style="width:${Math.round(r.recall * 70)}px"></span>${r.caught}/${r.errors} (${pct(r.recall)})</td>
           <td><span class="bar fa" style="width:${Math.round(r.false_alarm_rate * 70)}px"></span>${r.false_alarms} (${(r.false_alarm_rate * 100).toFixed(1)}%)</td>
-          <td>${r.f1.toFixed(2)}</td><td>${r.ms_median !== null ? `${r.ms_median < 10 ? r.ms_median.toFixed(1) : Math.round(r.ms_median)} ms` : "–"}</td><td>$${r.cost_per_1000.toFixed(2)}</td></tr>`;
+          <td>${r.f1.toFixed(2)}</td><td>${r.ms_median !== null ? `${r.ms_median < 10 ? r.ms_median.toFixed(1) : Math.round(r.ms_median)} ms` : "–"}</td><td>$${r.cost_per_1000.toFixed(2)}${r.failed ? ` <span class="small">(${r.failed} not answered, left out)</span>` : ""}</td></tr>`;
       }
       html += `</tbody></table></div></div>`;
     }
-    $("#bench").innerHTML = html + `<p class="small">Thresholds for the fine-tuned checker and the decision rule were chosen on held-out practice visits, never on these test sets. ACES (Amrhein et al., 2023) is licensed CC BY-NC-SA 4.0 and is downloaded at test time, not redistributed.</p>`;
+    const tuned = b.thresholds && b.thresholds.gate;
+    $("#bench").innerHTML = html + `<p class="small">${tuned ? `Every threshold (checker alone, rerank before fine-tuning, and the decision rule) was chosen on ${b.thresholds.dev_rows ? b.thresholds.dev_rows.toLocaleString() + " " : ""}held-out practice turns, never on these test sets, with the same rule for each: the best F1 with false alarms at or under 5%. ` : ""}ACES (Amrhein et al., 2023) is licensed CC BY-NC-SA 4.0 and is downloaded at test time, not redistributed; its unit-conversion items and duplicate rows are left out.</p>`;
+  } else {
+    $("#bench").innerHTML = `<p class="small">The benchmark hasn’t been run yet.</p>`;
   }
   const tr = d.training;
   if (tr && tr.fine_tuned) {

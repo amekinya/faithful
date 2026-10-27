@@ -9,7 +9,7 @@ on:
     paths: [".github/requests/run.json"]
   workflow_dispatch:
     inputs:
-      task: { description: "synth | tts | demo | eval", required: true, default: "eval", type: choice, options: [synth, tts, demo, eval] }
+      task: { description: "synth | synth_all | tts | demo | eval", required: true, default: "eval", type: choice, options: [synth, synth_all, tts, demo, eval] }
       args: { description: "extra arguments", required: false, default: "" }
 permissions:
   contents: write
@@ -21,13 +21,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Which step
+        env:
+          EVENT: ${{ github.event_name }}
+          IN_TASK: ${{ inputs.task }}
+          IN_ARGS: ${{ inputs.args }}
         run: |
-          if [ "${{ github.event_name }}" = "push" ]; then
-            echo "TASK=$(python3 -c "import json;print(json.load(open('.github/requests/run.json'))['task'])")" >> "$GITHUB_ENV"
-            echo "ARGS=$(python3 -c "import json;print(json.load(open('.github/requests/run.json')).get('args',''))")" >> "$GITHUB_ENV"
+          if [ "$EVENT" = "push" ]; then
+            TASK=$(python3 -c "import json;print(json.load(open('.github/requests/run.json'))['task'])")
+            ARGS=$(python3 -c "import json;print(json.load(open('.github/requests/run.json')).get('args',''))")
           else
-            echo "TASK=${{ inputs.task }}" >> "$GITHUB_ENV"; echo "ARGS=${{ inputs.args }}" >> "$GITHUB_ENV"
+            TASK="$IN_TASK"; ARGS="$IN_ARGS"
           fi
+          # Only known steps, and arguments made of flags, words, numbers, commas, dots, slashes and dashes.
+          case "$TASK" in synth|synth_all|tts|demo|eval) ;; *) echo "unknown task: $TASK"; exit 2 ;; esac
+          if ! printf '%s' "$ARGS" | grep -Eq '^[A-Za-z0-9 ,._/=-]*$'; then echo "arguments contain characters that aren't allowed"; exit 2; fi
+          echo "TASK=$TASK" >> "$GITHUB_ENV"; echo "ARGS=$ARGS" >> "$GITHUB_ENV"
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       - run: pip install -r requirements.txt
@@ -65,4 +73,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           for p in eval data app/static/audio; do [ -e "$p" ] && git add "$p"; done
           git commit -m "Pipeline step results: $TASK" || echo "No changes"
-          for i in 1 2 3 4; do git pull --rebase -q && git push && break; sleep 7; done
+          for i in 1 2 3 4; do if git pull --rebase -q && git push; then exit 0; fi; sleep 7; done
+          git log origin/main..HEAD --oneline | grep -q . && { echo "couldn't push the results"; exit 1; } || true

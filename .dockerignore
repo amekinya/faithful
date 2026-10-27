@@ -5,9 +5,9 @@ __pycache__
 .pytest_cache
 .env
 tests
-eval
 train
 docs
 data/cases/*/source
 data/cases/*/pages
 data/cases/_*
+data/synth

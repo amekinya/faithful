@@ -33,6 +33,8 @@ def check_turn(source: str, rendition: str, src_lang: str, ren_lang: str, *, use
             explanation = tasks.explain(source, rendition, src_lang, ren_lang, [f for f in findings if f["severity"] != "low"], calls)
         except LiveModelUnavailable:
             explanation = None
+        if explanation is not None and not explanation.get("quote_ok", False):
+            explanation = None  # the model quoted words that weren't said: show the code's exact words instead
     if explanation is None and decision["level"] != "ok":
         explanation = {"say": code_line(findings), "source_quote": next((f["source"] for f in findings if f["source"]), ""), "quote_ok": True, "by": "code"}
     return {"findings": findings, "p_faithful": None if p_faithful is None else round(p_faithful, 4), "checker": checker,
@@ -42,16 +44,31 @@ def check_turn(source: str, rendition: str, src_lang: str, ren_lang: str, *, use
 
 
 def code_line(findings: list[dict]) -> str:
-    """The card's line when no model is available: the exact words, grouped."""
-    fs = [f for f in findings if f["severity"] != "low"]
+    """The card's line when no model is available: the exact words, in clinical priority order (allergy, 'no', medicine,
+    warning sign, dose limit, left/right, how often, numbers, units, how long), with neighbouring omissions grouped."""
+    order = {k: i for i, k in enumerate(slots.PRIORITY)}
+    fs = sorted((f for f in findings if f["severity"] != "low"), key=lambda f: order.get(f["kind"], 99))
     q = lambda x: f"\u201c{x}\u201d"  # noqa: E731
-    parts = []
-    lost = [q(f["source"]) for f in fs if f["type"] == "omission"]
-    if lost:
-        parts.append("not interpreted: " + ", ".join(dict.fromkeys(lost)))
-    parts += [f"{q(f['source'])} became {q(f['rendition'])}" for f in fs if f["type"] == "substitution" and f["kind"] != "order"]
-    parts += [f["message"][0].lower() + f["message"][1:] for f in fs if f["kind"] == "order"]
-    added = [q(f["rendition"]) for f in fs if f["type"] == "addition"]
-    if added:
-        parts.append("added, not said: " + ", ".join(dict.fromkeys(added)))
-    return ("Re-confirm. " + "; ".join(parts)[:1].upper() + "; ".join(parts)[1:] + ".") if parts else "Re-confirm this turn: the meaning may have changed."
+    parts: list[str] = []
+    lost: list[str] = []
+
+    def flush():
+        if lost:
+            parts.append("not interpreted: " + ", ".join(dict.fromkeys(lost)))
+            lost.clear()
+    for f in fs:
+        if f["type"] == "omission":
+            lost.append(q(f["source"]))
+            continue
+        flush()
+        if f["kind"] == "order":
+            parts.append(f["message"][0].lower() + f["message"][1:])
+        elif f["type"] == "substitution":
+            parts.append(f"{q(f['source'])} became {q(f['rendition'])}")
+        else:
+            parts.append(f"added, not said: {q(f['rendition'])}")
+    flush()
+    if not parts:
+        return "Re-confirm this turn: the meaning may have changed."
+    text = "; ".join(parts)
+    return "Re-confirm. " + text[:1].upper() + text[1:] + "."

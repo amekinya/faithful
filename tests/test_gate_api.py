@@ -11,7 +11,9 @@ def test_gate_rules():
     assert gate.decide(HIGH, None, TH)["level"] == "card"            # code alone when the checker is off
     assert gate.decide([], None, TH)["level"] == "ok"
     assert gate.decide(HIGH, 0.2, TH)["level"] == "card"             # p_error 0.8 >= confirm
-    assert gate.decide(HIGH, 0.9, TH)["level"] == "note"             # checker thinks it's a fine re-wording
+    assert gate.decide(HIGH, 0.9, TH)["level"] == "card"             # an allergy change can't be quieted by the checker
+    NUM = [HIGH[0] | {"kind": "number"}]
+    assert gate.decide(NUM, 0.9, TH)["level"] == "note"              # a number the checker thinks is a fine re-wording
     assert gate.decide([], 0.1, TH)["title"] == "Possible change"    # checker very sure, code found nothing
     assert gate.decide([], 0.5, TH)["level"] == "ok"
 

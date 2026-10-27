@@ -7,8 +7,9 @@ data/thresholds.json by eval/run_eval.py.
   card    'Re-confirm'      a HIGH-severity slot change, and the checker agrees something is off (p_error >= confirm)
   card    'Possible change' the checker is very sure (p_error >= alone) even though code found no word-level change,
                             or a MEDIUM slot change the checker agrees with
-  note    'Check later'     a HIGH slot change the checker thinks is fine (often a legitimate re-wording): listed after the
-                            visit, never interrupts
+  note    'Check later'     a HIGH change in a number, unit or duration the checker thinks is fine (often a re-wording or a
+                            speech-recognition slip): listed after the visit, never interrupts
+  An allergy, 'no', medicine, left/right or dose-limit change is ALWAYS a card; the checker can't quiet it.
   ok      nothing shown
 Without the checker (endpoint stopped), the slot diff alone decides: HIGH -> card, MEDIUM -> note.
 """
@@ -18,6 +19,9 @@ import json
 from pathlib import Path
 
 DEFAULT = {"confirm": 0.35, "alone": 0.85}
+# A changed or missing allergy, 'no', medicine, left/right or dose limit is always a card: the checker can add cards,
+# but it can never quiet one of these.
+NEVER_QUIET = {"allergy", "negation", "drug", "side", "limit"}
 TH_FILE = Path(__file__).resolve().parents[2] / "data" / "thresholds.json"
 
 
@@ -39,6 +43,8 @@ def decide(findings: list[dict], p_faithful: float | None, th: dict | None = Non
             return {"level": "note", "title": "Check later", "why": "code", "p_error": None}
         return {"level": "ok", "title": "", "why": "", "p_error": None}
     p_err = round(1 - p_faithful, 3)
+    if any(f["kind"] in NEVER_QUIET for f in high):
+        return {"level": "card", "title": "Re-confirm", "why": "code" if p_err < th["confirm"] else "code+checker", "p_error": p_err}
     if high and p_err >= th["confirm"]:
         return {"level": "card", "title": "Re-confirm", "why": "code+checker", "p_error": p_err}
     if p_err >= th["alone"]:

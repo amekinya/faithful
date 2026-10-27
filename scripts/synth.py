@@ -4,12 +4,15 @@
    each turn has the speaker's words and a faithful interpretation into the other language.
 2. The same writer adds, per turn, one faithful re-wording (third person, other word order, synonyms) and one
    rendition with a single realistic interpreter error (omission / substitution / addition of critical content).
-3. Code adds more variants with exact labels: changed numbers, swapped units, flipped left/right, dropped 'no',
-   swapped medicines, dropped clauses (errors); digits<->number words, brand<->generic names, 'she says' framing (faithful).
-4. Code keeps a faithful re-wording only if the slot diff finds no critical change, and an error only if it differs
-   from the faithful rendition.
+3. Training visits only: code adds more variants with exact labels: changed numbers, swapped units, flipped left/right,
+   dropped 'no', swapped medicines, dropped clauses (errors); digits<->number words, brand<->generic names, 'she says'
+   framing (faithful). The TEST split gets none of these, because they are built from the same word lists our code
+   checks with, and would flatter the code baseline.
+4. Training visits only: code keeps a faithful re-wording only if the slot diff finds no critical change. Test visits
+   are never filtered by the system under test.
 Writes data/synth/turns_<generator>.jsonl (one row per source/rendition pair with label, split, group).
 Usage: python -m scripts.synth --n 60 --generator deepseek-ai/DeepSeek-V4.1-Flash-1017 --split trainval
+       python -m scripts.synth --rederive     (rebuild the code-made variants of existing visits after a code change; no model calls)
 """
 from __future__ import annotations
 
@@ -27,6 +30,26 @@ from app.engine import slots as S
 ROOT = Path(__file__).resolve().parent.parent
 OUT_DIR = ROOT / "data" / "synth"
 PREFERRED = ["deepseek-ai/DeepSeek-V4.1-Flash-1017", "Qwen/Qwen3-30B-A3B-Instruct-2507", "zai-org/GLM-5.2", "MiniMaxAI/MiniMax-M3"]
+# A tiny language check, independent of the system under test: generators sometimes "interpret" into the same
+# language. Such rows are dropped from both splits.
+_ES = set("el la los las de que y en un una es por con para se su al lo como pero sus le ya este sí porque esta entre cuando muy "
+          "sobre también me hasta hay donde desde todo nos durante todos les ni ese eso esto antes yo otro él tanto esa estos mucho "
+          "nada usted ustedes cada día días horas veces tiene tome dele le está están tengo duele dolor mi bien gracias doctora doctor".split())
+_EN = set("the of and to in is you that it he was for on are as with his they at be this have from or had by but not what all were "
+          "we when your can there an each which she do how their if will up about out then them these so some her would like him into "
+          "has more no could my than been who its now did get may every hours day days take give i'm it's don't doctor thank pain".split())
+
+
+def lang_of(text: str) -> str:
+    w = re.findall(r"[a-záéíóúñü']+", text.lower())
+    e, s = sum(x in _EN for x in w), sum(x in _ES for x in w)
+    return "en" if e > s else "es" if s > e else "?"
+
+
+def in_lang(text: str, lang: str) -> bool:
+    return lang_of(text) in (lang, "?")
+
+
 SCENES = [
     "pediatric fever discharge from the ER (acetaminophen and ibuprofen doses by weight, warning signs)",
     "ear infection, amoxicillin course for a toddler (mL dose, twice a day, 10 days, finish the course)",
@@ -49,7 +72,7 @@ SCENES = [
 VISIT_SCHEMA = {"type": "object", "properties": {"turns": {"type": "array", "items": {"type": "object", "properties": {
     "speaker": {"type": "string", "enum": ["clinician", "patient"]},
     "source": {"type": "string", "description": "what the speaker said, in their own language (clinician English, patient Spanish)"},
-    "rendition": {"type": "string", "description": "a complete, faithful interpretation into the other language"},
+    "rendition": {"type": "string", "description": "a complete, faithful interpretation into the OTHER language: Spanish for a clinician turn, English for a patient turn"},
     "reworded": {"type": "string", "description": "another fully faithful interpretation, worded differently (third person like 'dice que'/'she says', other word order, synonyms); same meaning, nothing dropped or added"},
     "error_type": {"type": "string", "enum": ["omission", "substitution", "addition"]},
     "with_error": {"type": "string", "description": "the interpretation with exactly ONE realistic error of error_type affecting critical content (a dose, number, time, frequency, allergy, side, medicine, a 'no', or a warning); everything else faithful"},
@@ -76,6 +99,7 @@ def write_visit(i: int, gen: ModelSpec, seed: int, split: str = "trainval") -> t
     prompt = (
         f"Write a realistic medical visit through a professional Spanish interpreter: {scene}. The Spanish speaker is {who}. "
         "Use invented names only. Write 12-16 turns alternating mostly between clinician (English) and patient side (Spanish; "
+        "the interpreter turns clinician English INTO SPANISH and patient Spanish INTO ENGLISH; "
         "everyday Mexican or Central American Spanish, sometimes informal). Most turns should carry critical content: doses, "
         "numbers, units, how often, how long, allergies, left/right, medicine names, a 'no'/'don't', warning signs. Include a few short "
         "turns with no critical content. For each turn give: the words as said; a complete faithful interpretation; a second faithful "
@@ -92,10 +116,18 @@ def write_visit(i: int, gen: ModelSpec, seed: int, split: str = "trainval") -> t
         return [], calls
     group = f"{gen.model_id.split('/')[-1]}-v{i:03d}"
     rows = []
-    for k, t in enumerate(out.get("turns", [])):
+    turns = out.get("turns", [])
+    wrong = 0
+    for k, t in enumerate(turns):
         if not t["source"].strip() or not t["rendition"].strip():
             continue
         sl, rl = ("en", "es") if t["speaker"] == "clinician" else ("es", "en")
+        if not in_lang(t["source"], sl) or not in_lang(t["rendition"], rl):
+            wrong += 1
+            continue
+        for key in ("reworded", "with_error"):
+            if t[key].strip() and not in_lang(t[key], rl):
+                t[key] = ""
         base = {"group": group, "turn": k, "scene": scene, "speaker": t["speaker"], "src_lang": sl, "ren_lang": rl, "source": t["source"]}
         rows.append(base | {"rendition": t["rendition"], "label": 0, "variant": "faithful"})
         if t["reworded"].strip() and t["reworded"].strip() != t["rendition"].strip():
@@ -105,8 +137,37 @@ def write_visit(i: int, gen: ModelSpec, seed: int, split: str = "trainval") -> t
                 rows.append(base | {"rendition": t["reworded"], "label": 0, "variant": "reworded"})
         if t["with_error"].strip() and t["with_error"].strip() != t["rendition"].strip():
             rows.append(base | {"rendition": t["with_error"], "label": 1, "variant": f"llm_{t['error_type']}", "note": t["what_changed"]})
-        rows += [base | v for v in code_variants(t["rendition"], rl, rng)]
+        if split != "test":
+            rows += [base | v for v in code_variants(t["rendition"], rl, rng)]
+    if wrong:
+        print(f"  visit {i}: {wrong} of {len(turns)} turns dropped (interpretation in the wrong language)")
+    if turns and wrong > len(turns) * 0.4:
+        print(f"  visit {i} dropped: too many turns in the wrong language")
+        return [], calls
     return rows, calls
+
+
+def rederive() -> None:
+    """Re-make the code variants from the visits already written (deterministic per turn), without new model calls."""
+    import zlib
+    for split in ("trainval", "test"):
+        p = OUT_DIR / f"turns_{split}.jsonl"
+        if not p.exists():
+            continue
+        old = [json.loads(x) for x in p.read_text().splitlines() if x.strip()]
+        keep = [r for r in old if not r["variant"].startswith("code_") and in_lang(r["source"], r["src_lang"]) and in_lang(r["rendition"], r["ren_lang"])]
+        rows = []
+        for r in keep:
+            rows.append(r)
+            if split != "test" and r["variant"] == "faithful":
+                rng = random.Random(zlib.crc32(f"{r['group']}#{r['turn']}".encode()))
+                base = {k: r[k] for k in r if k not in ("rendition", "label", "variant", "note")}
+                rows += [base | v for v in code_variants(r["rendition"], r["ren_lang"], rng)]
+        p.write_text("\n".join(json.dumps(r, ensure_ascii=False) for r in rows) + "\n")
+        by: dict[str, int] = {}
+        for r in rows:
+            by[r["variant"]] = by.get(r["variant"], 0) + 1
+        print(f"{split}: {len(old)} -> {len(rows)} pairs", by)
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -118,7 +179,14 @@ UNIT_SWAP = {"en": [("milliliters", "milligrams"), ("mL", "mg"), ("ml", "mg"), (
                     ("days", "weeks"), ("hours", "days"), ("pounds", "kilos")],
              "es": [("mililitros", "miligramos"), ("mL", "mg"), ("ml", "mg"), ("cucharadita", "cucharada"), ("pastillas", "cucharaditas"),
                     ("pastilla", "cucharadita"), ("días", "semanas"), ("horas", "días"), ("libras", "kilos")]}
-SIDE_SWAP = {"en": [("left", "right"), ("right", "left")], "es": [("izquierdo", "derecho"), ("izquierda", "derecha"), ("derecho", "izquierdo"), ("derecha", "izquierda")]}
+# Sides are swapped only where they name a side (a body part, "the left one", "on the right"), never the verb "left"
+# ("she left the clinic") or "right" meaning correct; Spanish never in "derecho a" (a right to).
+SIDE_PATTERNS = {
+    "en": [r"\b(left|right)(?=\s+(?:\w+\s+)?(?:side|arm|leg|ear|eye|hand|foot|knee|hip|shoulder|kidney|lung|breast|ankle|wrist|elbow|"
+           r"finger|toe|thumb|thigh|flank|cheek|heel|calf|one|lower|upper)\b)", r"(?<=\b(?:on|to) the )(left|right)\b"],
+    "es": [r"\b(izquierd[oa]|derech[oa])\b(?! a (?:la|las|los|el|un|una|recibir|tener)\b)"],
+}
+SIDE_OTHER = {"left": "right", "right": "left", "izquierdo": "derecho", "izquierda": "derecha", "derecho": "izquierdo", "derecha": "izquierda"}
 NEG_DROP = {"en": [(r"\bdo not\b", "do"), (r"\bdon't\b", "do"), (r"\bdoes not\b", "does"), (r"\bnot\b ", ""), (r"\bnever\b", "always"), (r"\bno more than\b", "")],
             "es": [(r"\bno\s+(?=\w)", ""), (r"\bnunca\b", "siempre"), (r"\bno más de\b", "")]}
 DRUG_SWAP = [("ibuprofen", "acetaminophen"), ("acetaminophen", "ibuprofen"), ("Tylenol", "Motrin"), ("Motrin", "Tylenol"), ("penicillin", "amoxicillin"),
@@ -145,19 +213,25 @@ def code_variants(r: str, lang: str, rng: random.Random) -> list[dict]:
             oks.append(("code_digits_to_words", r[:m.start()] + NUM_WORDS[lang][n] + r[m.end():]))
     else:
         for n, w in NUM_WORDS[lang].items():
-            v = _sub_once(r, w, NUM_WORDS[lang][rng.choice([x for x in NUM_WORDS[lang] if x != n])])
-            if v:
-                errs.append(("code_number", v))
-                oks.append(("code_words_to_digits", _sub_once(r, w, str(n)) or r))
-                break
+            # "one"/"una" are often an article or pronoun ("una pregunta", "the left one"): only a quantity before a noun it counts
+            pat = rf"(?<![\w]){re.escape(w)}(?![\w])" + (rf"(?=\s+(?:{'|'.join(sorted(S.NOUNS, key=len, reverse=True))})\b)" if n == 1 else "")
+            if not re.search(pat, r):
+                continue
+            other = NUM_WORDS[lang][rng.choice([x for x in NUM_WORDS[lang] if x != n])]
+            errs.append(("code_number", re.sub(pat, other, r, count=1)))
+            oks.append(("code_words_to_digits", re.sub(pat, str(n), r, count=1)))
+            break
     for a, b in UNIT_SWAP[lang]:
         v = _sub_once(r, a, b)
         if v:
             errs.append(("code_unit", v)); break
-    for a, b in SIDE_SWAP[lang]:
-        v = _sub_once(r, a, b)
-        if v:
-            errs.append(("code_side", v)); break
+    for pat in SIDE_PATTERNS[lang]:
+        m = re.search(pat, r, flags=re.I)
+        if m:
+            w = m.group(1)
+            o = SIDE_OTHER[w.lower()]
+            o = o.capitalize() if w[0].isupper() else o
+            errs.append(("code_side", r[:m.start(1)] + o + r[m.end(1):])); break
     for a, b in NEG_DROP[lang]:
         v = _sub_once(r, a, b, regex=True)
         if v:
@@ -195,7 +269,11 @@ def main() -> None:
     ap.add_argument("--seed", type=int, default=11)
     ap.add_argument("--generator", default=None)
     ap.add_argument("--split", default="trainval", choices=["trainval", "test"])
+    ap.add_argument("--rederive", action="store_true")
     a = ap.parse_args()
+    if a.rederive:
+        rederive()
+        return
     gen = pick_generator(a.generator)
     print("generator:", gen.model_id)
     OUT_DIR.mkdir(parents=True, exist_ok=True)

@@ -79,7 +79,9 @@ def main() -> None:
                           "heard": heard, "audio": audio.get(key), "check": res, "check_on_script": {"decision": res_text["decision"], "findings": res_text["findings"]},
                           "planted": t.get("error")})
             e2e_rows.append({"turn": key, "error": "error" in t, "speaker": t["speaker"], "flag": res["decision"]["level"] == "card",
-                             "flag_script": res_text["decision"]["level"] == "card", "ms": res["ms"]["to_decision"] + (heard["asr_ms"] or 0)})
+                             "note": res["decision"]["level"] == "note", "flag_script": res_text["decision"]["level"] == "card",
+                             "note_script": res_text["decision"]["level"] == "note", "asr": heard["asr"],
+                             "ms": res["ms"]["total"] + (heard["asr_ms"] or 0)})  # includes writing the card's line
             print(key, res["decision"]["level"], res["decision"]["title"], "| planted:", (t.get("error") or {}).get("type", "-"))
         review = []
         if not a.no_review:
@@ -98,13 +100,18 @@ def main() -> None:
         return {"caught": tp, "errors": n_err, "false_alarms": fp, "faithful_turns": len(e2e_rows) - n_err,
                 "patient_speech_caught": f"{pat}/{sum(r['error'] and r['speaker'] == 'patient' for r in e2e_rows)}",
                 "missed": [r["turn"] for r in e2e_rows if r["error"] and not r[key]],
-                "false_alarm_turns": [r["turn"] for r in e2e_rows if not r["error"] and r[key]]}
+                "false_alarm_turns": [r["turn"] for r in e2e_rows if not r["error"] and r[key]],
+                "notes_on_faithful_turns": [r["turn"] for r in e2e_rows if not r["error"] and r[key.replace("flag", "note")]]}
     ms = sorted(r["ms"] for r in e2e_rows)
     by_model = {}
     for c in calls:
         b = by_model.setdefault(c.role, {"model": c.model_id, "calls": 0, "seconds": 0.0, "cost_usd": 0.0})
         b["calls"] += 1; b["seconds"] = round(b["seconds"] + c.seconds, 2); b["cost_usd"] = round(b["cost_usd"] + c.cost_usd, 5)
-    e2e = {"from_audio": summ("flag"), "from_script_text": summ("flag_script"),
+    asr_all = bool(e2e_rows) and all(r["asr"] for r in e2e_rows)
+    if not asr_all:  # never label script-text results as 'from audio'
+        ms = []
+    e2e = {"asr_used": asr_all, "from_audio": summ("flag") if asr_all else None, "from_script_text": summ("flag_script"),
+           "checker_used": any(c.role == "checker" for c in calls),
            "wer": {k: round(e / n, 3) if n else None for k, (e, n) in werr.items()},
            "ms_median_audio_to_card": ms[len(ms) // 2] if ms else None, "ms_p95": ms[int(0.95 * (len(ms) - 1))] if ms else None,
            "by_model": by_model, "cost_usd": round(sum(c.cost_usd for c in calls), 4)}

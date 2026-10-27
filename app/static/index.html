@@ -28,16 +28,16 @@
 <main>
   <section class="intro" aria-labelledby="h1">
     <h1 id="h1">A second ear for the interpreter.</h1>
-    <p class="lede">When a mother says <span lang="es">“es alérgico a la penicilina”</span> and the English never mentions it, nobody in the room can tell. Faithful listens to both sides of an interpreted visit and, about a second after each turn, asks the interpreter to re-confirm any dose, number, allergy, left or right, medicine, warning sign or “no” that didn’t make it across.</p>
+    <p class="lede">When a mother says <span lang="es">“es alérgico a la penicilina”</span> and the English never mentions it, nobody in the room can tell. Faithful listens to both sides of an interpreted visit and, right after each turn, asks the interpreter to re-confirm any dose, number, allergy, left or right, medicine, warning sign or “no” that didn’t make it across.</p>
     <p class="note">Flags go to the interpreter and the clinician only. Faithful never speaks to the patient, never scores interpreters, and stores nothing.</p>
   </section>
 
   <section id="replay" class="replay" aria-labelledby="replay-h">
     <div class="replay-head">
       <h2 id="replay-h">Replay a visit</h2>
-      <p class="sub">Six scripted visits with 20 planted interpreter errors. Voices are synthetic; the words were heard by NVIDIA speech recognition on our Nebius GPU, then checked.</p>
+      <p class="sub">Six scripted visits with 20 planted interpreter errors. Voices are synthetic. Each turn shows what was heard and the check that ran on it.</p>
     </div>
-    <div class="visits" role="tablist" aria-label="Visits" id="visits"></div>
+    <div class="visits" role="group" aria-label="Visits" id="visits"></div>
 
     <div class="transport" id="transport">
       <button class="primary" id="play" type="button">Play visit</button>
@@ -46,6 +46,7 @@
       <label class="toggle"><input type="checkbox" id="sound" checked> Sound</label>
       <label class="toggle"><input type="checkbox" id="planted"> Show planted errors</label>
       <span class="status" id="status" aria-live="polite"></span>
+      <span class="sr-only" id="announce" aria-live="polite"></span>
     </div>
 
     <div class="stage" id="stage">

@@ -29,6 +29,20 @@ def passage(rendition: str, ren_lang: str) -> str:
     return f"[{ren_lang}] {rendition}"
 
 
+def _scores(r, n: int, name: str) -> list[float]:
+    """Validate the endpoint's reply: one probability per pair, and the fine-tuned model actually answered."""
+    try:
+        d = r.json()
+        sc = [float(x) for x in d["scores"]]
+    except Exception as e:  # noqa: BLE001  (a cold-start HTML page, a proxy error, another server's format)
+        raise LiveModelUnavailable(f"unexpected reply from the endpoint: {r.text[:120]!r}") from e
+    if len(sc) != n or not all(0.0 <= x <= 1.0 for x in sc):
+        raise LiveModelUnavailable(f"endpoint returned {len(sc)} scores for {n} pairs")
+    if name != "base-reranker" and d.get("fine_tuned") is False:
+        raise LiveModelUnavailable(f"endpoint answered with the base model, not {name}")
+    return sc
+
+
 def score(pairs: list[tuple[str, str]], calls: list[CallRecord] | None = None, model: str | None = None, timeout: float = 30) -> list[float]:
     """-> probability each rendition is faithful (1 = faithful)."""
     if not available():
@@ -42,7 +56,7 @@ def score(pairs: list[tuple[str, str]], calls: list[CallRecord] | None = None, m
                            json={"model": model or settings.checker_name, "pairs": [list(p) for p in pairs[i:i + 2048]]})
                 if r.status_code != 200:
                     raise LiveModelUnavailable(f"checker HTTP {r.status_code}: {r.text[:200]}")
-                out += r.json()["scores"]
+                out += _scores(r, len(pairs[i:i + 2048]), model or settings.checker_name)
     except httpx.HTTPError as e:
         raise LiveModelUnavailable(f"checker unreachable: {e}") from e
     if calls is not None:
@@ -62,7 +76,11 @@ def asr(audio: bytes, calls: list[CallRecord] | None = None, timeout: float = 60
         raise LiveModelUnavailable(f"speech recognition unreachable: {e}") from e
     if r.status_code != 200:
         raise LiveModelUnavailable(f"asr HTTP {r.status_code}: {r.text[:200]}")
-    d = r.json()
+    try:
+        d = r.json()
+        d["text"] = str(d["text"])
+    except Exception as e:  # noqa: BLE001
+        raise LiveModelUnavailable(f"unexpected reply from the endpoint: {r.text[:120]!r}") from e
     if calls is not None:
         calls.append(CallRecord("asr", d.get("model", "nvidia/parakeet-tdt-0.6b-v3") + " (Nebius endpoint)", time.perf_counter() - t0, 0, 0, 0, 0.0, "Speech to text"))
     return d

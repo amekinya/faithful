@@ -1,6 +1,6 @@
 # Faithful
 
-**A second ear for medical interpreters.** Faithful listens to both sides of an interpreted visit and, about a second after each turn, asks the interpreter to re-confirm any dose, number, allergy, left or right, medicine, warning sign or “no” that didn’t make it across the language gap. Spanish and English.
+**A second ear for medical interpreters.** Faithful listens to both sides of an interpreted visit and, right after each turn, asks the interpreter to re-confirm any dose, number, allergy, left or right, medicine, warning sign or “no” that didn’t make it across the language gap. Spanish and English.
 
 > A mother says *“ya le di dos dosis de Tylenol hoy… y es alérgico a la penicilina.”* The interpreter says *“Yes, I gave him Tylenol today.”* The doctor never hears about the two earlier doses or the penicillin allergy, and nobody in the room can tell. Faithful puts a red **Re-confirm** card in front of the interpreter before the doctor writes the prescription.
 
@@ -33,7 +33,7 @@ Live demo: _link after deploy_ · Built for the Nebius × NVIDIA Global AI Hacka
 
 Steps 2 and 3 cover each other's blind spots:
 - **Code** sees exact words. It knows that *cada seis horas* is "every 6 hours" and that *cada ocho horas* isn't.
-- **The checker** sees meaning. It catches “not this week” becoming *“esta semana sí puede”*, where both sentences still contain a “no”, and swapped doses where the same numbers appear in a different order.
+- **The checker** is trained on meaning. It's there for changes words alone can't see, like “not this week” becoming *“esta semana sí puede”* (both sentences still contain a “no”) or a dose moved to a different medicine. How often it actually catches them is in the results below.
 - **The rule** stops either one from crying wolf. If code sees a big change but the checker is confident the meaning held (often a speech-recognition slip or a legitimate re-wording), the turn becomes a quiet note for later instead of an interruption.
 
 ## Results
@@ -51,12 +51,12 @@ The visits were voiced with Kokoro, heard by Parakeet on our Nebius endpoint, an
 ### Benchmark
 | Test set | What it is |
 |---|---|
-| Held-out synthetic visits | Written by a different model family than the training visits. Labels are exact by construction |
+| Held-out synthetic visits | Written by a different model family, with a different seed, than the training visits. Each turn is labeled by how it was written (a planted error or a faithful rewording), and test turns are never filtered by our own code |
 | ACES English↔Spanish | A human-designed translation challenge set: numbers, units, dates, antonyms, omissions, additions, names. It is out-of-distribution, never seen in training, and downloaded at test time (CC BY-NC-SA 4.0) |
 | Our 6 scripted visits | The text, without speech recognition. The code rules were written while looking at these, so the code-only score here is optimistic |
 
 ### Fine-tuning on Nebius
-We report the base model against the fine-tuned model on held-out visits (AUC, and F1 at the threshold chosen on dev). The training run's log and metrics are in `eval/training.json`.
+We report the base model against the fine-tuned model on held-out visits (AUC, and F1 at the threshold chosen on dev). The training job writes these to `metrics.json` next to the weights; a copy is published in `eval/training.json`.
 
 ## Honest limits
 
