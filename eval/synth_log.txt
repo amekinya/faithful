@@ -69,3 +69,13 @@ generator: Qwen/Qwen3-30B-A3B-Instruct-2507
 {'faithful': 9, 'reworded': 9, 'llm_omission': 5, 'llm_addition': 2, 'llm_substitution': 1}
 50 calls, $0.534
 4516 pairs: {'dev/error': 343, 'dev/faithful': 293, 'test/error': 8, 'test/faithful': 18, 'train/error': 2133, 'train/faithful': 1721}
+generator: zai-org/GLM-5.2
+  visit 1: 7 of 14 turns dropped (interpretation in the wrong language)
+  visit 14: 1 of 1 turns dropped (interpretation in the wrong language)
+  visit 14 dropped: too many turns in the wrong language
+  visit 10: 2 of 16 turns dropped (interpretation in the wrong language)
+keeping 432 rows from other writers
+23 visits, 1449 pairs (461 with errors) -> /home/runner/work/faithful/faithful/data/synth/turns_test.jsonl
+{'faithful': 497, 'reworded': 491, 'llm_substitution': 159, 'llm_omission': 213, 'llm_addition': 89}
+24 calls, $0.087
+5939 pairs: {'dev/error': 343, 'dev/faithful': 293, 'test/error': 461, 'test/faithful': 988, 'train/error': 2133, 'train/faithful': 1721}
