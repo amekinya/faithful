@@ -60,13 +60,15 @@ VISIT_SCHEMA = {"type": "object", "properties": {"turns": {"type": "array", "ite
 
 def pick_generator(name: str | None) -> ModelSpec:
     ids = {m.id for m in _get_client().models.list().data}
+    if name and name not in ids:  # never fall back silently: train and test writers must differ
+        raise SystemExit(f"Generator {name} isn't available; have: {sorted(ids)[:40]}")
     for mid in ([name] if name else []) + PREFERRED:
         if mid in ids:
             return ModelSpec("generator", mid, 0.5, 1.5)
     raise SystemExit(f"No generator model available; have: {sorted(ids)[:40]}")
 
 
-def write_visit(i: int, gen: ModelSpec, seed: int) -> tuple[list[dict], list[CallRecord]]:
+def write_visit(i: int, gen: ModelSpec, seed: int, split: str = "trainval") -> tuple[list[dict], list[CallRecord]]:
     rng = random.Random(seed * 1000 + i)
     scene = SCENES[i % len(SCENES)]
     who = rng.choice(["a mother speaking for her child", "an adult patient", "an older patient", "a father speaking for his child"])
@@ -97,7 +99,9 @@ def write_visit(i: int, gen: ModelSpec, seed: int) -> tuple[list[dict], list[Cal
         base = {"group": group, "turn": k, "scene": scene, "speaker": t["speaker"], "src_lang": sl, "ren_lang": rl, "source": t["source"]}
         rows.append(base | {"rendition": t["rendition"], "label": 0, "variant": "faithful"})
         if t["reworded"].strip() and t["reworded"].strip() != t["rendition"].strip():
-            if not [f for f in S.diff(t["source"], t["reworded"], sl, rl) if f.severity == "high"]:
+            # Training data drops re-wordings the slot diff disagrees with (cleaner labels). The TEST split keeps them all,
+            # so the code baseline isn't scored on data it filtered.
+            if split == "test" or not [f for f in S.diff(t["source"], t["reworded"], sl, rl) if f.severity == "high"]:
                 rows.append(base | {"rendition": t["reworded"], "label": 0, "variant": "reworded"})
         if t["with_error"].strip() and t["with_error"].strip() != t["rendition"].strip():
             rows.append(base | {"rendition": t["with_error"], "label": 1, "variant": f"llm_{t['error_type']}", "note": t["what_changed"]})
@@ -132,7 +136,7 @@ def _sub_once(text: str, a: str, b: str, regex: bool = False) -> str | None:
 def code_variants(r: str, lang: str, rng: random.Random) -> list[dict]:
     errs, oks = [], []
     # change a number (digits or words)
-    m = re.search(r"(?<![\w.])(\d+)(?![\w])", r)
+    m = re.search(r"(?<![\w.,])(\d+)(?![\w.,]\d|[\w])", r)  # a whole number, not part of 2.5 or 1,000
     if m:
         n = int(m.group(1))
         new = rng.choice([x for x in {n + 1, n * 2, max(1, n - 1), n + 2, n * 10} if x != n])
@@ -197,7 +201,7 @@ def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     rows, calls = [], []
     with ThreadPoolExecutor(8) as ex:
-        for rs, c in ex.map(lambda i: write_visit(i, gen, a.seed), range(a.n)):
+        for rs, c in ex.map(lambda i: write_visit(i, gen, a.seed, a.split), range(a.n)):
             rows += rs
             calls += c
     groups = sorted({r["group"] for r in rows})

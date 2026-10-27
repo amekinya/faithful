@@ -49,6 +49,10 @@ jobs:
           echo "step: $TASK $ARGS"
           case "$TASK" in
             synth) python -m scripts.synth $ARGS 2>&1 | tee -a eval/synth_log.txt; python -m scripts.build_pairs | tee -a eval/synth_log.txt ;;
+            synth_all)  # training visits by one writer, test visits by a different writer and seed, then pairs, in one commit
+              python -m scripts.synth --n 64 --split trainval --generator deepseek-ai/DeepSeek-V4.1-Flash-1017 2>&1 | tee -a eval/synth_log.txt
+              python -m scripts.synth --n 24 --split test --seed 101 --generator Qwen/Qwen3-30B-A3B-Instruct-2507 2>&1 | tee -a eval/synth_log.txt
+              python -m scripts.build_pairs | tee -a eval/synth_log.txt ;;
             tts)   python -m scripts.tts $ARGS 2>&1 | tee eval/tts_log.txt ;;
             demo)  python -m scripts.build_demo $ARGS 2>&1 | tee eval/demo_log.txt ;;
             eval)  python -m eval.run_eval $ARGS 2>&1 | tee eval/eval_log.txt; cat eval/RESULTS.md >> "$GITHUB_STEP_SUMMARY" ;;
