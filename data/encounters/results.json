@@ -23,7 +23,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V1-01-src.mp3",
+      "ren": "audio/V1-01-ren.mp3",
+      "src_seconds": 3.45,
+      "ren_seconds": 3.3,
+      "src_voice": "af_heart",
+      "ren_voice": "em_santa"
+     },
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -36,10 +43,10 @@
       },
       "explanation": null,
       "ms": {
-       "code": 8.2,
+       "code": 8.9,
        "checker": 0.0,
-       "to_decision": 8.2,
-       "total": 8.2
+       "to_decision": 8.9,
+       "total": 8.9
       }
      },
      "check_on_script": {
@@ -69,7 +76,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V1-02-src.mp3",
+      "ren": "audio/V1-02-ren.mp3",
+      "src_seconds": 4.88,
+      "ren_seconds": 5.88,
+      "src_voice": "ef_dora",
+      "ren_voice": "am_echo"
+     },
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -82,10 +96,10 @@
       },
       "explanation": null,
       "ms": {
-       "code": 2.1,
+       "code": 1.0,
        "checker": 0.0,
-       "to_decision": 2.1,
-       "total": 2.1
+       "to_decision": 1.0,
+       "total": 1.0
       }
      },
      "check_on_script": {
@@ -115,7 +129,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V1-03-src.mp3",
+      "ren": "audio/V1-03-ren.mp3",
+      "src_seconds": 2.27,
+      "ren_seconds": 2.33,
+      "src_voice": "af_heart",
+      "ren_voice": "em_santa"
+     },
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -128,10 +149,10 @@
       },
       "explanation": null,
       "ms": {
-       "code": 0.3,
+       "code": 0.4,
        "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
+       "to_decision": 0.4,
+       "total": 0.4
       }
      },
      "check_on_script": {
@@ -161,16 +182,31 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V1-04-src.mp3",
+      "ren": "audio/V1-04-ren.mp3",
+      "src_seconds": 5.42,
+      "ren_seconds": 2.85,
+      "src_voice": "ef_dora",
+      "ren_voice": "am_echo"
+     },
      "check": {
       "findings": [
        {
         "type": "omission",
-        "kind": "number",
+        "kind": "allergy",
         "severity": "high",
-        "source": "diez",
+        "source": "alérgico",
         "rendition": "",
-        "message": "Not in the interpretation: number “diez”"
+        "message": "Not in the interpretation: allergy “alérgico”"
+       },
+       {
+        "type": "omission",
+        "kind": "drug",
+        "severity": "high",
+        "source": "penicilina",
+        "rendition": "",
+        "message": "Not in the interpretation: medicine “penicilina”"
        },
        {
         "type": "omission",
@@ -182,27 +218,11 @@
        },
        {
         "type": "omission",
-        "kind": "unit",
+        "kind": "number",
         "severity": "high",
-        "source": "dosis",
+        "source": "diez",
         "rendition": "",
-        "message": "Not in the interpretation: unit “dosis”"
-       },
-       {
-        "type": "omission",
-        "kind": "allergy",
-        "severity": "high",
-        "source": "alergico",
-        "rendition": "",
-        "message": "Not in the interpretation: allergy “alergico”"
-       },
-       {
-        "type": "omission",
-        "kind": "drug",
-        "severity": "high",
-        "source": "penicilina",
-        "rendition": "",
-        "message": "Not in the interpretation: medicine “penicilina”"
+        "message": "Not in the interpretation: number “diez”"
        }
       ],
       "p_faithful": null,
@@ -214,16 +234,16 @@
        "p_error": null
       },
       "explanation": {
-       "say": "Re-confirm: Not in the interpretation: number “diez”",
-       "source_quote": "diez",
+       "say": "Re-confirm. Not interpreted: “alérgico”, “penicilina”, “dos”, “diez”.",
+       "source_quote": "alérgico",
        "quote_ok": true,
        "by": "code"
       },
       "ms": {
-       "code": 0.6,
+       "code": 0.9,
        "checker": 0.0,
-       "to_decision": 0.6,
-       "total": 0.6
+       "to_decision": 0.9,
+       "total": 0.9
       }
      },
      "check_on_script": {
@@ -236,11 +256,19 @@
       "findings": [
        {
         "type": "omission",
-        "kind": "number",
+        "kind": "allergy",
         "severity": "high",
-        "source": "diez",
+        "source": "alérgico",
         "rendition": "",
-        "message": "Not in the interpretation: number “diez”"
+        "message": "Not in the interpretation: allergy “alérgico”"
+       },
+       {
+        "type": "omission",
+        "kind": "drug",
+        "severity": "high",
+        "source": "penicilina",
+        "rendition": "",
+        "message": "Not in the interpretation: medicine “penicilina”"
        },
        {
         "type": "omission",
@@ -252,27 +280,11 @@
        },
        {
         "type": "omission",
-        "kind": "unit",
+        "kind": "number",
         "severity": "high",
-        "source": "dosis",
+        "source": "diez",
         "rendition": "",
-        "message": "Not in the interpretation: unit “dosis”"
-       },
-       {
-        "type": "omission",
-        "kind": "allergy",
-        "severity": "high",
-        "source": "alergico",
-        "rendition": "",
-        "message": "Not in the interpretation: allergy “alergico”"
-       },
-       {
-        "type": "omission",
-        "kind": "drug",
-        "severity": "high",
-        "source": "penicilina",
-        "rendition": "",
-        "message": "Not in the interpretation: medicine “penicilina”"
+        "message": "Not in the interpretation: number “diez”"
        }
       ]
      },
@@ -297,7 +309,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V1-05-src.mp3",
+      "ren": "audio/V1-05-ren.mp3",
+      "src_seconds": 4.35,
+      "ren_seconds": 4.8,
+      "src_voice": "af_heart",
+      "ren_voice": "em_santa"
+     },
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -310,10 +329,10 @@
       },
       "explanation": null,
       "ms": {
-       "code": 0.5,
+       "code": 0.7,
        "checker": 0.0,
-       "to_decision": 0.5,
-       "total": 0.5
+       "to_decision": 0.7,
+       "total": 0.7
       }
      },
      "check_on_script": {
@@ -343,16 +362,23 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V1-06-src.mp3",
+      "ren": "audio/V1-06-ren.mp3",
+      "src_seconds": 3.23,
+      "ren_seconds": 3.55,
+      "src_voice": "ef_dora",
+      "ren_voice": "am_echo"
+     },
      "check": {
       "findings": [
        {
         "type": "substitution",
         "kind": "side",
         "severity": "high",
-        "source": "oido derecho",
+        "source": "derecho",
         "rendition": "left ear",
-        "message": "Changed left/right: “oido derecho” became “left ear”"
+        "message": "Changed left/right: “derecho” became “left ear”"
        }
       ],
       "p_faithful": null,
@@ -364,16 +390,16 @@
        "p_error": null
       },
       "explanation": {
-       "say": "Re-confirm: Changed left/right: “oido derecho” became “left ear”",
-       "source_quote": "oido derecho",
+       "say": "Re-confirm. “derecho” became “left ear”.",
+       "source_quote": "derecho",
        "quote_ok": true,
        "by": "code"
       },
       "ms": {
-       "code": 0.4,
+       "code": 0.7,
        "checker": 0.0,
-       "to_decision": 0.5,
-       "total": 0.5
+       "to_decision": 0.7,
+       "total": 0.7
       }
      },
      "check_on_script": {
@@ -388,9 +414,9 @@
         "type": "substitution",
         "kind": "side",
         "severity": "high",
-        "source": "oido derecho",
+        "source": "derecho",
         "rendition": "left ear",
-        "message": "Changed left/right: “oido derecho” became “left ear”"
+        "message": "Changed left/right: “derecho” became “left ear”"
        }
       ]
      },
@@ -415,72 +441,40 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V1-07-src.mp3",
+      "ren": "audio/V1-07-ren.mp3",
+      "src_seconds": 6.45,
+      "ren_seconds": 6.28,
+      "src_voice": "af_heart",
+      "ren_voice": "em_santa"
+     },
      "check": {
-      "findings": [
-       {
-        "type": "omission",
-        "kind": "frequency",
-        "severity": "medium",
-        "source": "once a day",
-        "rendition": "",
-        "message": "Not in the interpretation: how often “once a day”"
-       },
-       {
-        "type": "addition",
-        "kind": "frequency",
-        "severity": "medium",
-        "source": "",
-        "rendition": "al dia",
-        "message": "Added in the interpretation: how often “al dia”"
-       }
-      ],
+      "findings": [],
       "p_faithful": null,
       "checker": "off",
       "decision": {
-       "level": "note",
-       "title": "Check later",
-       "why": "code",
+       "level": "ok",
+       "title": "",
+       "why": "",
        "p_error": null
       },
-      "explanation": {
-       "say": "Re-confirm: Not in the interpretation: how often “once a day”",
-       "source_quote": "once a day",
-       "quote_ok": true,
-       "by": "code"
-      },
+      "explanation": null,
       "ms": {
-       "code": 0.5,
+       "code": 1.1,
        "checker": 0.0,
-       "to_decision": 0.5,
-       "total": 0.5
+       "to_decision": 1.1,
+       "total": 1.1
       }
      },
      "check_on_script": {
       "decision": {
-       "level": "note",
-       "title": "Check later",
-       "why": "code",
+       "level": "ok",
+       "title": "",
+       "why": "",
        "p_error": null
       },
-      "findings": [
-       {
-        "type": "omission",
-        "kind": "frequency",
-        "severity": "medium",
-        "source": "once a day",
-        "rendition": "",
-        "message": "Not in the interpretation: how often “once a day”"
-       },
-       {
-        "type": "addition",
-        "kind": "frequency",
-        "severity": "medium",
-        "source": "",
-        "rendition": "al dia",
-        "message": "Added in the interpretation: how often “al dia”"
-       }
-      ]
+      "findings": []
      },
      "planted": null
     },
@@ -500,16 +494,23 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V1-08-src.mp3",
+      "ren": "audio/V1-08-ren.mp3",
+      "src_seconds": 8.4,
+      "ren_seconds": 4.3,
+      "src_voice": "af_heart",
+      "ren_voice": "em_santa"
+     },
      "check": {
       "findings": [
        {
         "type": "omission",
-        "kind": "number",
+        "kind": "limit",
         "severity": "high",
-        "source": "24",
+        "source": "no more than",
         "rendition": "",
-        "message": "Not in the interpretation: number “24”"
+        "message": "Not in the interpretation: dose limit “no more than”"
        },
        {
         "type": "omission",
@@ -521,35 +522,11 @@
        },
        {
         "type": "omission",
-        "kind": "unit",
-        "severity": "high",
-        "source": "doses",
-        "rendition": "",
-        "message": "Not in the interpretation: unit “doses”"
-       },
-       {
-        "type": "omission",
-        "kind": "negation",
-        "severity": "high",
-        "source": "no",
-        "rendition": "",
-        "message": "Not in the interpretation: a 'no' / 'not' “no”"
-       },
-       {
-        "type": "omission",
-        "kind": "limit",
-        "severity": "high",
-        "source": "no more than",
-        "rendition": "",
-        "message": "Not in the interpretation: dose limit “no more than”"
-       },
-       {
-        "type": "omission",
         "kind": "duration",
         "severity": "high",
-        "source": "6 hours",
+        "source": "24 hours",
         "rendition": "",
-        "message": "Not in the interpretation: how long “6 hours”"
+        "message": "Not in the interpretation: how long “24 hours”"
        }
       ],
       "p_faithful": null,
@@ -561,16 +538,16 @@
        "p_error": null
       },
       "explanation": {
-       "say": "Re-confirm: Not in the interpretation: number “24”",
-       "source_quote": "24",
+       "say": "Re-confirm. Not interpreted: “no more than”, “4”, “24 hours”.",
+       "source_quote": "no more than",
        "quote_ok": true,
        "by": "code"
       },
       "ms": {
-       "code": 0.7,
+       "code": 1.1,
        "checker": 0.0,
-       "to_decision": 0.7,
-       "total": 0.7
+       "to_decision": 1.1,
+       "total": 1.2
       }
      },
      "check_on_script": {
@@ -583,11 +560,11 @@
       "findings": [
        {
         "type": "omission",
-        "kind": "number",
+        "kind": "limit",
         "severity": "high",
-        "source": "24",
+        "source": "no more than",
         "rendition": "",
-        "message": "Not in the interpretation: number “24”"
+        "message": "Not in the interpretation: dose limit “no more than”"
        },
        {
         "type": "omission",
@@ -599,35 +576,11 @@
        },
        {
         "type": "omission",
-        "kind": "unit",
-        "severity": "high",
-        "source": "doses",
-        "rendition": "",
-        "message": "Not in the interpretation: unit “doses”"
-       },
-       {
-        "type": "omission",
-        "kind": "negation",
-        "severity": "high",
-        "source": "no",
-        "rendition": "",
-        "message": "Not in the interpretation: a 'no' / 'not' “no”"
-       },
-       {
-        "type": "omission",
-        "kind": "limit",
-        "severity": "high",
-        "source": "no more than",
-        "rendition": "",
-        "message": "Not in the interpretation: dose limit “no more than”"
-       },
-       {
-        "type": "omission",
         "kind": "duration",
         "severity": "high",
-        "source": "6 hours",
+        "source": "24 hours",
         "rendition": "",
-        "message": "Not in the interpretation: how long “6 hours”"
+        "message": "Not in the interpretation: how long “24 hours”"
        }
       ]
      },
@@ -652,7 +605,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V1-09-src.mp3",
+      "ren": "audio/V1-09-ren.mp3",
+      "src_seconds": 2.67,
+      "ren_seconds": 2.95,
+      "src_voice": "ef_dora",
+      "ren_voice": "am_echo"
+     },
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -665,7 +625,7 @@
       },
       "explanation": null,
       "ms": {
-       "code": 0.3,
+       "code": 0.4,
        "checker": 0.0,
        "to_decision": 0.4,
        "total": 0.4
@@ -698,7 +658,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V1-10-src.mp3",
+      "ren": "audio/V1-10-ren.mp3",
+      "src_seconds": 5.5,
+      "ren_seconds": 3.75,
+      "src_voice": "af_heart",
+      "ren_voice": "em_santa"
+     },
      "check": {
       "findings": [
        {
@@ -719,16 +686,16 @@
        "p_error": null
       },
       "explanation": {
-       "say": "Re-confirm: Not in the interpretation: a 'no' / 'not' “don't”",
+       "say": "Re-confirm. Not interpreted: “don't”.",
        "source_quote": "don't",
        "quote_ok": true,
        "by": "code"
       },
       "ms": {
-       "code": 0.4,
+       "code": 0.7,
        "checker": 0.0,
-       "to_decision": 0.4,
-       "total": 0.4
+       "to_decision": 0.7,
+       "total": 0.7
       }
      },
      "check_on_script": {
@@ -770,7 +737,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V1-11-src.mp3",
+      "ren": "audio/V1-11-ren.mp3",
+      "src_seconds": 4.88,
+      "ren_seconds": 3.48,
+      "src_voice": "af_heart",
+      "ren_voice": "em_santa"
+     },
      "check": {
       "findings": [
        {
@@ -799,16 +773,16 @@
        "p_error": null
       },
       "explanation": {
-       "say": "Re-confirm: Not in the interpretation: a 'no' / 'not' “won't”",
+       "say": "Re-confirm. Not interpreted: “won't”, “won't wake”.",
        "source_quote": "won't",
        "quote_ok": true,
        "by": "code"
       },
       "ms": {
-       "code": 0.5,
+       "code": 0.7,
        "checker": 0.0,
-       "to_decision": 0.5,
-       "total": 0.5
+       "to_decision": 0.7,
+       "total": 0.7
       }
      },
      "check_on_script": {
@@ -858,7 +832,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V1-12-src.mp3",
+      "ren": "audio/V1-12-ren.mp3",
+      "src_seconds": 1.9,
+      "ren_seconds": 2.58,
+      "src_voice": "ef_dora",
+      "ren_voice": "am_echo"
+     },
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -914,7 +895,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V2-01-src.mp3",
+      "ren": "audio/V2-01-ren.mp3",
+      "src_seconds": 3.38,
+      "ren_seconds": 3.3,
+      "src_voice": "am_michael",
+      "ren_voice": "em_santa"
+     },
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -927,10 +915,10 @@
       },
       "explanation": null,
       "ms": {
-       "code": 0.4,
+       "code": 0.5,
        "checker": 0.0,
-       "to_decision": 0.4,
-       "total": 0.4
+       "to_decision": 0.5,
+       "total": 0.5
       }
      },
      "check_on_script": {
@@ -960,7 +948,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V2-02-src.mp3",
+      "ren": "audio/V2-02-ren.mp3",
+      "src_seconds": 6.08,
+      "ren_seconds": 5.38,
+      "src_voice": "ef_dora",
+      "ren_voice": "am_echo"
+     },
      "check": {
       "findings": [
        {
@@ -981,16 +976,16 @@
        "p_error": null
       },
       "explanation": {
-       "say": "Re-confirm: Not in the interpretation: number “sesenta”",
+       "say": "Re-confirm. Not interpreted: “sesenta”.",
        "source_quote": "sesenta",
        "quote_ok": true,
        "by": "code"
       },
       "ms": {
-       "code": 0.6,
+       "code": 0.9,
        "checker": 0.0,
-       "to_decision": 0.6,
-       "total": 0.6
+       "to_decision": 0.9,
+       "total": 0.9
       }
      },
      "check_on_script": {
@@ -1032,7 +1027,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V2-03-src.mp3",
+      "ren": "audio/V2-03-ren.mp3",
+      "src_seconds": 3.25,
+      "ren_seconds": 2.45,
+      "src_voice": "am_michael",
+      "ren_voice": "em_santa"
+     },
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -1045,10 +1047,10 @@
       },
       "explanation": null,
       "ms": {
-       "code": 0.3,
+       "code": 0.4,
        "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
+       "to_decision": 0.4,
+       "total": 0.4
       }
      },
      "check_on_script": {
@@ -1078,7 +1080,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V2-04-src.mp3",
+      "ren": "audio/V2-04-ren.mp3",
+      "src_seconds": 2.73,
+      "ren_seconds": 2.8,
+      "src_voice": "ef_dora",
+      "ren_voice": "am_echo"
+     },
      "check": {
       "findings": [
        {
@@ -1099,16 +1108,16 @@
        "p_error": null
       },
       "explanation": {
-       "say": "Re-confirm: Changed number: “veinte” became “twelve”",
+       "say": "Re-confirm. “veinte” became “twelve”.",
        "source_quote": "veinte",
        "quote_ok": true,
        "by": "code"
       },
       "ms": {
-       "code": 0.3,
+       "code": 0.5,
        "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
+       "to_decision": 0.5,
+       "total": 0.5
       }
      },
      "check_on_script": {
@@ -1150,7 +1159,226 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V2-05-src.mp3",
+      "ren": "audio/V2-05-ren.mp3",
+      "src_seconds": 8.32,
+      "ren_seconds": 8.47,
+      "src_voice": "am_michael",
+      "ren_voice": "em_santa"
+     },
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 1.4,
+       "checker": 0.0,
+       "to_decision": 1.4,
+       "total": 1.4
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 6,
+     "key": "V2-06",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "¿Y si me siento mareada otra vez?",
+      "rendition": "And what if I feel dizzy again?"
+     },
+     "heard": {
+      "source": "¿Y si me siento mareada otra vez?",
+      "rendition": "And what if I feel dizzy again?",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": {
+      "src": "audio/V2-06-src.mp3",
+      "ren": "audio/V2-06-ren.mp3",
+      "src_seconds": 2.2,
+      "ren_seconds": 2.75,
+      "src_voice": "ef_dora",
+      "ren_voice": "am_echo"
+     },
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.4,
+       "checker": 0.0,
+       "to_decision": 0.4,
+       "total": 0.4
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 7,
+     "key": "V2-07",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "If you feel shaky or sweaty, drink half a cup of juice and check your sugar again in 15 minutes.",
+      "rendition": "Si se siente temblorosa o sudorosa, tómese media taza de jugo y vuelva a medirse el azúcar en 15 minutos."
+     },
+     "heard": {
+      "source": "If you feel shaky or sweaty, drink half a cup of juice and check your sugar again in 15 minutes.",
+      "rendition": "Si se siente temblorosa o sudorosa, tómese media taza de jugo y vuelva a medirse el azúcar en 15 minutos.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": {
+      "src": "audio/V2-07-src.mp3",
+      "ren": "audio/V2-07-ren.mp3",
+      "src_seconds": 7.0,
+      "ren_seconds": 6.95,
+      "src_voice": "am_michael",
+      "ren_voice": "em_santa"
+     },
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 1.0,
+       "checker": 0.0,
+       "to_decision": 1.0,
+       "total": 1.0
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 8,
+     "key": "V2-08",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "También tomo una aspirina diaria que me dio otro doctor.",
+      "rendition": "I also take an aspirin every day, another doctor gave it to me."
+     },
+     "heard": {
+      "source": "También tomo una aspirina diaria que me dio otro doctor.",
+      "rendition": "I also take an aspirin every day, another doctor gave it to me.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": {
+      "src": "audio/V2-08-src.mp3",
+      "ren": "audio/V2-08-ren.mp3",
+      "src_seconds": 3.4,
+      "ren_seconds": 4.72,
+      "src_voice": "ef_dora",
+      "ren_voice": "am_echo"
+     },
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.7,
+       "checker": 0.0,
+       "to_decision": 0.7,
+       "total": 0.7
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 9,
+     "key": "V2-09",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "Okay. Don't skip dinner on the days you take insulin.",
+      "rendition": "Muy bien. No se salte la cena los días que se ponga insulina."
+     },
+     "heard": {
+      "source": "Okay. Don't skip dinner on the days you take insulin.",
+      "rendition": "Muy bien. No se salte la cena los días que se ponga insulina.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": {
+      "src": "audio/V2-09-src.mp3",
+      "ren": "audio/V2-09-ren.mp3",
+      "src_seconds": 4.03,
+      "ren_seconds": 3.9,
+      "src_voice": "am_michael",
+      "ren_voice": "em_santa"
+     },
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -1181,236 +1409,6 @@
      "planted": null
     },
     {
-     "n": 6,
-     "key": "V2-06",
-     "speaker": "patient",
-     "src_lang": "es",
-     "ren_lang": "en",
-     "script": {
-      "source": "¿Y si me siento mareada otra vez?",
-      "rendition": "And what if I feel dizzy again?"
-     },
-     "heard": {
-      "source": "¿Y si me siento mareada otra vez?",
-      "rendition": "And what if I feel dizzy again?",
-      "asr": false,
-      "asr_ms": null
-     },
-     "audio": null,
-     "check": {
-      "findings": [],
-      "p_faithful": null,
-      "checker": "off",
-      "decision": {
-       "level": "ok",
-       "title": "",
-       "why": "",
-       "p_error": null
-      },
-      "explanation": null,
-      "ms": {
-       "code": 0.3,
-       "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
-      }
-     },
-     "check_on_script": {
-      "decision": {
-       "level": "ok",
-       "title": "",
-       "why": "",
-       "p_error": null
-      },
-      "findings": []
-     },
-     "planted": null
-    },
-    {
-     "n": 7,
-     "key": "V2-07",
-     "speaker": "clinician",
-     "src_lang": "en",
-     "ren_lang": "es",
-     "script": {
-      "source": "If you feel shaky or sweaty, drink half a cup of juice and check your sugar again in 15 minutes.",
-      "rendition": "Si se siente temblorosa o sudorosa, tómese media taza de jugo y vuelva a medirse el azúcar en 15 minutos."
-     },
-     "heard": {
-      "source": "If you feel shaky or sweaty, drink half a cup of juice and check your sugar again in 15 minutes.",
-      "rendition": "Si se siente temblorosa o sudorosa, tómese media taza de jugo y vuelva a medirse el azúcar en 15 minutos.",
-      "asr": false,
-      "asr_ms": null
-     },
-     "audio": null,
-     "check": {
-      "findings": [
-       {
-        "type": "addition",
-        "kind": "warning",
-        "severity": "medium",
-        "source": "",
-        "rendition": "vuelva",
-        "message": "Added in the interpretation: warning sign “vuelva”"
-       }
-      ],
-      "p_faithful": null,
-      "checker": "off",
-      "decision": {
-       "level": "note",
-       "title": "Check later",
-       "why": "code",
-       "p_error": null
-      },
-      "explanation": {
-       "say": "Re-confirm: Added in the interpretation: warning sign “vuelva”",
-       "source_quote": "",
-       "quote_ok": true,
-       "by": "code"
-      },
-      "ms": {
-       "code": 0.5,
-       "checker": 0.0,
-       "to_decision": 0.5,
-       "total": 0.5
-      }
-     },
-     "check_on_script": {
-      "decision": {
-       "level": "note",
-       "title": "Check later",
-       "why": "code",
-       "p_error": null
-      },
-      "findings": [
-       {
-        "type": "addition",
-        "kind": "warning",
-        "severity": "medium",
-        "source": "",
-        "rendition": "vuelva",
-        "message": "Added in the interpretation: warning sign “vuelva”"
-       }
-      ]
-     },
-     "planted": null
-    },
-    {
-     "n": 8,
-     "key": "V2-08",
-     "speaker": "patient",
-     "src_lang": "es",
-     "ren_lang": "en",
-     "script": {
-      "source": "También tomo una aspirina diaria que me dio otro doctor.",
-      "rendition": "I also take an aspirin every day, another doctor gave it to me."
-     },
-     "heard": {
-      "source": "También tomo una aspirina diaria que me dio otro doctor.",
-      "rendition": "I also take an aspirin every day, another doctor gave it to me.",
-      "asr": false,
-      "asr_ms": null
-     },
-     "audio": null,
-     "check": {
-      "findings": [
-       {
-        "type": "addition",
-        "kind": "frequency",
-        "severity": "medium",
-        "source": "",
-        "rendition": "every day",
-        "message": "Added in the interpretation: how often “every day”"
-       }
-      ],
-      "p_faithful": null,
-      "checker": "off",
-      "decision": {
-       "level": "note",
-       "title": "Check later",
-       "why": "code",
-       "p_error": null
-      },
-      "explanation": {
-       "say": "Re-confirm: Added in the interpretation: how often “every day”",
-       "source_quote": "",
-       "quote_ok": true,
-       "by": "code"
-      },
-      "ms": {
-       "code": 0.3,
-       "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
-      }
-     },
-     "check_on_script": {
-      "decision": {
-       "level": "note",
-       "title": "Check later",
-       "why": "code",
-       "p_error": null
-      },
-      "findings": [
-       {
-        "type": "addition",
-        "kind": "frequency",
-        "severity": "medium",
-        "source": "",
-        "rendition": "every day",
-        "message": "Added in the interpretation: how often “every day”"
-       }
-      ]
-     },
-     "planted": null
-    },
-    {
-     "n": 9,
-     "key": "V2-09",
-     "speaker": "clinician",
-     "src_lang": "en",
-     "ren_lang": "es",
-     "script": {
-      "source": "Okay. Don't skip dinner on the days you take insulin.",
-      "rendition": "Muy bien. No se salte la cena los días que se ponga insulina."
-     },
-     "heard": {
-      "source": "Okay. Don't skip dinner on the days you take insulin.",
-      "rendition": "Muy bien. No se salte la cena los días que se ponga insulina.",
-      "asr": false,
-      "asr_ms": null
-     },
-     "audio": null,
-     "check": {
-      "findings": [],
-      "p_faithful": null,
-      "checker": "off",
-      "decision": {
-       "level": "ok",
-       "title": "",
-       "why": "",
-       "p_error": null
-      },
-      "explanation": null,
-      "ms": {
-       "code": 0.3,
-       "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
-      }
-     },
-     "check_on_script": {
-      "decision": {
-       "level": "ok",
-       "title": "",
-       "why": "",
-       "p_error": null
-      },
-      "findings": []
-     },
-     "planted": null
-    },
-    {
      "n": 10,
      "key": "V2-10",
      "speaker": "patient",
@@ -1426,7 +1424,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V2-10-src.mp3",
+      "ren": "audio/V2-10-ren.mp3",
+      "src_seconds": 3.45,
+      "ren_seconds": 2.58,
+      "src_voice": "ef_dora",
+      "ren_voice": "am_echo"
+     },
      "check": {
       "findings": [
        {
@@ -1441,9 +1446,9 @@
         "type": "omission",
         "kind": "side",
         "severity": "high",
-        "source": "pie izquierdo",
+        "source": "izquierdo",
         "rendition": "",
-        "message": "Not in the interpretation: left/right “pie izquierdo”"
+        "message": "Not in the interpretation: left/right “izquierdo”"
        }
       ],
       "p_faithful": null,
@@ -1455,16 +1460,16 @@
        "p_error": null
       },
       "explanation": {
-       "say": "Re-confirm: Not in the interpretation: a 'no' / 'not' “no”",
+       "say": "Re-confirm. Not interpreted: “no”, “izquierdo”.",
        "source_quote": "no",
        "quote_ok": true,
        "by": "code"
       },
       "ms": {
-       "code": 0.3,
+       "code": 0.5,
        "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
+       "to_decision": 0.5,
+       "total": 0.5
       }
      },
      "check_on_script": {
@@ -1487,9 +1492,9 @@
         "type": "omission",
         "kind": "side",
         "severity": "high",
-        "source": "pie izquierdo",
+        "source": "izquierdo",
         "rendition": "",
-        "message": "Not in the interpretation: left/right “pie izquierdo”"
+        "message": "Not in the interpretation: left/right “izquierdo”"
        }
       ]
      },
@@ -1514,7 +1519,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V2-11-src.mp3",
+      "ren": "audio/V2-11-ren.mp3",
+      "src_seconds": 3.6,
+      "ren_seconds": 3.27,
+      "src_voice": "am_michael",
+      "ren_voice": "em_santa"
+     },
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -1527,10 +1539,10 @@
       },
       "explanation": null,
       "ms": {
-       "code": 0.3,
+       "code": 0.4,
        "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
+       "to_decision": 0.5,
+       "total": 0.5
       }
      },
      "check_on_script": {
@@ -1570,7 +1582,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V3-01-src.mp3",
+      "ren": "audio/V3-01-ren.mp3",
+      "src_seconds": 3.67,
+      "ren_seconds": 3.5,
+      "src_voice": "af_bella",
+      "ren_voice": "em_santa"
+     },
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -1583,10 +1602,10 @@
       },
       "explanation": null,
       "ms": {
-       "code": 0.3,
+       "code": 0.5,
        "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
+       "to_decision": 0.5,
+       "total": 0.5
       }
      },
      "check_on_script": {
@@ -1616,7 +1635,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V3-02-src.mp3",
+      "ren": "audio/V3-02-ren.mp3",
+      "src_seconds": 4.38,
+      "ren_seconds": 2.92,
+      "src_voice": "em_alex",
+      "ren_voice": "am_echo"
+     },
      "check": {
       "findings": [
        {
@@ -1638,10 +1664,10 @@
       },
       "explanation": null,
       "ms": {
-       "code": 0.3,
+       "code": 0.6,
        "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
+       "to_decision": 0.6,
+       "total": 0.6
       }
      },
      "check_on_script": {
@@ -1683,56 +1709,40 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V3-03-src.mp3",
+      "ren": "audio/V3-03-ren.mp3",
+      "src_seconds": 8.72,
+      "ren_seconds": 7.28,
+      "src_voice": "af_bella",
+      "ren_voice": "em_santa"
+     },
      "check": {
-      "findings": [
-       {
-        "type": "omission",
-        "kind": "frequency",
-        "severity": "medium",
-        "source": "as needed",
-        "rendition": "",
-        "message": "Not in the interpretation: how often “as needed”"
-       }
-      ],
+      "findings": [],
       "p_faithful": null,
       "checker": "off",
       "decision": {
-       "level": "note",
-       "title": "Check later",
-       "why": "code",
+       "level": "ok",
+       "title": "",
+       "why": "",
        "p_error": null
       },
-      "explanation": {
-       "say": "Re-confirm: Not in the interpretation: how often “as needed”",
-       "source_quote": "as needed",
-       "quote_ok": true,
-       "by": "code"
-      },
+      "explanation": null,
       "ms": {
-       "code": 0.5,
+       "code": 1.4,
        "checker": 0.0,
-       "to_decision": 0.5,
-       "total": 0.5
+       "to_decision": 1.4,
+       "total": 1.4
       }
      },
      "check_on_script": {
       "decision": {
-       "level": "note",
-       "title": "Check later",
-       "why": "code",
+       "level": "ok",
+       "title": "",
+       "why": "",
        "p_error": null
       },
-      "findings": [
-       {
-        "type": "omission",
-        "kind": "frequency",
-        "severity": "medium",
-        "source": "as needed",
-        "rendition": "",
-        "message": "Not in the interpretation: how often “as needed”"
-       }
-      ]
+      "findings": []
      },
      "planted": {
       "type": "omission",
@@ -1755,7 +1765,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V3-04-src.mp3",
+      "ren": "audio/V3-04-ren.mp3",
+      "src_seconds": 2.42,
+      "ren_seconds": 3.65,
+      "src_voice": "em_alex",
+      "ren_voice": "am_echo"
+     },
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -1768,10 +1785,10 @@
       },
       "explanation": null,
       "ms": {
-       "code": 0.3,
+       "code": 0.4,
        "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
+       "to_decision": 0.5,
+       "total": 0.5
       }
      },
      "check_on_script": {
@@ -1801,16 +1818,23 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V3-05-src.mp3",
+      "ren": "audio/V3-05-ren.mp3",
+      "src_seconds": 4.62,
+      "ren_seconds": 4.3,
+      "src_voice": "af_bella",
+      "ren_voice": "em_santa"
+     },
      "check": {
       "findings": [
        {
         "type": "substitution",
-        "kind": "number",
+        "kind": "frequency",
         "severity": "high",
-        "source": "two",
-        "rendition": "tres",
-        "message": "Changed number: “two” became “tres”"
+        "source": "two times a day",
+        "rendition": "tres veces al día",
+        "message": "Changed how often: “two times a day” became “tres veces al día”"
        }
       ],
       "p_faithful": null,
@@ -1822,16 +1846,16 @@
        "p_error": null
       },
       "explanation": {
-       "say": "Re-confirm: Changed number: “two” became “tres”",
-       "source_quote": "two",
+       "say": "Re-confirm. “two times a day” became “tres veces al día”.",
+       "source_quote": "two times a day",
        "quote_ok": true,
        "by": "code"
       },
       "ms": {
-       "code": 0.4,
+       "code": 0.7,
        "checker": 0.0,
-       "to_decision": 0.4,
-       "total": 0.4
+       "to_decision": 0.7,
+       "total": 0.7
       }
      },
      "check_on_script": {
@@ -1844,11 +1868,11 @@
       "findings": [
        {
         "type": "substitution",
-        "kind": "number",
+        "kind": "frequency",
         "severity": "high",
-        "source": "two",
-        "rendition": "tres",
-        "message": "Changed number: “two” became “tres”"
+        "source": "two times a day",
+        "rendition": "tres veces al día",
+        "message": "Changed how often: “two times a day” became “tres veces al día”"
        }
       ]
      },
@@ -1873,7 +1897,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V3-06-src.mp3",
+      "ren": "audio/V3-06-ren.mp3",
+      "src_seconds": 2.58,
+      "ren_seconds": 3.08,
+      "src_voice": "em_alex",
+      "ren_voice": "am_echo"
+     },
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -1886,10 +1917,10 @@
       },
       "explanation": null,
       "ms": {
-       "code": 0.2,
+       "code": 0.5,
        "checker": 0.0,
-       "to_decision": 0.2,
-       "total": 0.2
+       "to_decision": 0.5,
+       "total": 0.5
       }
      },
      "check_on_script": {
@@ -1919,56 +1950,40 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V3-07-src.mp3",
+      "ren": "audio/V3-07-ren.mp3",
+      "src_seconds": 5.95,
+      "ren_seconds": 5.58,
+      "src_voice": "af_bella",
+      "ren_voice": "em_santa"
+     },
      "check": {
-      "findings": [
-       {
-        "type": "addition",
-        "kind": "warning",
-        "severity": "medium",
-        "source": "",
-        "rendition": "llame",
-        "message": "Added in the interpretation: warning sign “llame”"
-       }
-      ],
+      "findings": [],
       "p_faithful": null,
       "checker": "off",
       "decision": {
-       "level": "note",
-       "title": "Check later",
-       "why": "code",
+       "level": "ok",
+       "title": "",
+       "why": "",
        "p_error": null
       },
-      "explanation": {
-       "say": "Re-confirm: Added in the interpretation: warning sign “llame”",
-       "source_quote": "",
-       "quote_ok": true,
-       "by": "code"
-      },
+      "explanation": null,
       "ms": {
-       "code": 0.4,
+       "code": 0.8,
        "checker": 0.0,
-       "to_decision": 0.4,
-       "total": 0.4
+       "to_decision": 0.8,
+       "total": 0.8
       }
      },
      "check_on_script": {
       "decision": {
-       "level": "note",
-       "title": "Check later",
-       "why": "code",
+       "level": "ok",
+       "title": "",
+       "why": "",
        "p_error": null
       },
-      "findings": [
-       {
-        "type": "addition",
-        "kind": "warning",
-        "severity": "medium",
-        "source": "",
-        "rendition": "llame",
-        "message": "Added in the interpretation: warning sign “llame”"
-       }
-      ]
+      "findings": []
      },
      "planted": null
     },
@@ -1988,7 +2003,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V3-08-src.mp3",
+      "ren": "audio/V3-08-ren.mp3",
+      "src_seconds": 1.48,
+      "ren_seconds": 1.98,
+      "src_voice": "em_alex",
+      "ren_voice": "am_echo"
+     },
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -2001,10 +2023,10 @@
       },
       "explanation": null,
       "ms": {
-       "code": 0.2,
+       "code": 0.3,
        "checker": 0.0,
-       "to_decision": 0.2,
-       "total": 0.2
+       "to_decision": 0.3,
+       "total": 0.3
       }
      },
      "check_on_script": {
@@ -2044,7 +2066,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V4-01-src.mp3",
+      "ren": "audio/V4-01-ren.mp3",
+      "src_seconds": 6.22,
+      "ren_seconds": 4.7,
+      "src_voice": "af_nicole",
+      "ren_voice": "em_santa"
+     },
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -2057,10 +2086,10 @@
       },
       "explanation": null,
       "ms": {
-       "code": 0.4,
+       "code": 0.6,
        "checker": 0.0,
-       "to_decision": 0.4,
-       "total": 0.4
+       "to_decision": 0.6,
+       "total": 0.6
       }
      },
      "check_on_script": {
@@ -2082,15 +2111,22 @@
      "ren_lang": "es",
      "script": {
       "source": "Take 2.5 milligrams on Mondays and Fridays, and 5 milligrams on the other days.",
-      "rendition": "Tome 5 miligramos los lunes y viernes, y 2.5 miligramos los demás días."
+      "rendition": "Tome cinco miligramos los lunes y viernes, y dos y medio miligramos los demás días."
      },
      "heard": {
       "source": "Take 2.5 milligrams on Mondays and Fridays, and 5 milligrams on the other days.",
-      "rendition": "Tome 5 miligramos los lunes y viernes, y 2.5 miligramos los demás días.",
+      "rendition": "Tome cinco miligramos los lunes y viernes, y dos y medio miligramos los demás días.",
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V4-02-src.mp3",
+      "ren": "audio/V4-02-ren.mp3",
+      "src_seconds": 9.1,
+      "ren_seconds": 5.28,
+      "src_voice": "af_nicole",
+      "ren_voice": "em_santa"
+     },
      "check": {
       "findings": [
        {
@@ -2111,16 +2147,16 @@
        "p_error": null
       },
       "explanation": {
-       "say": "Re-confirm: Same numbers in a different order: 2.5, 5 became 5, 2.5",
+       "say": "Re-confirm. Same numbers in a different order: 2.5, 5 became 5, 2.5.",
        "source_quote": "2.5 / 5",
        "quote_ok": true,
        "by": "code"
       },
       "ms": {
-       "code": 0.4,
+       "code": 0.8,
        "checker": 0.0,
-       "to_decision": 0.4,
-       "total": 0.4
+       "to_decision": 0.8,
+       "total": 0.8
       }
      },
      "check_on_script": {
@@ -2162,17 +2198,16 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V4-03-src.mp3",
+      "ren": "audio/V4-03-ren.mp3",
+      "src_seconds": 4.05,
+      "ren_seconds": 2.6,
+      "src_voice": "em_alex",
+      "ren_voice": "am_echo"
+     },
      "check": {
       "findings": [
-       {
-        "type": "omission",
-        "kind": "number",
-        "severity": "high",
-        "source": "media",
-        "rendition": "",
-        "message": "Not in the interpretation: number “media”"
-       },
        {
         "type": "omission",
         "kind": "negation",
@@ -2182,12 +2217,12 @@
         "message": "Not in the interpretation: a 'no' / 'not' “no”"
        },
        {
-        "type": "omission",
+        "type": "addition",
         "kind": "warning",
-        "severity": "high",
-        "source": "sangre",
-        "rendition": "",
-        "message": "Not in the interpretation: warning sign “sangre”"
+        "severity": "medium",
+        "source": "",
+        "rendition": "bled",
+        "message": "Added in the interpretation: warning sign “bled”"
        },
        {
         "type": "omission",
@@ -2207,16 +2242,16 @@
        "p_error": null
       },
       "explanation": {
-       "say": "Re-confirm: Not in the interpretation: number “media”",
-       "source_quote": "media",
+       "say": "Re-confirm. Not interpreted: “no”; added, not said: “bled”; not interpreted: “media hora”.",
+       "source_quote": "no",
        "quote_ok": true,
        "by": "code"
       },
       "ms": {
-       "code": 0.3,
+       "code": 0.5,
        "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
+       "to_decision": 0.5,
+       "total": 0.5
       }
      },
      "check_on_script": {
@@ -2229,14 +2264,6 @@
       "findings": [
        {
         "type": "omission",
-        "kind": "number",
-        "severity": "high",
-        "source": "media",
-        "rendition": "",
-        "message": "Not in the interpretation: number “media”"
-       },
-       {
-        "type": "omission",
         "kind": "negation",
         "severity": "high",
         "source": "no",
@@ -2244,12 +2271,12 @@
         "message": "Not in the interpretation: a 'no' / 'not' “no”"
        },
        {
-        "type": "omission",
+        "type": "addition",
         "kind": "warning",
-        "severity": "high",
-        "source": "sangre",
-        "rendition": "",
-        "message": "Not in the interpretation: warning sign “sangre”"
+        "severity": "medium",
+        "source": "",
+        "rendition": "bled",
+        "message": "Added in the interpretation: warning sign “bled”"
        },
        {
         "type": "omission",
@@ -2282,171 +2309,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
-     "check": {
-      "findings": [],
-      "p_faithful": null,
-      "checker": "off",
-      "decision": {
-       "level": "ok",
-       "title": "",
-       "why": "",
-       "p_error": null
-      },
-      "explanation": null,
-      "ms": {
-       "code": 0.3,
-       "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
-      }
+     "audio": {
+      "src": "audio/V4-04-src.mp3",
+      "ren": "audio/V4-04-ren.mp3",
+      "src_seconds": 4.2,
+      "ren_seconds": 3.12,
+      "src_voice": "af_nicole",
+      "ren_voice": "em_santa"
      },
-     "check_on_script": {
-      "decision": {
-       "level": "ok",
-       "title": "",
-       "why": "",
-       "p_error": null
-      },
-      "findings": []
-     },
-     "planted": null
-    },
-    {
-     "n": 5,
-     "key": "V4-05",
-     "speaker": "patient",
-     "src_lang": "es",
-     "ren_lang": "en",
-     "script": {
-      "source": "No, nada de eso.",
-      "rendition": "No, nothing like that."
-     },
-     "heard": {
-      "source": "No, nada de eso.",
-      "rendition": "No, nothing like that.",
-      "asr": false,
-      "asr_ms": null
-     },
-     "audio": null,
-     "check": {
-      "findings": [],
-      "p_faithful": null,
-      "checker": "off",
-      "decision": {
-       "level": "ok",
-       "title": "",
-       "why": "",
-       "p_error": null
-      },
-      "explanation": null,
-      "ms": {
-       "code": 0.2,
-       "checker": 0.0,
-       "to_decision": 0.2,
-       "total": 0.2
-      }
-     },
-     "check_on_script": {
-      "decision": {
-       "level": "ok",
-       "title": "",
-       "why": "",
-       "p_error": null
-      },
-      "findings": []
-     },
-     "planted": null
-    },
-    {
-     "n": 6,
-     "key": "V4-06",
-     "speaker": "patient",
-     "src_lang": "es",
-     "ren_lang": "en",
-     "script": {
-      "source": "Para el dolor de rodilla me tomo ibuprofeno.",
-      "rendition": "For my knee pain I take Tylenol."
-     },
-     "heard": {
-      "source": "Para el dolor de rodilla me tomo ibuprofeno.",
-      "rendition": "For my knee pain I take Tylenol.",
-      "asr": false,
-      "asr_ms": null
-     },
-     "audio": null,
-     "check": {
-      "findings": [
-       {
-        "type": "substitution",
-        "kind": "drug",
-        "severity": "high",
-        "source": "ibuprofeno",
-        "rendition": "tylenol",
-        "message": "Changed medicine: “ibuprofeno” became “tylenol”"
-       }
-      ],
-      "p_faithful": null,
-      "checker": "off",
-      "decision": {
-       "level": "card",
-       "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
-      },
-      "explanation": {
-       "say": "Re-confirm: Changed medicine: “ibuprofeno” became “tylenol”",
-       "source_quote": "ibuprofeno",
-       "quote_ok": true,
-       "by": "code"
-      },
-      "ms": {
-       "code": 0.3,
-       "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
-      }
-     },
-     "check_on_script": {
-      "decision": {
-       "level": "card",
-       "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
-      },
-      "findings": [
-       {
-        "type": "substitution",
-        "kind": "drug",
-        "severity": "high",
-        "source": "ibuprofeno",
-        "rendition": "tylenol",
-        "message": "Changed medicine: “ibuprofeno” became “tylenol”"
-       }
-      ]
-     },
-     "planted": {
-      "type": "substitution",
-      "what": "Ibuprofen became Tylenol (ibuprofen raises bleeding risk with warfarin)."
-     }
-    },
-    {
-     "n": 7,
-     "key": "V4-07",
-     "speaker": "clinician",
-     "src_lang": "en",
-     "ren_lang": "es",
-     "script": {
-      "source": "Please stop the ibuprofen. It raises your bleeding risk with warfarin. You can use acetaminophen instead.",
-      "rendition": "Por favor deje el ibuprofeno, porque con la warfarina aumenta el riesgo de sangrado. En su lugar puede usar acetaminofén."
-     },
-     "heard": {
-      "source": "Please stop the ibuprofen. It raises your bleeding risk with warfarin. You can use acetaminophen instead.",
-      "rendition": "Por favor deje el ibuprofeno, porque con la warfarina aumenta el riesgo de sangrado. En su lugar puede usar acetaminofén.",
-      "asr": false,
-      "asr_ms": null
-     },
-     "audio": null,
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -2477,6 +2347,191 @@
      "planted": null
     },
     {
+     "n": 5,
+     "key": "V4-05",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "No, nada de eso.",
+      "rendition": "No, nothing like that."
+     },
+     "heard": {
+      "source": "No, nada de eso.",
+      "rendition": "No, nothing like that.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": {
+      "src": "audio/V4-05-src.mp3",
+      "ren": "audio/V4-05-ren.mp3",
+      "src_seconds": 1.45,
+      "ren_seconds": 2.27,
+      "src_voice": "em_alex",
+      "ren_voice": "am_echo"
+     },
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 0.3,
+       "checker": 0.0,
+       "to_decision": 0.3,
+       "total": 0.3
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
+     "n": 6,
+     "key": "V4-06",
+     "speaker": "patient",
+     "src_lang": "es",
+     "ren_lang": "en",
+     "script": {
+      "source": "Para el dolor de rodilla me tomo ibuprofeno.",
+      "rendition": "For my knee pain I take Tylenol."
+     },
+     "heard": {
+      "source": "Para el dolor de rodilla me tomo ibuprofeno.",
+      "rendition": "For my knee pain I take Tylenol.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": {
+      "src": "audio/V4-06-src.mp3",
+      "ren": "audio/V4-06-ren.mp3",
+      "src_seconds": 2.98,
+      "ren_seconds": 2.88,
+      "src_voice": "em_alex",
+      "ren_voice": "am_echo"
+     },
+     "check": {
+      "findings": [
+       {
+        "type": "substitution",
+        "kind": "drug",
+        "severity": "high",
+        "source": "ibuprofeno",
+        "rendition": "Tylenol",
+        "message": "Changed medicine: “ibuprofeno” became “Tylenol”"
+       }
+      ],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "explanation": {
+       "say": "Re-confirm. “ibuprofeno” became “Tylenol”.",
+       "source_quote": "ibuprofeno",
+       "quote_ok": true,
+       "by": "code"
+      },
+      "ms": {
+       "code": 0.5,
+       "checker": 0.0,
+       "to_decision": 0.5,
+       "total": 0.5
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
+       "p_error": null
+      },
+      "findings": [
+       {
+        "type": "substitution",
+        "kind": "drug",
+        "severity": "high",
+        "source": "ibuprofeno",
+        "rendition": "Tylenol",
+        "message": "Changed medicine: “ibuprofeno” became “Tylenol”"
+       }
+      ]
+     },
+     "planted": {
+      "type": "substitution",
+      "what": "Ibuprofen became Tylenol (ibuprofen raises bleeding risk with warfarin)."
+     }
+    },
+    {
+     "n": 7,
+     "key": "V4-07",
+     "speaker": "clinician",
+     "src_lang": "en",
+     "ren_lang": "es",
+     "script": {
+      "source": "Please stop the ibuprofen. It raises your bleeding risk with warfarin. You can use acetaminophen instead.",
+      "rendition": "Por favor deje el ibuprofeno, porque con la warfarina aumenta el riesgo de sangrado. En su lugar puede usar acetaminofén."
+     },
+     "heard": {
+      "source": "Please stop the ibuprofen. It raises your bleeding risk with warfarin. You can use acetaminophen instead.",
+      "rendition": "Por favor deje el ibuprofeno, porque con la warfarina aumenta el riesgo de sangrado. En su lugar puede usar acetaminofén.",
+      "asr": false,
+      "asr_ms": null
+     },
+     "audio": {
+      "src": "audio/V4-07-src.mp3",
+      "ren": "audio/V4-07-ren.mp3",
+      "src_seconds": 10.85,
+      "ren_seconds": 7.35,
+      "src_voice": "af_nicole",
+      "ren_voice": "em_santa"
+     },
+     "check": {
+      "findings": [],
+      "p_faithful": null,
+      "checker": "off",
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "explanation": null,
+      "ms": {
+       "code": 1.1,
+       "checker": 0.0,
+       "to_decision": 1.1,
+       "total": 1.1
+      }
+     },
+     "check_on_script": {
+      "decision": {
+       "level": "ok",
+       "title": "",
+       "why": "",
+       "p_error": null
+      },
+      "findings": []
+     },
+     "planted": null
+    },
+    {
      "n": 8,
      "key": "V4-08",
      "speaker": "clinician",
@@ -2492,56 +2547,40 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V4-08-src.mp3",
+      "ren": "audio/V4-08-ren.mp3",
+      "src_seconds": 4.22,
+      "ren_seconds": 3.45,
+      "src_voice": "af_nicole",
+      "ren_voice": "em_santa"
+     },
      "check": {
-      "findings": [
-       {
-        "type": "addition",
-        "kind": "warning",
-        "severity": "medium",
-        "source": "",
-        "rendition": "sangre",
-        "message": "Added in the interpretation: warning sign “sangre”"
-       }
-      ],
+      "findings": [],
       "p_faithful": null,
       "checker": "off",
       "decision": {
-       "level": "note",
-       "title": "Check later",
-       "why": "code",
+       "level": "ok",
+       "title": "",
+       "why": "",
        "p_error": null
       },
-      "explanation": {
-       "say": "Re-confirm: Added in the interpretation: warning sign “sangre”",
-       "source_quote": "",
-       "quote_ok": true,
-       "by": "code"
-      },
+      "explanation": null,
       "ms": {
-       "code": 0.3,
+       "code": 0.5,
        "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
+       "to_decision": 0.5,
+       "total": 0.5
       }
      },
      "check_on_script": {
       "decision": {
-       "level": "note",
-       "title": "Check later",
-       "why": "code",
+       "level": "ok",
+       "title": "",
+       "why": "",
        "p_error": null
       },
-      "findings": [
-       {
-        "type": "addition",
-        "kind": "warning",
-        "severity": "medium",
-        "source": "",
-        "rendition": "sangre",
-        "message": "Added in the interpretation: warning sign “sangre”"
-       }
-      ]
+      "findings": []
      },
      "planted": null
     }
@@ -2571,7 +2610,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V5-01-src.mp3",
+      "ren": "audio/V5-01-ren.mp3",
+      "src_seconds": 2.17,
+      "ren_seconds": 1.88,
+      "src_voice": "am_adam",
+      "ren_voice": "em_santa"
+     },
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -2584,10 +2630,10 @@
       },
       "explanation": null,
       "ms": {
-       "code": 0.2,
+       "code": 0.3,
        "checker": 0.0,
-       "to_decision": 0.2,
-       "total": 0.2
+       "to_decision": 0.3,
+       "total": 0.3
       }
      },
      "check_on_script": {
@@ -2617,7 +2663,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V5-02-src.mp3",
+      "ren": "audio/V5-02-ren.mp3",
+      "src_seconds": 2.92,
+      "ren_seconds": 3.6,
+      "src_voice": "em_alex",
+      "ren_voice": "am_echo"
+     },
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -2630,10 +2683,10 @@
       },
       "explanation": null,
       "ms": {
-       "code": 0.3,
+       "code": 0.5,
        "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
+       "to_decision": 0.5,
+       "total": 0.5
       }
      },
      "check_on_script": {
@@ -2663,7 +2716,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V5-03-src.mp3",
+      "ren": "audio/V5-03-ren.mp3",
+      "src_seconds": 3.27,
+      "ren_seconds": 2.98,
+      "src_voice": "em_alex",
+      "ren_voice": "am_echo"
+     },
      "check": {
       "findings": [
        {
@@ -2684,16 +2744,16 @@
        "p_error": null
       },
       "explanation": {
-       "say": "Re-confirm: Not in the interpretation: number “ochocientos”",
+       "say": "Re-confirm. Not interpreted: “ochocientos”.",
        "source_quote": "ochocientos",
        "quote_ok": true,
        "by": "code"
       },
       "ms": {
-       "code": 0.3,
+       "code": 0.5,
        "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
+       "to_decision": 0.5,
+       "total": 0.5
       }
      },
      "check_on_script": {
@@ -2735,7 +2795,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V5-04-src.mp3",
+      "ren": "audio/V5-04-ren.mp3",
+      "src_seconds": 4.72,
+      "ren_seconds": 7.03,
+      "src_voice": "am_adam",
+      "ren_voice": "em_santa"
+     },
      "check": {
       "findings": [
        {
@@ -2745,6 +2812,14 @@
         "source": "",
         "rendition": "ibuprofeno",
         "message": "Added in the interpretation: medicine “ibuprofeno”"
+       },
+       {
+        "type": "addition",
+        "kind": "timing",
+        "severity": "medium",
+        "source": "",
+        "rendition": "con cada comida",
+        "message": "Added in the interpretation: when to take it “con cada comida”"
        }
       ],
       "p_faithful": null,
@@ -2756,16 +2831,16 @@
        "p_error": null
       },
       "explanation": {
-       "say": "Re-confirm: Added in the interpretation: medicine “ibuprofeno”",
+       "say": "Re-confirm. Added, not said: “ibuprofeno”; added, not said: “con cada comida”.",
        "source_quote": "",
        "quote_ok": true,
        "by": "code"
       },
       "ms": {
-       "code": 0.5,
+       "code": 1.2,
        "checker": 0.0,
-       "to_decision": 0.5,
-       "total": 0.5
+       "to_decision": 1.2,
+       "total": 1.2
       }
      },
      "check_on_script": {
@@ -2783,6 +2858,14 @@
         "source": "",
         "rendition": "ibuprofeno",
         "message": "Added in the interpretation: medicine “ibuprofeno”"
+       },
+       {
+        "type": "addition",
+        "kind": "timing",
+        "severity": "medium",
+        "source": "",
+        "rendition": "con cada comida",
+        "message": "Added in the interpretation: when to take it “con cada comida”"
        }
       ]
      },
@@ -2807,7 +2890,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V5-05-src.mp3",
+      "ren": "audio/V5-05-ren.mp3",
+      "src_seconds": 6.8,
+      "ren_seconds": 6.62,
+      "src_voice": "am_adam",
+      "ren_voice": "em_santa"
+     },
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -2820,10 +2910,10 @@
       },
       "explanation": null,
       "ms": {
-       "code": 0.5,
+       "code": 1.2,
        "checker": 0.0,
-       "to_decision": 0.5,
-       "total": 0.5
+       "to_decision": 1.2,
+       "total": 1.2
       }
      },
      "check_on_script": {
@@ -2853,7 +2943,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V5-06-src.mp3",
+      "ren": "audio/V5-06-ren.mp3",
+      "src_seconds": 3.23,
+      "ren_seconds": 3.23,
+      "src_voice": "em_alex",
+      "ren_voice": "am_echo"
+     },
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -2866,10 +2963,10 @@
       },
       "explanation": null,
       "ms": {
-       "code": 0.3,
+       "code": 0.4,
        "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
+       "to_decision": 0.4,
+       "total": 0.4
       }
      },
      "check_on_script": {
@@ -2899,33 +2996,79 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V5-07-src.mp3",
+      "ren": "audio/V5-07-ren.mp3",
+      "src_seconds": 4.67,
+      "ren_seconds": 4.83,
+      "src_voice": "am_adam",
+      "ren_voice": "em_santa"
+     },
      "check": {
-      "findings": [],
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "negation",
+        "severity": "high",
+        "source": "Not",
+        "rendition": "",
+        "message": "Not in the interpretation: a 'no' / 'not' “Not”"
+       },
+       {
+        "type": "addition",
+        "kind": "negation",
+        "severity": "high",
+        "source": "",
+        "rendition": "No",
+        "message": "Added in the interpretation: a 'no' / 'not' “No”"
+       }
+      ],
       "p_faithful": null,
       "checker": "off",
       "decision": {
-       "level": "ok",
-       "title": "",
-       "why": "",
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
        "p_error": null
       },
-      "explanation": null,
+      "explanation": {
+       "say": "Re-confirm. Not interpreted: “Not”; added, not said: “No”.",
+       "source_quote": "Not",
+       "quote_ok": true,
+       "by": "code"
+      },
       "ms": {
-       "code": 0.4,
+       "code": 0.7,
        "checker": 0.0,
-       "to_decision": 0.4,
-       "total": 0.4
+       "to_decision": 0.7,
+       "total": 0.8
       }
      },
      "check_on_script": {
       "decision": {
-       "level": "ok",
-       "title": "",
-       "why": "",
+       "level": "card",
+       "title": "Re-confirm",
+       "why": "code",
        "p_error": null
       },
-      "findings": []
+      "findings": [
+       {
+        "type": "omission",
+        "kind": "negation",
+        "severity": "high",
+        "source": "Not",
+        "rendition": "",
+        "message": "Not in the interpretation: a 'no' / 'not' “Not”"
+       },
+       {
+        "type": "addition",
+        "kind": "negation",
+        "severity": "high",
+        "source": "",
+        "rendition": "No",
+        "message": "Added in the interpretation: a 'no' / 'not' “No”"
+       }
+      ]
      },
      "planted": {
       "type": "substitution",
@@ -2948,7 +3091,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V5-08-src.mp3",
+      "ren": "audio/V5-08-ren.mp3",
+      "src_seconds": 4.22,
+      "ren_seconds": 4.08,
+      "src_voice": "am_adam",
+      "ren_voice": "em_santa"
+     },
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -2961,10 +3111,10 @@
       },
       "explanation": null,
       "ms": {
-       "code": 0.3,
+       "code": 0.5,
        "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
+       "to_decision": 0.5,
+       "total": 0.5
       }
      },
      "check_on_script": {
@@ -3004,7 +3154,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V6-01-src.mp3",
+      "ren": "audio/V6-01-ren.mp3",
+      "src_seconds": 4.72,
+      "ren_seconds": 4.58,
+      "src_voice": "af_sarah",
+      "ren_voice": "em_santa"
+     },
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -3017,10 +3174,10 @@
       },
       "explanation": null,
       "ms": {
-       "code": 0.3,
+       "code": 0.5,
        "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
+       "to_decision": 0.6,
+       "total": 0.6
       }
      },
      "check_on_script": {
@@ -3050,7 +3207,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V6-02-src.mp3",
+      "ren": "audio/V6-02-ren.mp3",
+      "src_seconds": 3.7,
+      "ren_seconds": 3.62,
+      "src_voice": "af_sarah",
+      "ren_voice": "em_santa"
+     },
      "check": {
       "findings": [
        {
@@ -3058,8 +3222,8 @@
         "kind": "duration",
         "severity": "high",
         "source": "2 weeks",
-        "rendition": "2 dias",
-        "message": "Changed how long: “2 weeks” became “2 dias”"
+        "rendition": "2 días",
+        "message": "Changed how long: “2 weeks” became “2 días”"
        }
       ],
       "p_faithful": null,
@@ -3071,16 +3235,16 @@
        "p_error": null
       },
       "explanation": {
-       "say": "Re-confirm: Changed how long: “2 weeks” became “2 dias”",
+       "say": "Re-confirm. “2 weeks” became “2 días”.",
        "source_quote": "2 weeks",
        "quote_ok": true,
        "by": "code"
       },
       "ms": {
-       "code": 0.3,
+       "code": 0.7,
        "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
+       "to_decision": 0.7,
+       "total": 0.7
       }
      },
      "check_on_script": {
@@ -3096,8 +3260,8 @@
         "kind": "duration",
         "severity": "high",
         "source": "2 weeks",
-        "rendition": "2 dias",
-        "message": "Changed how long: “2 weeks” became “2 dias”"
+        "rendition": "2 días",
+        "message": "Changed how long: “2 weeks” became “2 días”"
        }
       ]
      },
@@ -3122,24 +3286,31 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V6-03-src.mp3",
+      "ren": "audio/V6-03-ren.mp3",
+      "src_seconds": 4.3,
+      "ren_seconds": 2.73,
+      "src_voice": "ef_dora",
+      "ren_voice": "am_echo"
+     },
      "check": {
       "findings": [
        {
         "type": "omission",
         "kind": "allergy",
         "severity": "high",
-        "source": "alergico",
+        "source": "alérgico",
         "rendition": "",
-        "message": "Not in the interpretation: allergy “alergico”"
+        "message": "Not in the interpretation: allergy “alérgico”"
        },
        {
         "type": "omission",
         "kind": "drug",
         "severity": "high",
-        "source": "codeina",
+        "source": "codeína",
         "rendition": "",
-        "message": "Not in the interpretation: medicine “codeina”"
+        "message": "Not in the interpretation: medicine “codeína”"
        }
       ],
       "p_faithful": null,
@@ -3151,16 +3322,16 @@
        "p_error": null
       },
       "explanation": {
-       "say": "Re-confirm: Not in the interpretation: allergy “alergico”",
-       "source_quote": "alergico",
+       "say": "Re-confirm. Not interpreted: “alérgico”, “codeína”.",
+       "source_quote": "alérgico",
        "quote_ok": true,
        "by": "code"
       },
       "ms": {
-       "code": 0.3,
+       "code": 0.8,
        "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
+       "to_decision": 0.8,
+       "total": 0.8
       }
      },
      "check_on_script": {
@@ -3175,17 +3346,17 @@
         "type": "omission",
         "kind": "allergy",
         "severity": "high",
-        "source": "alergico",
+        "source": "alérgico",
         "rendition": "",
-        "message": "Not in the interpretation: allergy “alergico”"
+        "message": "Not in the interpretation: allergy “alérgico”"
        },
        {
         "type": "omission",
         "kind": "drug",
         "severity": "high",
-        "source": "codeina",
+        "source": "codeína",
         "rendition": "",
-        "message": "Not in the interpretation: medicine “codeina”"
+        "message": "Not in the interpretation: medicine “codeína”"
        }
       ]
      },
@@ -3210,7 +3381,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V6-04-src.mp3",
+      "ren": "audio/V6-04-ren.mp3",
+      "src_seconds": 5.62,
+      "ren_seconds": 4.47,
+      "src_voice": "af_sarah",
+      "ren_voice": "em_santa"
+     },
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -3223,10 +3401,10 @@
       },
       "explanation": null,
       "ms": {
-       "code": 0.4,
+       "code": 0.8,
        "checker": 0.0,
-       "to_decision": 0.4,
-       "total": 0.4
+       "to_decision": 0.8,
+       "total": 0.8
       }
      },
      "check_on_script": {
@@ -3256,7 +3434,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V6-05-src.mp3",
+      "ren": "audio/V6-05-ren.mp3",
+      "src_seconds": 1.9,
+      "ren_seconds": 2.3,
+      "src_voice": "ef_dora",
+      "ren_voice": "am_echo"
+     },
      "check": {
       "findings": [
        {
@@ -3266,14 +3451,6 @@
         "source": "dos",
         "rendition": "",
         "message": "Not in the interpretation: number “dos”"
-       },
-       {
-        "type": "omission",
-        "kind": "warning",
-        "severity": "high",
-        "source": "vomit",
-        "rendition": "",
-        "message": "Not in the interpretation: warning sign “vomit”"
        }
       ],
       "p_faithful": null,
@@ -3285,16 +3462,16 @@
        "p_error": null
       },
       "explanation": {
-       "say": "Re-confirm: Not in the interpretation: number “dos”",
+       "say": "Re-confirm. Not interpreted: “dos”.",
        "source_quote": "dos",
        "quote_ok": true,
        "by": "code"
       },
       "ms": {
-       "code": 0.3,
+       "code": 0.4,
        "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
+       "to_decision": 0.4,
+       "total": 0.4
       }
      },
      "check_on_script": {
@@ -3312,14 +3489,6 @@
         "source": "dos",
         "rendition": "",
         "message": "Not in the interpretation: number “dos”"
-       },
-       {
-        "type": "omission",
-        "kind": "warning",
-        "severity": "high",
-        "source": "vomit",
-        "rendition": "",
-        "message": "Not in the interpretation: warning sign “vomit”"
        }
       ]
      },
@@ -3344,7 +3513,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V6-06-src.mp3",
+      "ren": "audio/V6-06-ren.mp3",
+      "src_seconds": 7.7,
+      "ren_seconds": 6.35,
+      "src_voice": "af_sarah",
+      "ren_voice": "em_santa"
+     },
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -3357,10 +3533,10 @@
       },
       "explanation": null,
       "ms": {
-       "code": 0.5,
+       "code": 1.0,
        "checker": 0.0,
-       "to_decision": 0.5,
-       "total": 0.5
+       "to_decision": 1.0,
+       "total": 1.0
       }
      },
      "check_on_script": {
@@ -3390,7 +3566,14 @@
       "asr": false,
       "asr_ms": null
      },
-     "audio": null,
+     "audio": {
+      "src": "audio/V6-07-src.mp3",
+      "ren": "audio/V6-07-ren.mp3",
+      "src_seconds": 1.88,
+      "ren_seconds": 2.75,
+      "src_voice": "ef_dora",
+      "ren_voice": "am_echo"
+     },
      "check": {
       "findings": [],
       "p_faithful": null,
@@ -3403,10 +3586,10 @@
       },
       "explanation": null,
       "ms": {
-       "code": 0.2,
+       "code": 0.3,
        "checker": 0.0,
-       "to_decision": 0.2,
-       "total": 0.2
+       "to_decision": 0.3,
+       "total": 0.3
       }
      },
      "check_on_script": {
@@ -3425,22 +3608,10 @@
   }
  ],
  "e2e": {
-  "from_audio": {
-   "caught": 16,
-   "errors": 20,
-   "false_alarms": 0,
-   "faithful_turns": 34,
-   "patient_speech_caught": "10/11",
-   "missed": [
-    "V3-02",
-    "V3-03",
-    "V4-02",
-    "V5-07"
-   ],
-   "false_alarm_turns": []
-  },
+  "asr_used": false,
+  "from_audio": null,
   "from_script_text": {
-   "caught": 16,
+   "caught": 17,
    "errors": 20,
    "false_alarms": 0,
    "faithful_turns": 34,
@@ -3448,17 +3619,18 @@
    "missed": [
     "V3-02",
     "V3-03",
-    "V4-02",
-    "V5-07"
+    "V4-02"
    ],
-   "false_alarm_turns": []
+   "false_alarm_turns": [],
+   "notes_on_faithful_turns": []
   },
+  "checker_used": false,
   "wer": {
    "en": null,
    "es": null
   },
-  "ms_median_audio_to_card": 0.3,
-  "ms_p95": 0.6,
+  "ms_median_audio_to_card": null,
+  "ms_p95": null,
   "by_model": {},
   "cost_usd": 0
  }

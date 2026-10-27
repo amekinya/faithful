@@ -192,6 +192,11 @@ NEG_DROP = {"en": [(r"\bdo not\b", "do"), (r"\bdon't\b", "do"), (r"\bdoes not\b"
 DRUG_SWAP = [("ibuprofen", "acetaminophen"), ("acetaminophen", "ibuprofen"), ("Tylenol", "Motrin"), ("Motrin", "Tylenol"), ("penicillin", "amoxicillin"),
              ("ibuprofeno", "acetaminofén"), ("acetaminofén", "ibuprofeno"), ("penicilina", "amoxicilina"), ("aspirina", "ibuprofeno"), ("aspirin", "ibuprofen")]
 GENERIC = [("Tylenol", "acetaminophen"), ("Motrin", "ibuprofen"), ("Advil", "ibuprofen"), ("acetaminofén", "paracetamol"), ("Tylenol", "acetaminofén")]
+# Words that make a number word part of a bigger number: skip those when swapping words and digits.
+_TENS = {"en": "twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand",
+         "es": "veinti\\w*|treinta|cuarenta|cincuenta|sesenta|setenta|ochenta|noventa|ciento|\\w*cientos|mil"}
+_COMPOUND_BEFORE = {l: rf"(?:\b(?:{_TENS[l]}|{'and|point' if l == 'en' else 'y|punto'})[\s-]+|-)$" for l in ("en", "es")}
+_COMPOUND_AFTER = {"en": r"(?:[\s-]+(?:hundred|thousand|point|and a half|and)\b|-)", "es": r"(?:\s+(?:cientos|mil|punto|y)\b|-)"}
 FRAME = {"en": ["She says ", "He says ", "The patient says "], "es": ["Dice el doctor que ", "El doctor dice que ", "Dice que "]}
 
 
@@ -214,12 +219,15 @@ def code_variants(r: str, lang: str, rng: random.Random) -> list[dict]:
     else:
         for n, w in NUM_WORDS[lang].items():
             # "one"/"una" are often an article or pronoun ("una pregunta", "the left one"): only a quantity before a noun it counts
-            pat = rf"(?<![\w]){re.escape(w)}(?![\w])" + (rf"(?=\s+(?:{'|'.join(sorted(S.NOUNS, key=len, reverse=True))})\b)" if n == 1 else "")
-            if not re.search(pat, r):
+            pat = rf"(?<![\w-]){re.escape(w)}(?![\w-])" + (rf"(?=\s+(?:{'|'.join(sorted(S.NOUNS, key=len, reverse=True))})\b)" if n == 1 else "")
+            # never inside a compound number ("twenty-eight", "five hundred", "cuarenta y ocho", "two point five")
+            m = next((m for m in re.finditer(pat, r) if not re.search(_COMPOUND_BEFORE[lang], r[:m.start()])
+                      and not re.match(_COMPOUND_AFTER[lang], r[m.end():])), None)
+            if not m:
                 continue
             other = NUM_WORDS[lang][rng.choice([x for x in NUM_WORDS[lang] if x != n])]
-            errs.append(("code_number", re.sub(pat, other, r, count=1)))
-            oks.append(("code_words_to_digits", re.sub(pat, str(n), r, count=1)))
+            errs.append(("code_number", r[:m.start()] + other + r[m.end():]))
+            oks.append(("code_words_to_digits", r[:m.start()] + str(n) + r[m.end():]))
             break
     for a, b in UNIT_SWAP[lang]:
         v = _sub_once(r, a, b)

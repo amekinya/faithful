@@ -1,20 +1,8 @@
 {
- "from_audio": {
-  "caught": 16,
-  "errors": 20,
-  "false_alarms": 0,
-  "faithful_turns": 34,
-  "patient_speech_caught": "10/11",
-  "missed": [
-   "V3-02",
-   "V3-03",
-   "V4-02",
-   "V5-07"
-  ],
-  "false_alarm_turns": []
- },
+ "asr_used": false,
+ "from_audio": null,
  "from_script_text": {
-  "caught": 16,
+  "caught": 17,
   "errors": 20,
   "false_alarms": 0,
   "faithful_turns": 34,
@@ -22,17 +10,18 @@
   "missed": [
    "V3-02",
    "V3-03",
-   "V4-02",
-   "V5-07"
+   "V4-02"
   ],
-  "false_alarm_turns": []
+  "false_alarm_turns": [],
+  "notes_on_faithful_turns": []
  },
+ "checker_used": false,
  "wer": {
   "en": null,
   "es": null
  },
- "ms_median_audio_to_card": 0.3,
- "ms_p95": 0.6,
+ "ms_median_audio_to_card": null,
+ "ms_p95": null,
  "by_model": {},
  "cost_usd": 0
 }

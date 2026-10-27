@@ -189,6 +189,8 @@ def _cardinal(W: list[str], i: int, lang: str) -> tuple[float, int] | None:
                 last = "and"
             elif w == "-" and last == "tens" and j + 1 < len(W) and W[j + 1] in small and small[W[j + 1]] < 10:
                 last = "hyphen"
+            elif w == "-" and last in ("small", "tens") and j + 1 < len(W) and W[j + 1] in ("hundred", "thousand"):
+                pass
             else:
                 break
         else:
@@ -197,6 +199,8 @@ def _cardinal(W: list[str], i: int, lang: str) -> tuple[float, int] | None:
             elif w in tens and (not seen or last in ("hundred", "mil")):
                 cur += tens[w]; seen, last = True, "tens"
             elif w in small and (not seen or last in ("hundred", "mil", "y")):
+                if last in ("hundred", "mil") and j + 1 < len(W) and W[j + 1] in ("veces", "vez"):
+                    break                                            # "trescientos dos veces" = 300, twice
                 cur += small[w]; seen, last = True, "small"
             elif w == "y" and last == "tens" and j + 1 < len(W) and W[j + 1] in small and small[W[j + 1]] < 10:
                 last = "y"
@@ -234,7 +238,10 @@ def numbers(toks: list[tuple[str, int, int]], lang: str) -> list[Num]:
         extra: list[Num] = []
         if w[0].isdigit():
             vals = _digits(w, lang)
-            if vals:
+            if vals and len(vals) == 1 and w_(i + 1) in ("mil", "thousand"):
+                vals = [vals[0] * 1000]
+                got = Num(vals[0], i, i + 2)
+            elif vals:
                 got = Num(vals[0], i, i + 1, clock=":" in w)
                 extra = [Num(v, i, i + 1) for v in vals[1:]]
                 nxt = w_(i + 1)
@@ -253,7 +260,10 @@ def numbers(toks: list[tuple[str, int, int]], lang: str) -> list[Num]:
             continue
         j = got.i1
         # spoken decimals: "two point five", "cero punto uno dos cinco"
-        if w_(j) in ("point", "punto") and w_(j + 1) in DIGIT_WORDS:
+        if w_(j) in ("point", "punto") and re.fullmatch(r"\d{1,3}", w_(j + 1)) and not got.clock:
+            got = Num(got.value + float("0." + w_(j + 1)), got.i0, j + 2)
+            j = got.i1
+        elif w_(j) in ("point", "punto") and w_(j + 1) in DIGIT_WORDS:
             digits, j = "", j + 1
             while w_(j) in DIGIT_WORDS:
                 digits += str(DIGIT_WORDS[w_(j)]); j += 1
@@ -278,7 +288,29 @@ def numbers(toks: list[tuple[str, int, int]], lang: str) -> list[Num]:
                 and not any(nm.i0 <= i < nm.i1 or nm.i1 == i for nm in out):
             out.append(Num(1.5, i, i + 3))
     out.sort(key=lambda x: x.i0)
+    # a year read in pairs ("nineteen seventy-eight", "twenty twenty-five") after a month or "in"/"since"/"born"
+    if lang == "en":
+        merged: list[Num] = []
+        for nm in out:
+            if merged:
+                p = merged[-1]
+                ctx_ok = any(x in MONTHS for x in W[max(0, p.i0 - 5):p.i0]) or w_(p.i0 - 1) in ("in", "since", "born", "year")
+                if ctx_ok and nm.i0 == p.i1 and 10 <= p.value <= 20 and p.value == int(p.value) and 0 <= nm.value <= 99 \
+                        and not W[p.i0][0].isdigit() and not W[nm.i0][0].isdigit() and p.i1 - p.i0 == 1:
+                    merged[-1] = Num(p.value * 100 + nm.value, p.i0, nm.i1)
+                    continue
+            merged.append(nm)
+        out = merged
     return out
+
+
+MONTHS = {"january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december",
+          "enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "setiembre", "octubre", "noviembre", "diciembre"}
+EN_ORD = {"first": 1, "second": 2, "third": 3, "fourth": 4, "fifth": 5, "sixth": 6, "seventh": 7, "eighth": 8, "ninth": 9, "tenth": 10,
+          "eleventh": 11, "twelfth": 12, "thirteenth": 13, "fourteenth": 14, "fifteenth": 15, "sixteenth": 16, "seventeenth": 17,
+          "eighteenth": 18, "nineteenth": 19, "twentieth": 20, "thirtieth": 30}
+DUR_PREP = {"for", "in", "within", "after", "over", "about", "than", "least", "past", "last", "nearly", "almost", "around",
+            "under", "only", "just", "once", "every", "each", "maybe", "roughly", "approximately", "another", "half"}
 
 
 def _en_word_number(W: list[str], i: int) -> Num | None:
@@ -297,18 +329,36 @@ def _en_word_number(W: list[str], i: int) -> Num | None:
             r = _cardinal(W, i, "en")
             return Num(r[0], i, r[1]) if r else None
     if w in ("a", "an"):
-        per = prv in ("times", "twice", "once", "x", "per") or prv in CTX_ONLY or prv in UNIT_WORDS or (prv and prv[0].isdigit())
+        per = prv in ("times", "twice", "once", "x", "per") or prv in CTX_ONLY or prv in UNIT_WORDS or (prv and prv[0].isdigit()) \
+            or prv in EN_SMALL or prv in EN_TENS or prv in ("hundred", "thousand", "half")
         if prv in ("half", "quarter", "third", "eighth", "of"):
             return None
-        if (nxt in UNIT_WORDS or nxt in CTX_ONLY) and not per:
+        if (nxt in UNIT_WORDS or (nxt in CTX_ONLY and nxt != "x")) and not per:
             return Num(1, i, i + 1)
-        if nxt in TIME_WORDS and not per:
+        if nxt in ("full", "whole", "entire", "single") and nxt2 in TIME_WORDS and (prv in DUR_PREP or prv in ("", ".", "?", "!", ",", "¿")):
+            return Num(1, i, i + 1)
+        # "a day" is a length of time only after for/in/within/about... or before "ago"; otherwise it's a rate ("two liters a day")
+        clause_start = prv in ("", ".", "?", "!", ";", ":", "—", "-", ",", "and", "or")
+        if prv == "in" and any(W[k] in UNIT_WORDS or W[k] in CTX_ONLY for k in range(max(0, i - 4), i - 1)):
+            return None                                                      # "four puffs in a day" is a rate
+        if nxt in TIME_WORDS and not per and (prv in DUR_PREP or clause_start or nxt2 in ("ago", "later", "earlier", "before", "after", "old", "away")
+                                              or W[i + 2:i + 5] == ["and", "a", "half"]):
             return Num(1, i, i + 1)
         return None
+    if w == "both" and "and" not in W[i + 1:i + 7] and prv not in ("you", "them", "us", "we", "they") \
+            and ((nxt.endswith("s") and nxt.isalpha() and nxt not in ("is", "was", "has", "does", "says")) or nxt in ("of", "feet", "teeth")
+                 or (not nxt.isalpha() and prv in ("to", "of", "for", "with", "on", "in"))):
+        return Num(2, i, i + 1)                                               # "both allergies" = "las dos alergias"
+    if w in EN_ORD and (prv in MONTHS or (prv == "the" and nxt == "of" and nxt2 in MONTHS)):
+        return Num(EN_ORD[w], i, i + 1)                                        # "February third", "the third of February"
+    if w in ("twenty", "thirty") and nxt == "-" and nxt2 in EN_ORD and EN_ORD[nxt2] < 10 and (prv in MONTHS or prv == "the"):
+        return Num(EN_TENS[w] + EN_ORD[nxt2], i, i + 3)
     if w == "half":
         if prv in ("a", "an", "and", "one"):
             return None
         if nxt in ("a", "an"):
+            return Num(0.5, i, i + 2)
+        if nxt == "of" and nxt2 in ("a", "an", "the", "one", "his", "her", "your"):
             return Num(0.5, i, i + 2)
         if _is_noun(nxt):
             return Num(0.5, i, i + 1)
@@ -341,6 +391,12 @@ def _es_word_number(W: list[str], i: int) -> Num | None:
     w = W[i]
     prv = W[i - 1] if i else ""
     nxt = W[i + 1] if i + 1 < n else ""
+    if w in ("ambos", "ambas"):
+        return Num(2, i, i + 1)
+    if w == "dos" and i >= 3 and W[i - 3] in ("cualquiera", "ninguna", "ninguno", "cual", "una", "uno") and W[i - 2] == "de":
+        return None                                                          # "cualquiera de las dos" = either
+    if w == "primero" and nxt == "de" and i + 2 < n and W[i + 2] in MONTHS:
+        return Num(1, i, i + 1)
     if w in ("un", "una", "uno"):
         if nxt in ("cuarto", "tercio", "octavo", "medio"):                    # un cuarto (de tableta)
             j = i + 2
@@ -352,6 +408,8 @@ def _es_word_number(W: list[str], i: int) -> Num | None:
         if nxt == "mil":
             r = _cardinal(W, i, "es")
             return Num(r[0], i, r[1]) if r else None
+        if nxt in TIME_WORDS and prv in ("en", "por", "al") and any(W[k] in UNIT_WORDS or W[k] in CTX_ONLY for k in range(max(0, i - 4), i - 1)):
+            return None                                                      # "cuatro dosis en un día" is a rate
         if _is_noun(nxt) or (nxt == "y" and W[i + 2:i + 3] in (["medio"], ["media"])):
             return Num(1, i, i + 1)
         return None                                                          # an article: "una pregunta", "tome una"
@@ -418,25 +476,52 @@ DRUGS = {
 WARNINGS = {
     "emergency": r"emergency(?: room)?|\ber\b|urgencias|sala de emergencias?|emergencias?",
     "911": r"911|nine one one|nueve uno uno|novecientos once",
-    "call": r"\bcall(?:ing)?\b|(?<!se )\bllam(?:e|enos|ar)\b",
-    "return": r"come back|return (?:to|if|here|right|in|for)|go back to the|regres(?:e|ar|en)\b|vuelva(?! a [a-z]+(?:ar|er|ir)(?:se|lo|la|le)?\b)|volver(?! a [a-z]+(?:ar|er|ir)\b)",
-    "breathing": r"(?:trouble|difficulty|hard time|problems?|struggling) breathing|hard to breathe|can'?t breathe|short(?:ness)? of breath|"
-                 r"dificultad para respirar|no puede respirar|le cuesta respirar|le falta el aire|falta de aire|respira con dificultad",
+    # an instruction to call ("call us if...", "llámenos"), not "we'll call you with the result" / "le llamamos"
+    "call": r"\bcall(?:ing)? (?:us|me|911|the (?:doctor|clinic|office|nurse|pediatrician|ambulance)|your (?:doctor|pediatrician)|an ambulance|"
+            r"right away|immediately|if|when|first|back|our)\b|\bcall\b(?=\s*(?:[.,;!?—-]|$))|let (?:us|me|the doctor) know|contact us|phone us|"
+            r"\b(?:llame|llamen|llamenos|llameme|llamennos|llamar(?:nos|me|le)?|llamandonos|avis(?:e|enos|eme|ennos|ar|arnos|arme))\b",
+    "return": r"come back|go back|return(?=\s*[?.!,]|\s+(?:to|if|here|right|in|for|on|immediately|tomorrow)\b)|go back to the|regres(?:e|ar|en|o|a)\b|vuelva(?! a [a-z]+(?:ar|er|ir)(?:se|lo|la|le)?\b)|volver(?! a [a-z]+(?:ar|er|ir)\b)",
+    "breathing": r"(?:trouble|difficulty|hard time|problems?|struggling|struggles?) (?:to )?breath(?:e|ing)|hard to breathe|can'?t breathe|short(?:ness)? of breath|"
+                 r"(?:dificultad|problemas?) (?:para|al) respirar|no puede respirar|le cuesta (?:trabajo )?respirar|le falta el aire|falta de aire|respira con dificultad|"
+                 r"batall\w* (?:para|pa) respirar|(?:can'?t|couldn'?t|unable to) (?:get enough air|catch (?:his|her|my|your) breath)",
     "chest pain": r"chest pain|pain in (?:the|his|her|your) chest|dolor (?:de|en el) pecho", "fever": r"fever|temperature|fiebre|calentura|temperatura",
-    "bleeding": r"bleed(?:ing|s)?|bloody|blood in (?:the |his |her |your )?(?:urine|stool|stools|poop|vomit)|black stools?|"
-                r"sangrado|sangra(?:ndo)?\b|sangre en (?:la |el |las |los )?(?:orina|heces|popo|excremento|vomito)|con sangre|heces negras|excremento negro",
-    "rash": r"rash|hives|[sz]arpullido|ronchas|erupcion", "swelling": r"swell(?:ing|ed|s)?|hinchaz[oó]n|hinchad[oa]|inflamad[oa]",
-    "vomiting": r"vomit(?:ing|s|ed)?|thr(?:ew|ow(?:s|ing)?) up|vomit(?:o|a|ando|os)|devolv",
-    "fainting": r"faint(?:ing|ed|s)?|pass(?:es|ed)? out|black(?:ed)? out|desmay", "dizzy": r"dizz(?:y|iness)|light-?headed|mare(?:o|ad[oa]|os)",
-    "seizure": r"seizures?|convulsi(?:on|ones)|ataques?", "unresponsive": r"unconscious|won'?t wake|unresponsive|inconsciente|no despierta|no reacciona",
+    "bleeding": r"bleed(?:ing|s)?|bled\b|bloody|nosebleeds?|blood in (?:the |his |her |your |my )?(?:urine|stool|stools|poop|vomit|pee)|black stools?|"
+                r"sangrado|sangr(?:a|an|ar|o)\b|sangrando|sangre en (?:la |el |las |los |su )?(?:orina|heces|popo|excremento|vomito|pipi)|con sangre|heces negras|excremento negro",
+    "rash": r"rash|hives|[sz]arpullido|salpullido|ronchas|erupcion", "swelling": r"swell(?:ing|ed|s)?|swollen|hinch(?:azon|ad[oa]s?|a|an|o|e|en|arse|ando)\b|inflamad[oa]",
+    "vomiting": r"vomit(?:ing|s|ed)?|thr(?:ew|ows?|owing) (?:\w+ ){0,2}up|vomit(?:o|a|ando|os|e|ar|an)\b|devolv",
+    "fainting": r"faint(?:ing|ed|s)?|pass(?:es|ed)? out|black(?:ed)? out|desmay|perd(?:io|ido|er|ió|e) el conocimiento|loses? consciousness|lost consciousness",
+    "dizzy": r"dizz(?:y|iness)|light-?headed|mare(?:o|ad[oa]|os|e|a|an|arse)\b",
+    "seizure": r"seizures?|convulsi(?:on|ones)|ataques?", "unresponsive": r"unconscious|(?:won'?t|will not|doesn'?t|does not|can'?t|cannot) (?:want to )?wake|unresponsive|inconsciente|no despierta|no reacciona|no (?:se )?quiere despertar|hard to wake|"
+                     r"(?:dificil|cuesta(?: trabajo)?|trabajo) (?:de )?despertar|no (?:se )?despierta",
     "pregnant": r"pregnan(?:t|cy)|embarazad[ao]|embarazo",
     "pain": r"\bpain\b|hurts?|\bdolor\b|\bduele\b",
 }
+WARNING_MEDIUM: set[str] = set()   # warning signs whose change is only a note (none at present)
 ALLERGY = r"allerg(?:y|ies|ic)|alerg(?:ia|ias|ico|ica|icos|icas)"
-NEGATORS_EN = {"not", "no", "never", "without", "none", "nothing", "nobody", "neither", "nor", "cannot", "avoid", "stop", "quit"}
-NEGATORS_ES = {"no", "nunca", "jamas", "sin", "nada", "nadie", "ningun", "ninguna", "ninguno", "ni", "tampoco", "evite", "evitar",
-               "suspenda", "suspender"}
-ES_CONCORD = {"nada", "nunca", "jamas", "nadie", "ningun", "ninguna", "ninguno", "ni", "tampoco"}  # "no ... nada" is one negation
+# Negation is compared by presence, sentence by sentence, not by counting words: languages negate differently ("no food,
+# no water, nothing" vs "no le dé nada de comer ni de tomar"). Each negating word gets a class:
+#   verbal   negates a verb or noun ("not", "don't", "never", "no" + word, "nunca")
+#   nominal  a negative pronoun or connector ("nothing", "none", "nada", "ninguna", "ni")
+#   answer   a bare "No," / "No." answering a question
+#   weak     "without", "sin", "forget", "le falta": often a paraphrase of a plain "no", never flagged on its own
+#   hardly   "hardly", "barely", "casi no", "apenas": flagged only when the other side has no negation at all
+#   stop     "stop", "avoid", "deje de", "suspenda", "evite"
+#   dontstop a negated stop ("don't stop", "no deje de", "no lo suspenda"), which means "keep going"
+NEG_VERBAL_EN = {"not", "no", "never", "cannot"}
+NEG_NOMINAL_EN = {"none", "nothing", "nobody", "neither", "nor", "nowhere"}
+NEG_WEAK_EN = {"without", "forget", "forgets", "forgot", "forgotten", "forgetting"}
+NEG_HARDLY_EN = {"hardly", "barely", "scarcely", "rarely", "seldom"}
+STOP_EN = {"stop", "stops", "stopped", "stopping", "quit", "quits", "quitting", "avoid", "avoids", "avoided", "avoiding",
+           "discontinue", "discontinued", "discontinuing", "skip", "skips", "skipped", "skipping"}
+STOP_EN_OBJ = {"the", "his", "her", "your", "their", "my", "it", "them", "that", "this", "these", "those", "all", "any", "a", "an"}
+NEG_VERBAL_ES = {"no", "nunca", "jamas"}
+NEG_NOMINAL_ES = {"nada", "nadie", "ningun", "ninguna", "ninguno", "ningunas", "ningunos", "ni", "tampoco"}
+NEG_WEAK_ES = {"sin", "apenas"}
+STOP_ES = {"salte", "saltar", "saltarse", "saltes", "saltarme", "saltarle", "saltandose", "saltense"}
+STOP_ES_RX = re.compile(r"(?:suspend|evit)(?:a|e|o|as|es|an|en|ar|er|ido|io|iendo|ando)(?:lo|la|los|las|le|les|se)?")
+DEJAR = {"deje", "deja", "dejar", "dejen", "dejo", "dejes"}
+PARAR = {"pare", "parar", "paren", "pararle", "pararlo"}
+LACK_ES = {"falta", "faltaba", "falto", "faltan", "faltaban", "faltar"}
 TIMING = [
     (r"with (?:food|meals|a meal)|after (?:eating|meals|a meal)|con (?:la |las )?comidas?|con (?:los )?alimentos|despues de comer|con cada comida", "with_food"),
     (r"(?:on an )?empty stomach|en ayunas|(?:con el )?estomago vacio", "empty_stomach"),
@@ -450,8 +535,10 @@ TIMING_CONFLICT = {frozenset(("with_food", "empty_stomach")), frozenset(("before
 PRN = r"as needed|if needed|when needed|as necessary|if necessary|when necessary|if (?:he|she|you|they) needs? (?:it|them)|when (?:he|she|you|they) needs? (?:it|them)|prn|" \
       r"si (?:lo |la |los |las |le |les )?necesita|cuando (?:lo |la |los |las |le |les )?necesite|cuando sea necesario|si es necesario|si (?:lo|la) necesita|" \
       r"segun sea necesario|si hace falta|cuando haga falta"
-LIMIT_MAX = r"(?:no|not) more than|never more than|(?:do not|don't|never|not to) (?:\w+ ){0,2}more than|no (?:\w+ ){0,2}mas de|nunca mas de|maximum(?: of)?|max\b|(?<!got )(?<!get )(?<!gets )(?<!went )(?<!goes )(?<!rose )up to(?= #\d)|at most|como maximo|maximo(?: de)?|hasta un maximo de|hasta(?= #\d)|" \
-            r"(?:do not|don't|no) (?:exceed|pass|go over)|no (?:exceda|pase de|sobrepase)"
+LIMIT_MAX = r"(?:no|not) (?:\w+ ){0,2}more (?:often )?than(?= #\d| every| each| a\b| an\b| one\b| the\b| \w+ (?:doses?|times?|pills?|tablets?|puffs?))|never more (?:often )?than|(?:do not|don't|never|not to) (?:\w+ ){0,2}more than|no (?:\w+ ){0,2}mas de|nunca mas de|maximum(?: of)?|max\b|(?<!got )(?<!get )(?<!gets )(?<!went )(?<!goes )(?<!rose )up to(?= #\d)|at most|como maximo|maximo(?: de)?|hasta un maximo de|(?<!llega )(?<!llego )(?<!sube )(?<!subio )(?<!subir )(?<!llegar )(?<!llegan )(?<!suben )hasta(?= #\d)|" \
+            r"(?:do not|don't|no|never) (?:\w+ ){0,1}(?:exceed|pass|go over|go above)|(?:no|nunca|jamas) (?:\w+ ){0,2}(?:exceda|exceder|excedas|pase de|pasar de|pasarse de|sobrepase|sobrepasar)|" \
+            r"no mas(?= (?:#\d|una?\b|uno\b))|(?:no|nunca|jamas) mas (?:seguido|frecuente|a menudo|seguidas?) (?:que|de)|" \
+            r"sin (?:pasar(?:se)?|exceder|sobrepasar) (?:de )?"
 LIMIT_MIN = r"at least|no less than|minimum(?: of)?|por lo menos|al menos|minimo(?: de)?|como minimo"
 BODY_EN = r"(?:side|arm|leg|ear|eye|hand|foot|knee|hip|shoulder|kidney|lung|breast|ankle|wrist|elbow|finger|toe|thumb|thigh|flank|lower|upper|chest|one|quadrant|cheek|temple|heel|calf|shin)"
 
@@ -464,7 +551,8 @@ def _side_slots(t: str, lang: str) -> list[Slot]:
     if lang == "en":
         pats = [rf"\b(left|right)\s+(?:\w+\s+)?{BODY_EN}\b", r"\b(?:on|to|in|at) (?:the|his|her|your|my|their) (left|right)\b",
                 r"\b(?:the|his|her|your|my|their) (left|right)\b(?!\s*(?:now|away|here|there|thing|answer|time|person|place|way|to\b))",
-                r"\bturn (left|right)\b"]
+                r"\bturn (left|right)\b", r"\b(left|right)\b(?= (?:or|and) (?:the )?(?:left|right)\b)",
+                r"\b(?:left|right) (?:or|and) (?:the )?(left|right)\b"]
     else:
         pats = [r"(?<!todo )\b(izquierd[oa]s?|derech[oa]s?)\b(?! a (?:la|las|los|el|un|una|recibir|tener|ser)\b)"]
     for p in pats:
@@ -474,39 +562,151 @@ def _side_slots(t: str, lang: str) -> list[Slot]:
                 continue
             seen.add(pos)
             w = m.group(1)
-            out.append(Slot("side", "left" if w.startswith(("left", "izq")) else "right", m.group(0), pos=m.start()))
+            pair = re.match(r"(?:left|right) (?:or|and) ", m.group(0)) is not None   # "left or right": the second word
+            out.append(Slot("side", "left" if w.startswith(("left", "izq")) else "right", w if pair else m.group(0),
+                            pos=m.start(1) if pair else m.start()))
     return out
 
 
 def _negations(toks: list[tuple[str, int, int]], lang: str, exclude: list[tuple[int, int]] = ()) -> list[Slot]:
-    """Each negating word, counted. Spanish negative concord ('no tiene nada', 'no ... ni') counts once. 'stop', 'avoid',
-    'deje de' and 'evite' count as negations in both languages, so 'don't stop' (2) vs 'deje de' (1) is caught."""
-    out: list[Slot] = []
+    """Every negating word with its class (see NEG_* above) as the slot value."""
     W = [x[0] for x in toks]
-    clause_has_no, last_no = False, -9
-    for k, (w, s, e) in enumerate(toks):
-        if w in (".", "?", "!", ";", ",") and w != ",":
-            clause_has_no = False
+    n = len(W)
+    w_ = lambda k: W[k] if 0 <= k < n else ""  # noqa: E731
+    punct = {",", ".", "!", "?", ";", ":", "-", "—", "–", "…", ")"}
+    openers = {".", "!", "?", ";", ":", "—", "–", "-", "¿", "¡", '"', "“", "(", "…"}
+    fillers = {"oh", "ah", "uh", "um", "well", "bueno", "pues", "ay", "eh", "este", "mmm", "hmm", "okay", "ok"}
+
+    def answer_at(k: int) -> bool:
+        """A bare 'No,' / 'No.' that opens a sentence (after an optional 'oh', 'bueno', ...) answers a question, and so
+        does a reported one ("she says no,"). A 'no' after other words ("fiebre no", "creo que no", "fever, no") negates them."""
+        if not (w_(k + 1) in punct or k + 1 == n):
+            return False
+        if w_(k - 1) in ("says", "said", "say", "dice", "dijo", "decir", "answers", "answered", "responde", "contesta"):
+            return True
+        j, conj = k - 1, False
+        while j >= 0 and (W[j] in fillers or W[j] in (",", "and", "but", "y", "pero", "no")):
+            conj = conj or W[j] in ("and", "but", "y", "pero")
+            if conj and W[j] == ",":
+                return True                                  # "..., y no, fiebre no ha tenido"
+            j -= 1
+        return j < 0 or W[j] in openers
+
+    def in_question(k: int) -> bool:
+        """Inside the asking part of a question ("¿no hay problema?", "isn't it?"): negation there is rhetorical, so it is
+        weak. Not a statement with a tag ("Don't give him aspirin, okay?")."""
+        j = k + 1
+        while j < n and W[j] not in (".", "!", "?", ",", ";"):
+            j += 1
+        if j >= n or W[j] != "?":
+            return False
+        if lang == "es":
+            i = k - 1
+            while i >= 0 and W[i] not in (".", "!", "?", ",", ";", "¿"):
+                i -= 1
+            return i >= 0 and W[i] == "¿"
+        return True
+
+    found: list[list] = []   # [class, k]
+    for k, w in enumerate(W):
+        cls = ""
         if lang == "en":
-            hit = w in NEGATORS_EN or w.endswith("n't")
-        else:
-            hit = w in NEGATORS_ES or (w in ("deje", "deja", "dejar", "dejen") and (
-                (k + 1 < len(W) and W[k + 1] == "de")
-                or (k + 1 < len(W) and W[k + 1] in ("el", "la", "los", "las", "su", "sus", "ese", "esa", "esta", "este")
-                    and any(_is_medicine(x) for x in W[k + 2:k + 4]))
-                or (k and W[k - 1] in ("lo", "la", "los", "las", "le", "les")))) \
-                or (w == "pare" and k + 1 < len(W) and W[k + 1] == "de")
-            if hit and w in ES_CONCORD and clause_has_no and k - last_no >= 2:   # "no tiene nada": one negation
+            if w == "no" and w_(k + 1) == "?":
+                continue                                     # tag question: "..., no?"
+            if (w == "no" and w_(k + 1) == "problem") or (w in ("don't", "do") and W[k + 1:k + 2] == ["worry"]) \
+                    or (w == "not" and w_(k - 1) == "do" and w_(k + 1) == "worry"):
+                continue                                     # "no problem", "don't worry"
+            if w == "not" and w_(k - 1) in ("course", "certainly", "definitely", "absolutely", "probably") and (w_(k + 1) in punct or k + 1 == n):
+                found.append(["answer", k])                  # "of course not." answers like "No."
                 continue
-            if hit and w in ("no", "nunca", "jamas", "tampoco") and not (k + 1 < len(W) and W[k + 1] in (",", ".", "!", "?")):
-                clause_has_no, last_no = True, k   # "No, ..." on its own is an answer, not a negated verb
-        if hit and not any(a <= s < b for a, b in exclude):
-            out.append(Slot("negation", "neg", w, pos=s))
+            if w in NEG_VERBAL_EN or w.endswith("n't"):
+                cls = "answer" if w == "no" and answer_at(k) else "verbal"
+            elif w in NEG_NOMINAL_EN:
+                cls = "nominal"
+            elif w in NEG_WEAK_EN:
+                cls = "weak"
+            elif w in NEG_HARDLY_EN:
+                cls = "hardly"
+            elif w in STOP_EN and (w.startswith(("avoid", "skip")) or w_(k + 1) in STOP_EN_OBJ or w_(k + 1).endswith("ing")
+                                   or _is_medicine(w_(k + 1)) or w_(k - 1) in ("don't", "not", "never", "dont")):
+                cls = "stop"                                 # an instruction ("stop the medicine"), not "it stopped quickly"
+        else:
+            if w == "no" and w_(k + 1) == "?":
+                continue                                     # "¿verdad?, ¿no?"
+            if w == "no" and (W[k + 1:k + 3] in (["hay", "problema"], ["pasa", "nada"], ["se", "preocupe"], ["te", "preocupes"], ["hay", "de"])
+                              or W[k + 1:k + 4] == ["se", "le", "olvide"]):
+                continue                                     # "no hay problema" = fine, "no hay de qué" = you're welcome
+            if w == "no" and w_(k - 1) == "si" and (w_(k + 1) in punct or k + 1 == n):
+                continue                                     # "si no," = otherwise
+            if w == "nada" and w_(k - 1) in ("de", "por") and (w_(k + 1) in punct or k + 1 == n):
+                continue                                     # "de nada" = you're welcome
+            if w in NEG_VERBAL_ES:
+                if w_(k - 1) == "casi":
+                    cls = "hardly"                           # "casi no" = hardly
+                else:
+                    cls = "answer" if w == "no" and answer_at(k) else "verbal"
+            elif w == "nada" and w_(k + 1) == "mas":
+                cls = "weak"                                 # "nada más" = only / nothing else
+            elif w in NEG_NOMINAL_ES:
+                cls = "hardly" if w_(k - 1) == "casi" else "nominal"
+            elif w == "apenas":
+                cls = "hardly"
+            elif w in NEG_WEAK_ES or w.startswith("olvid"):
+                cls = "weak"
+            elif w in STOP_ES or STOP_ES_RX.fullmatch(w):
+                cls = "stop"
+            elif w in LACK_ES:
+                cls = "weak"                                 # "le falta el aire" = he can't get enough air
+            elif w in DEJAR and (w_(k + 1) == "de"
+                                 or (w_(k + 1) in ("el", "la", "los", "las", "su", "sus", "ese", "esa", "esta", "este")
+                                     and any(_is_medicine(x) for x in W[k + 2:k + 4]))
+                                 or (w_(k - 1) in ("lo", "la", "los", "las", "le", "les")
+                                     and (w_(k + 1) in punct or k + 1 == n or w_(k + 1) in ("y", "o", "si", "hasta", "cuando", "ya", "nunca")))):
+                cls = "stop"                                 # "no lo deje." / "déjelo de dar"; not "la dejo tapada"
+            elif w.startswith("quit") and w_(k - 1) in ("lo", "la", "los", "las") and w_(k - 2) == "se":
+                cls = "stop"                                 # "se la quito" = I stop giving it
+            elif w in PARAR and w_(k + 1) in ("de", "el", "la", "los", "las", "su", "sus"):
+                cls = "stop"
+            if w in ("ninguna", "ningun") and w_(k - 1) == "de" and w_(k + 1) in ("manera", "forma", "modo"):
+                cls = "verbal"                               # "de ninguna manera" = by no means
+        if cls in ("verbal", "nominal", "answer", "hardly") and in_question(k):
+            cls = "weak"
+        if cls:
+            found.append([cls, k])
+    # a negated stop means "keep going": "don't stop", "do not stop", "no lo deje de tomar", "nunca suspenda";
+    # a negated 'forget' means "remember": both words drop out
+    for i, (cls, k) in enumerate(found):
+        if cls == "weak" and (W[k].startswith(("olvid", "forget", "forgot"))):
+            for j in range(i - 1, -1, -1):
+                c2, k2 = found[j]
+                if k - k2 > 3:
+                    break
+                if c2 == "verbal" and not any(x in punct for x in W[k2 + 1:k]):
+                    found[i][0] = found[j][0] = ""
+                    break
+            continue
+        if cls != "stop":
+            continue
+        for j in range(i - 1, -1, -1):
+            c2, k2 = found[j]
+            if k - k2 > 4:
+                break
+            if c2 == "verbal" and not any(x in punct for x in W[k2 + 1:k]):
+                found[i][0] = "dontstop"
+                found[j][0] = ""
+                break
+    out = []
+    for cls, k in found:
+        s_ = toks[k][1]
+        if cls and not any(a <= s_ < b for a, b in exclude):
+            out.append(Slot("negation", cls, W[k], pos=s_))
     return out
 
 
 MEDICINE_WORDS = {"medicina", "medicinas", "medicamento", "medicamentos", "pastilla", "pastillas", "tableta", "tabletas", "tratamiento",
-                  "jarabe", "inyecciones", "inhalador", "crema", "gotas"}
+                  "jarabe", "inyecciones", "inhalador", "crema", "gotas", "terapia", "fisioterapia", "antibiotico", "dosis", "insulina",
+                  "medicine", "medication", "medications", "medicines", "pills", "pill", "tablets", "tablet", "treatment", "therapy",
+                  "antibiotic", "antibiotics", "inhaler", "drops", "doses", "dose", "insulin"}
 
 
 def _is_medicine(w: str) -> bool:
@@ -574,32 +774,41 @@ def extract(text: str, lang: str | None = None) -> list[Slot]:
         used.update(num_ids(m))
 
     # How often. Dosing intervals and "N times a day" carry their own numbers.
-    for m in re.finditer(rf"(?<![a-z#])(?:every|cada|each)\s+(?:(#\d+)(?:\s*(?:-|to|or|a|o)\s*(#\d+))?\s+)?({_FU})\b", ns):
+    for m in re.finditer(rf"(?<![a-z#])(?:every|cada|each)\s+(?:(#\d+)(?:\s*(?:-|to|or|a|o|u)\s*(#\d+))?\s+)?({_FU})\b", ns):
         lo = _fmt(nums[int(m.group(1)[1:])].value) if m.group(1) else "1"
         hi = ("-" + _fmt(nums[int(m.group(2)[1:])].value)) if m.group(2) else ""
-        add("frequency", f"q{lo}{hi}{FREQ_UNIT[m.group(3)]}" if (m.group(1) or FREQ_UNIT[m.group(3)] != "d") else "daily", m)
+        add("frequency", f"q{lo}{hi}{FREQ_UNIT[m.group(3)]}" if (m.group(1) or FREQ_UNIT[m.group(3)] != "d") else "1x/day", m)
+    # "6 hours apart", "con 6 horas de diferencia": the same dosing interval
+    for m in re.finditer(r"(#\d+)(?:\s*(?:-|to|or|a|o|u)\s*(#\d+))?\s+(hours?|horas)\s+(?:apart|between (?:doses|each dose|them)|de diferencia|entre (?:cada )?(?:dosis|toma|tomas|una y otra))\b", ns):
+        if int(m.group(1)[1:]) in used:
+            continue
+        hi = ("-" + _fmt(nums[int(m.group(2)[1:])].value)) if m.group(2) else ""
+        add("frequency", f"q{_fmt(nums[int(m.group(1)[1:])].value)}{hi}h", m)
     no_neg: list[tuple[int, int]] = []
     for m in re.finditer(r"(?<![a-z])(?:every other day|every second day|cada tercer dia|every third day|(?:un|1) dia si,? y (?:un dia|otro|1 dia) no|"
                          r"dia (?:de por medio|por medio)|cada otro dia)", t):
         slots.append(Slot("frequency", "q3d" if "tercer" in m.group(0) or "third" in m.group(0) else "q2d", m.group(0), pos=m.start()))
         no_neg.append((m.start(), m.end()))
         used.update(k for k, nm in enumerate(nums) if m.start() <= toks[nm.i0][1] < m.end())
-    for m in re.finditer(r"(#\d+)\s+(?:times?\s+|x\s*|veces\s+|vez\s+)?(?:(?:a|per|each|al|por|cada|a la|en el|en la)\s+)(day|dia|week|semana|month|mes)\b", ns):
+    for m in re.finditer(r"(#\d+)\s+(?:times?\s+|x\s*|veces\s+|vez\s+|(?:nights|days|mornings|evenings|noches|dias|mananas|tardes)\s+)?"
+                         r"(?:(?:a|per|each|al|por|cada|a la|en el|en la)\s+)(day|dia|week|semana|month|mes)\b(?!\s+(?:siguiente|anterior|before|after|next))", ns):
         k = int(m.group(1)[1:])
         if k in used:
             continue
         unit = {"day": "day", "dia": "day", "week": "week", "semana": "week", "month": "month", "mes": "month"}[m.group(2)]
-        add("frequency", f"{_fmt(nums[k].value)}x/{unit}", m)
+        add("frequency", f"{_fmt(nums[k].value)}x/{unit}", m, ctx="said")
     for m in re.finditer(r"(#\d+)\s+(?:times?\s+|veces\s+)?(daily|diari[oa]s?|weekly|semanal(?:es)?)\b", ns):
         k = int(m.group(1)[1:])
         if k not in used:
-            add("frequency", f"{_fmt(nums[k].value)}x/{'day' if m.group(2).startswith(('dai', 'dia')) else 'week'}", m)
+            add("frequency", f"{_fmt(nums[k].value)}x/{'day' if m.group(2).startswith(('dai', 'dia')) else 'week'}", m, ctx="said")
     have_xday = any(s.kind == "frequency" and s.value.endswith("x/day") for s in slots)
     if not have_xday and not any(s.kind == "frequency" and s.value.startswith("q") and s.value.endswith(("h", "min")) for s in slots):
         for m in re.finditer(r"(?<![a-z])(?:daily|every day|each day|(?<!#\d )(?<!#\d\d )(?<!times )(?:a|per) day|todos los dias|cada dia|diari[oa]s?|diariamente|"
                              r"(?<!#\d )(?<!veces )(?:al|por) dia|una vez al dia)\b", ns):
-            if not any(s.kind == "frequency" and s.value == "daily" for s in slots):
-                add("frequency", "daily", m)
+            if re.match(r"\s+(?:siguiente|anterior|before|after|next)\b", ns[m.end():]):
+                continue                                     # "al día siguiente" = the next day
+            if not any(s.kind == "frequency" and s.value == "1x/day" for s in slots):
+                add("frequency", "1x/day", m)
     for m in re.finditer(rf"(?<![a-z])(?:{PRN})\b", ns):
         add("frequency", "as_needed", m)
 
@@ -625,6 +834,12 @@ def extract(text: str, lang: str | None = None) -> list[Slot]:
     # Units (compared on their own, so "por kilo" vs "por libra" is caught even without a number).
     for i, (w, s, e) in enumerate(toks):
         u = UNIT_WORDS.get(w)
+        prv_ = toks[i - 1][0] if i else ""
+        nxt_ = toks[i + 1][0] if i + 1 < len(toks) else ""
+        if u == "drop" and lang == "en" and not (prv_[:1].isdigit() or prv_ in EN_SMALL or prv_ in ("eye", "ear", "nose", "nasal", "few", "some", "the", "these",
+                                                                                                    "those", "of", "two", "a", "saline")
+                                                  or nxt_ in ("of", "in", "into", "each", "per", "every")):
+            continue                                         # "when your sugar drops" is a verb
         if u and not (w == "g" and i and toks[i - 1][0] in ("vitamin", "vitamina")) and not (w == "l" and not (i and toks[i - 1][0][0].isdigit())):
             slots.append(Slot("unit", u, w, pos=s))
     for canon, rx in DRUGS.items():
@@ -643,6 +858,7 @@ def extract(text: str, lang: str | None = None) -> list[Slot]:
         add("limit", "min", m)
     for m in re.finditer(rf"(?<![a-z])(?:{ALLERGY})", t):
         slots.append(Slot("allergy", "allergy", m.group(0), pos=m.start()))
+    no_neg += [(x.pos, x.pos + len(x.span)) for x in slots if x.kind == "limit" and x.pos >= 0]  # "no more than" is a limit
     slots += _negations(toks, lang, no_neg)
     slots += _side_slots(t, lang)
     return slots
@@ -674,7 +890,7 @@ def heard_as(canon: str, text: str) -> bool:
     return False
 
 
-COUNTED_KINDS = ("number", "unit", "side", "drug", "duration", "frequency", "negation", "warning")
+COUNTED_KINDS = ("number", "unit", "side", "drug", "duration", "frequency", "negation", "warning", "limit")
 
 
 def diff(source: str, rendition: str, src_lang: str | None = None, ren_lang: str | None = None) -> list[Finding]:
@@ -689,6 +905,8 @@ def diff(source: str, rendition: str, src_lang: str | None = None, ren_lang: str
             continue
         sa = [s for s in a if s.kind == kind]
         sb = [s for s in b if s.kind == kind]
+        if kind == "negation":
+            continue
         if kind in COUNTED_KINDS and kind not in ("warning",):
             ca, cb = Counter(s.value for s in sa), Counter(s.value for s in sb)
             miss, extra = list((ca - cb).elements()), list((cb - ca).elements())
@@ -711,9 +929,19 @@ def diff(source: str, rendition: str, src_lang: str | None = None, ren_lang: str
                     pool.remove(s)
                     return s
             return Slot(kind, v, v)
-        ms = [take(pool_a, v) for v in miss]
-        es = [take(pool_b, v) for v in extra]
+        if kind == "number":
+            ms, es = _match_numbers(sa, sb)
+        else:
+            ms = [take(pool_a, v) for v in miss]
+            es = [take(pool_b, v) for v in extra]
         leftover[kind] = (ms, es)
+    # "don't go under 6 hours between doses" said as a length of time on one side and as an interval on the other
+    for side_d, side_f in ((0, 1), (1, 0)):
+        ds, fs = leftover["duration"][side_d], leftover["frequency"][side_f]
+        for d in list(ds):
+            f = next((f for f in fs if re.fullmatch(r"q[\d.]+h", f.value) and abs(float(f.value[1:-1]) - float(d.value.rstrip("h"))) < 1e-6), None)
+            if f:
+                ds.remove(d); fs.remove(f)
     # A duration in one sentence and the same count as a bare number in the other ("dos años y medio" / "two and a half"):
     # the unit was left implicit, not changed.
     dm, de = leftover["duration"]
@@ -726,11 +954,8 @@ def diff(source: str, rendition: str, src_lang: str | None = None, ren_lang: str
         hit = next((x for x in nm if not x.ctx and abs(float(x.value) - _count(d)) < 1e-6), None)
         if hit:
             de.remove(d); nm.remove(hit)
-    # a 'no' that is part of an omitted or added dose limit ("no more than") is reported once, as the limit
-    for side in (0, 1):
-        lims = leftover["limit"][side]
-        negs = leftover["negation"][side]
-        leftover["negation"][side][:] = [g for g in negs if not any(0 <= g.pos - lm.pos < len(lm.span) for lm in lims if lm.pos >= 0)]
+    leftover["negation"] = ([], [])
+    neg_findings = _negation_diff(source, rendition, [x for x in a if x.kind == "negation"], [x for x in b if x.kind == "negation"])
     for kind in PRIORITY:
         if kind == "order" or kind not in leftover:
             continue
@@ -748,12 +973,7 @@ def diff(source: str, rendition: str, src_lang: str | None = None, ren_lang: str
                 out.append(Finding("addition", kind, "medium", "", e.span, f"Added in the interpretation: {KIND_LABEL[kind]} {q(e.span)}"))
             continue
         if kind == "negation":
-            if len(ms) > len(es):
-                for m in ms[: len(ms) - len(es)]:
-                    out.append(Finding("omission", kind, sev, m.span, "", f"Not in the interpretation: {KIND_LABEL[kind]} {q(m.span)}"))
-            elif len(es) > len(ms):
-                for e in es[: len(es) - len(ms)]:
-                    out.append(Finding("addition", kind, sev, "", e.span, f"Added in the interpretation: {KIND_LABEL[kind]} {q(e.span)}"))
+            out += neg_findings
             continue
         if kind == "number":    # pair a changed number with its replacement: same unit first, then in order
             for m in list(ms):
@@ -761,18 +981,33 @@ def diff(source: str, rendition: str, src_lang: str | None = None, ren_lang: str
                 if e:
                     ms.remove(m); es.remove(e)
                     out.append(Finding("substitution", kind, sev, m.span, e.span, f"Changed {KIND_LABEL[kind]}: {q(m.span)} became {q(e.span)}"))
+        if kind == "number":    # a lone 'a' / 'una' / 'una vez' is rarely the number that changed
+            weak_m = [m for m in ms if _weak_one(m)]; weak_e = [e for e in es if _weak_one(e)]
+            ms = [m for m in ms if m not in weak_m]; es = [e for e in es if e not in weak_e]
         if kind in ("number", "unit", "side", "drug", "duration", "frequency", "limit", "warning"):
             while ms and es:
                 m, e = ms.pop(0), es.pop(0)
-                out.append(Finding("substitution", kind, sev, m.span, e.span, f"Changed {KIND_LABEL[kind]}: {q(m.span)} became {q(e.span)}"))
+                s_sub = "medium" if kind == "warning" and (m.value in WARNING_MEDIUM or e.value in WARNING_MEDIUM) else sev
+                out.append(Finding("substitution", kind, s_sub, m.span, e.span, f"Changed {KIND_LABEL[kind]}: {q(m.span)} became {q(e.span)}"))
+        if kind == "number":
+            out += [Finding("omission", kind, "low", m.span, "", f"Not in the interpretation: {KIND_LABEL[kind]} {q(m.span)}") for m in weak_m]
+            out += [Finding("addition", kind, "low", "", e.span, f"Added in the interpretation: {KIND_LABEL[kind]} {q(e.span)}") for e in weak_e]
         for m in ms:
             s_om = sev
-            if kind == "frequency" and m.value in ("daily", "as_needed"):
+            if kind == "frequency" and (m.value == "as_needed" or (m.value == "1x/day" and m.ctx != "said")):
+                s_om = "medium"     # a dropped "daily" / "as needed" is a note; a dropped "once a day" is a card
+            if kind == "warning" and m.value in WARNING_MEDIUM:
                 s_om = "medium"
+            if kind == "drug" and any(x.value == m.value for x in b if x.kind == "drug"):
+                s_om = "medium"     # one of several mentions of a medicine that is still named
+            if kind == "unit" and m.value in ("celsius", "fahrenheit"):
+                s_om = "medium"     # "38 grados" for "38 degrees Celsius": the scale is implied
             out.append(Finding("omission", kind, s_om, m.span, "", f"Not in the interpretation: {KIND_LABEL[kind]} {q(m.span)}"))
         for e in es:
             # added content is usually lower risk than dropped content, except an added drug, number or side
-            s_add = "high" if kind in ("drug", "number", "side", "allergy") or (kind == "frequency" and e.value not in ("daily", "as_needed")) else "medium"
+            s_add = "high" if kind in ("drug", "number", "side") or (kind == "frequency" and e.value not in ("1x/day", "as_needed")) else "medium"
+            if kind == "drug" and any(x.value == e.value for x in a if x.kind == "drug"):
+                s_add = "medium"    # the same medicine named again ("allergic to it" -> "alérgico a la codeína")
             out.append(Finding("addition", kind, s_add, "", e.span, f"Added in the interpretation: {KIND_LABEL[kind]} {q(e.span)}"))
     # Same numbers in a different order ("2.5 mg Mon/Fri, 5 mg other days" -> "5 mg Mon/Fri, 2.5 mg other days"): code
     # can't tell a harmless re-ordering from a swap, so it's a medium note for the checker to weigh.
@@ -782,6 +1017,123 @@ def diff(source: str, rendition: str, src_lang: str | None = None, ren_lang: str
         out.append(Finding("substitution", "order", SEVERITY["order"], " / ".join(na), " / ".join(nb),
                            "Same numbers in a different order: " + ", ".join(na) + " became " + ", ".join(nb)))
     return out
+
+
+ABBREV = {"dr", "dra", "sr", "sra", "srta", "mr", "mrs", "ms", "st", "vs", "etc", "approx", "aprox", "no", "num", "ud", "uds", "lic"}
+
+
+def _sentences(text: str) -> list[tuple[int, int]]:
+    """(start, end) character ranges of the sentences in a text (split at . ? !; not at abbreviations, decimals or '...')."""
+    t = fold(text)
+    toks = _tok(t)
+    cuts, k = [], 0
+    while k < len(toks):
+        w, s_, e = toks[k]
+        if w in (".", "?", "!"):
+            j = k
+            while j + 1 < len(toks) and toks[j + 1][0] in (".", "?", "!"):
+                j += 1
+            prev = toks[k - 1][0] if k else ""
+            ellipsis = w == "." and j > k and all(toks[x][0] == "." for x in range(k, j + 1))
+            nxt = toks[k + 1][0] if k + 1 < len(toks) else ""
+            abbrev = w == "." and j == k and ((len(prev) == 1 and prev.isalpha() and k + 1 < len(toks))
+                                              or (prev in ABBREV and prev != "no" and nxt[:1].isalpha())
+                                              or (prev == "no" and nxt[:1].isdigit()))
+            if not ellipsis and not abbrev:
+                cuts.append(toks[j][2])
+            k = j + 1
+            continue
+        k += 1
+    bounds, last = [], 0
+    for c in cuts + [len(t)]:
+        if re.search(r"[a-z0-9]", t[last:c]):
+            bounds.append((last, c))
+        last = c
+    return bounds or [(0, len(t))]
+
+
+def _neg_profile(slots_: list[Slot]) -> dict:
+    return {c: [x for x in slots_ if x.value == c] for c in ("verbal", "nominal", "answer", "weak", "hardly", "stop", "dontstop")}
+
+
+def _satisfied(A: dict, B: dict) -> tuple[bool, Slot | None]:
+    """Is every negation in sentence A carried by sentence B? -> (ok, the slot in A that isn't)."""
+    anyB = any(B[c] for c in B)
+    strongB = bool(B["verbal"] or B["nominal"] or B["weak"] or B["hardly"] or B["stop"] or B["dontstop"])
+    # more negated verbs than B has negations of any kind: one was dropped ("if you can't answer or she can't wake you"
+    # -> "si puede contestar o ella no logra despertarlo"). Negative pronouns and 'sin' count on B's side, so
+    # "no food, no water" vs "ni comida ni agua" is fine.
+    if len(A["verbal"]) > len(B["verbal"]) + len(B["nominal"]) + len(B["weak"]) + len(B["hardly"]) + len(B["stop"]) + len(B["dontstop"]) \
+            + (0 if A["answer"] else len(B["answer"])):
+        return False, A["verbal"][-1]
+    if A["verbal"]:
+        # a negated verb needs a negation in B; a bare "No," in B only counts if A had no answer of its own
+        # ("No, no tiene fiebre" -> "No, he has a fever" drops the second 'no')
+        if not (strongB or (B["answer"] and not A["answer"])):
+            return False, A["verbal"][0]
+    for c in ("nominal", "stop", "hardly", "answer"):
+        if A[c] and not anyB:
+            return False, A[c][0]
+    return True, None
+
+
+def _negation_diff(source: str, rendition: str, na: list[Slot], nb: list[Slot]) -> list[Finding]:
+    """Negation compared sentence by sentence when both texts have the same number of sentences, else over the whole turn."""
+    sa, sb = _sentences(source), _sentences(rendition)
+    if len(sa) == len(sb):
+        groups = [([x for x in na if a0 <= x.pos < a1], [x for x in nb if b0 <= x.pos < b1]) for (a0, a1), (b0, b1) in zip(sa, sb)]
+    else:
+        groups = [(na, nb)]
+    out: list[Finding] = []
+    q = lambda x: f"“{x}”"  # noqa: E731
+    lab = KIND_LABEL["negation"]
+    for ga, gb in groups:
+        A, B = _neg_profile(ga), _neg_profile(gb)
+        # "don't stop" vs "stop" (or the reverse) flips the instruction
+        if A["dontstop"] and B["stop"] and not B["dontstop"]:
+            out.append(Finding("substitution", "negation", "high", A["dontstop"][0].span, B["stop"][0].span,
+                               f"Changed {lab}: {q(A['dontstop'][0].span)} became {q(B['stop'][0].span)}"))
+            continue
+        if A["stop"] and B["dontstop"] and not A["dontstop"]:
+            out.append(Finding("substitution", "negation", "high", A["stop"][0].span, B["dontstop"][0].span,
+                               f"Changed {lab}: {q(A['stop'][0].span)} became {q(B['dontstop'][0].span)}"))
+            continue
+        ok, miss = _satisfied(A, B)
+        if not ok:   # a dropped bare "No," answer is often carried by the rest of the sentence: a note, not a card
+            out.append(Finding("omission", "negation", "medium" if miss.value == "answer" else "high", miss.span, "",
+                               f"Not in the interpretation: {lab} {q(miss.span)}"))
+        ok, extra = _satisfied(B, A)
+        if not ok:
+            out.append(Finding("addition", "negation", "medium" if extra.value == "answer" else "high", "", extra.span,
+                               f"Added in the interpretation: {lab} {q(extra.span)}"))
+    return out
+
+
+def _weak_one(x: Slot) -> bool:
+    """A 1 that is just an article or 'once' ('a pill', 'una pastilla', 'una vez'): its absence on the other side is a
+    matter of grammar, not a dropped number."""
+    return x.value == "1" and (fold(x.span).strip() in ("a", "an", "un", "una", "uno") or x.ctx == "times")
+
+
+def _match_numbers(sa: list[Slot], sb: list[Slot]) -> tuple[list[Slot], list[Slot]]:
+    """Numbers left over on each side after matching equal values: same value and same unit first, then same value."""
+    a, b = list(sa), list(sb)
+    for key in (lambda x: (x.value, x.ctx), lambda x: x.value):
+        for x in list(a):
+            y = next((y for y in b if key(y) == key(x)), None)
+            if y is not None:
+                a.remove(x); b.remove(y)
+    # a body temperature converted between Fahrenheit and Celsius (100.4 = 38) is the same number
+    for x in list(a):
+        y = next((y for y in b if _same_temp(float(x.value), float(y.value))), None)
+        if y is not None:
+            a.remove(x); b.remove(y)
+    return a, b
+
+
+def _same_temp(u: float, v: float) -> bool:
+    f, c = (u, v) if u > v else (v, u)
+    return 95 <= f <= 110 and 35 <= c <= 43.5 and abs(f - (c * 9 / 5 + 32)) <= 0.5
 
 
 def _count(d: Slot) -> float:

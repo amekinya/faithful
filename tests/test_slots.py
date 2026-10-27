@@ -180,3 +180,64 @@ def test_findings_in_clinical_priority_order():
     f = diff("Sí, ya le di dos dosis de Tylenol hoy, la última a las diez. Y es alérgico a la penicilina.", "Yes, I gave him Tylenol today.", "es", "en")
     kinds_ = [x.kind for x in f]
     assert kinds_[0] == "allergy" and kinds_ == sorted(kinds_, key=PRIORITY.index)
+
+
+# --- false-alarm fixes on realistic re-wordings (written by hand, not taken from any test set) ---------------------
+FAITHFUL_2 = [
+    ("No food, no water, nothing until we see him.", "No le dé nada de comer ni de tomar hasta que lo veamos.", "en", "es"),
+    ("Fiebre no, gracias a Dios.", "No fever, thank God.", "es", "en"),
+    ("No, fiebre no.", "No, no fever.", "es", "en"),
+    ("Casi no come.", "He barely eats.", "es", "en"),
+    ("It's liquid, isn't it?", "Es líquido, ¿verdad?", "en", "es"),
+    ("¿No le dio fiebre?", "Did he get a fever?", "es", "en"),
+    ("We'll call you with the results.", "Le llamamos con los resultados.", "en", "es"),
+    ("Drink two liters of water a day.", "Tome dos litros de agua al día.", "en", "es"),
+    ("Give no more than four puffs in a day.", "No le dé más de cuatro disparos al día.", "en", "es"),
+    ("Which foot, left or right?", "¿Cuál pie, el izquierdo o el derecho?", "en", "es"),
+    ("She was born on February third, nineteen seventy-eight.", "Nació el tres de febrero de mil novecientos setenta y ocho.", "en", "es"),
+    ("Keep them six hours apart.", "Déselas cada seis horas.", "en", "es"),
+    ("If the fever is 100.4 or higher, bring him in.", "Si la fiebre es de 38 o más, tráigalo.", "en", "es"),
+    ("Una vez le salieron ronchas.", "He broke out in hives once.", "es", "en"),
+    ("Si no, venga a verme en dos días.", "Otherwise, come see me in two days.", "es", "en"),
+    ("No, ninguna. Nunca le ha dado nada.", "No, none. Nothing has ever happened to him.", "es", "en"),
+    ("Avoid ibuprofen.", "No tome ibuprofeno.", "en", "es"),
+    ("Don't skip doses.", "No se salte las dosis.", "en", "es"),
+    ("Sí, no hay problema.", "Yes, that's fine.", "es", "en"),
+    ("She's allergic to both.", "Es alérgica a las dos.", "en", "es"),
+    ("Nice to meet you both.", "Mucho gusto.", "en", "es"),
+    ("Una semana sin fútbol.", "A week without soccer.", "es", "en"),
+    ("Le doy dos al día siguiente?", "Do I give him two the next day?", "es", "en"),
+    ("When your sugar drops, eat something.", "Cuando le baje el azúcar, coma algo.", "en", "es"),
+]
+
+
+def test_more_faithful_rewordings_raise_no_card():
+    from app.engine.check import check_turn
+    bad = [(s, r) for s, r, a, b in FAITHFUL_2 if check_turn(s, r, a, b, use_checker=False, explain=False)["decision"]["level"] == "card"]
+    assert bad == []
+
+
+ERRORS_2 = [
+    ("If you can't answer or she can't wake you, call 911.", "Si usted puede contestar o ella no logra despertarlo, llame al 911.", "en", "es"),
+    ("Don't stop early, even if he feels better.", "Suspéndalo antes si se siente mejor.", "en", "es"),
+    ("Please don't stop the therapy.", "Por favor deje la terapia.", "en", "es"),
+    ("Casi no tomo agua.", "I drink a lot of water.", "es", "en"),
+    ("Take it once a day.", "Tómelo.", "en", "es"),
+    ("No more than 4 doses a day.", "Más de 4 dosis al día.", "en", "es"),
+    ("Acetaminophen no more than 4 times a day, ibuprofen no more than 3.", "Acetaminofén más de 4 veces al día, ibuprofeno no más de 3.", "en", "es"),
+    ("Not this week. Use the crutches.", "Esta semana sí puede. Use las muletas.", "en", "es"),
+    ("No, I have not taken it today.", "No, ya me la tomé hoy.", "en", "es"),
+]
+
+
+def test_more_dangerous_changes_raise_a_card():
+    from app.engine.check import check_turn
+    missed = [(s, r) for s, r, a, b in ERRORS_2 if check_turn(s, r, a, b, use_checker=False, explain=False)["decision"]["level"] != "card"]
+    assert missed == []
+
+
+def test_negation_is_compared_by_sentence():
+    from app.engine.slots import _sentences
+    assert len(_sentences("No. I don't know.")) == 2
+    assert len(_sentences("Dr. Patel is here. Take 2.5 mg.")) == 2
+    assert len(_sentences("Well... he said no.")) == 1
