@@ -106,8 +106,8 @@
     <ol class="steps">
       <li><h3>Hear both sides</h3><p>Each turn’s audio goes to NVIDIA Parakeet TDT 0.6B v3 on our Nebius Serverless Endpoint. In remote interpreting the interpreter is on the call channel and the room is on the device microphone, so who spoke is known.</p></li>
       <li><h3>Read the critical content</h3><p>Code pulls numbers, units, how often, how long, dose limits, allergies, left and right, medicine names, warning signs and every “no” out of both languages, and compares them. “Cada seis horas” and “every 6 hours” match; “cada ocho horas” doesn’t.</p></li>
-      <li><h3>Weigh the meaning</h3><p>Our checker, NVIDIA llama-nemotron-rerank-1b-v2 fine-tuned on a Nebius Serverless Job, scores whether the interpretation still means the same thing. It catches what words alone miss, like “not this week” becoming “this week you can”.</p></li>
-      <li><h3>Decide</h3><p>A fixed rule turns both into one of three outcomes: a re-confirm card, a note for after the visit, or nothing. Its two thresholds were picked on held-out practice visits, never on the test sets.</p></li>
+      <li><h3>Weigh the meaning</h3><p>Our checker, NVIDIA llama-nemotron-rerank-1b-v2 fine-tuned on a Nebius Serverless Job, scores whether the interpretation still means the same thing. It’s there for what words alone miss, like “not this week” becoming “this week you can”; the results show how often it does.</p></li>
+      <li><h3>Decide</h3><p>A fixed rule turns both into one of three outcomes: a re-confirm card, a note for after the visit, or nothing. A changed allergy, “no”, medicine, side or dose limit is always a card. The rule’s two thresholds are picked on held-out practice visits, never on the test sets.</p></li>
       <li><h3>Say it plainly</h3><p>For cards only, Nemotron 3.5 Lightning writes one line for the interpreter and clinician. Code checks that the words it quotes were really said.</p></li>
       <li><h3>Re-read after the visit</h3><p>Nemotron 3 Ultra reads the whole conversation once and lists anything the turn checks missed, each tied to a quote that code verifies.</p></li>
     </ol>

@@ -1,1 +1,1 @@
-{"task": "synth", "args": "--n 30 --split test --seed 101 --generator Qwen/Qwen3-30B-A3B-Instruct-2507", "note": "regenerate the held-out test visits with the language check"}
+{"task": "synth", "args": "--n 24 --split test --seed 202 --append --generator zai-org/GLM-5.2", "note": "add held-out test visits from a second writer family; the Qwen visits stay"}

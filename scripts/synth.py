@@ -141,7 +141,7 @@ def write_visit(i: int, gen: ModelSpec, seed: int, split: str = "trainval") -> t
             rows += [base | v for v in code_variants(t["rendition"], rl, rng)]
     if wrong:
         print(f"  visit {i}: {wrong} of {len(turns)} turns dropped (interpretation in the wrong language)")
-    if turns and wrong > len(turns) * 0.4:
+    if turns and wrong > len(turns) * 0.6:
         print(f"  visit {i} dropped: too many turns in the wrong language")
         return [], calls
     return rows, calls
@@ -270,6 +270,7 @@ def main() -> None:
     ap.add_argument("--generator", default=None)
     ap.add_argument("--split", default="trainval", choices=["trainval", "test"])
     ap.add_argument("--rederive", action="store_true")
+    ap.add_argument("--append", action="store_true", help="add these visits to the split's file instead of replacing it")
     a = ap.parse_args()
     if a.rederive:
         rederive()
@@ -290,6 +291,15 @@ def main() -> None:
         r["generator"] = gen.model_id
         r["split"] = "test" if a.split == "test" else ("dev" if r["group"] in dev else "train")
     out = OUT_DIR / f"turns_{a.split}.jsonl"
+    if a.split == "trainval" and a.append:
+        raise SystemExit("--append is for the test split (the dev split is drawn per run)")
+    if a.append and out.exists():
+        old = [json.loads(x) for x in out.read_text().splitlines() if x.strip()]
+        old = [r for r in old if r.get("generator") != gen.model_id]  # re-running a writer replaces its own visits
+        print(f"keeping {len(old)} rows from other writers")
+        rows = old + rows
+    if not rows:
+        raise SystemExit("no visits written; the file was left unchanged")
     out.write_text("\n".join(json.dumps(r, ensure_ascii=False) for r in rows) + "\n")
     by = {}
     for r in rows:
