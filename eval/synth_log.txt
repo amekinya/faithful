@@ -1,0 +1,13 @@
+generator: deepseek-ai/DeepSeek-V4.1-Flash-1017
+62 visits, 4876 pairs (2768 with errors) -> /home/runner/work/faithful/faithful/data/synth/turns_trainval.jsonl
+{'faithful': 978, 'reworded': 613, 'llm_omission': 481, 'code_unit': 218, 'llm_substitution': 316, 'code_side': 75, 'code_number': 429, 'code_words_to_digits': 307, 'code_drop_clause': 674, 'code_drug': 157, 'llm_addition': 171, 'code_negation': 247, 'code_framing': 100, 'code_digits_to_words': 76, 'code_brand_generic': 34}
+64 calls, $0.269
+generator: Qwen/Qwen3-30B-A3B-Instruct-2507
+  visit 6 failed: Qwen/Qwen3-30B-A3B-Instruct-2507 returned no valid JSON
+  visit 12 failed: Qwen/Qwen3-30B-A3B-Instruct-2507 returned no valid JSON
+  visit 17 failed: Qwen/Qwen3-30B-A3B-Instruct-2507 returned no valid JSON
+  visit 22 failed: Qwen/Qwen3-30B-A3B-Instruct-2507 returned no valid JSON
+20 visits, 1395 pairs (667 with errors) -> /home/runner/work/faithful/faithful/data/synth/turns_test.jsonl
+{'faithful': 291, 'reworded': 288, 'code_number': 94, 'code_drop_clause': 176, 'code_words_to_digits': 19, 'llm_substitution': 96, 'code_drug': 23, 'code_framing': 74, 'code_unit': 51, 'code_digits_to_words': 49, 'code_brand_generic': 7, 'code_negation': 43, 'llm_addition': 70, 'llm_omission': 110, 'code_side': 4}
+31 calls, $0.288
+6271 pairs: {'dev/error': 387, 'dev/faithful': 304, 'test/error': 667, 'test/faithful': 728, 'train/error': 2381, 'train/faithful': 1804}
