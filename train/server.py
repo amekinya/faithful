@@ -11,6 +11,7 @@ first request isn't slow. Auth is handled by the endpoint's bearer token.
 from __future__ import annotations
 
 import base64
+import json
 import io
 import os
 import re
@@ -98,6 +99,17 @@ def health():
     return {"device": DEVICE, "gpu": torch.cuda.get_device_name(0) if DEVICE == "cuda" else None,
             "asr_loaded": _asr is not None, "rerankers": {k: v[2] for k, v in _rerankers.items()},
             "available": sorted(p.name for p in MODELS_DIR.glob("*") if (p / "config.json").exists()) if MODELS_DIR.exists() else []}
+
+
+@app.get("/metrics/{name}")
+def metrics(name: str):
+    """The training job's report (metrics.json next to the weights), so results can be published without bucket access."""
+    if name not in NAMES or name == "base-reranker":
+        raise HTTPException(404, "unknown model")
+    f = MODELS_DIR / name / "metrics.json"
+    if not f.exists():
+        raise HTTPException(404, "no training report yet")
+    return json.loads(f.read_text())
 
 
 class AsrIn(BaseModel):
