@@ -1,0 +1,119 @@
+V1-01 ok  | planted: -
+V1-02 card Possible change | planted: -
+V1-03 ok  | planted: -
+V1-04 card Re-confirm | planted: omission
+V1-05 ok  | planted: -
+V1-06 card Re-confirm | planted: substitution
+V1-07 ok  | planted: -
+V1-08 card Re-confirm | planted: omission
+V1-09 ok  | planted: -
+V1-10 card Re-confirm | planted: substitution
+V1-11 card Re-confirm | planted: omission
+V1-12 ok  | planted: -
+V2-01 ok  | planted: -
+V2-02 card Re-confirm | planted: omission
+V2-03 ok  | planted: -
+V2-04 card Re-confirm | planted: substitution
+V2-05 ok  | planted: -
+V2-06 ok  | planted: -
+V2-07 ok  | planted: -
+V2-08 ok  | planted: -
+V2-09 ok  | planted: -
+V2-10 card Re-confirm | planted: omission
+V2-11 ok  | planted: -
+V3-01 ok  | planted: -
+V3-02 card Possible change | planted: omission
+V3-03 card Possible change | planted: omission
+V3-04 ok  | planted: -
+V3-05 card Re-confirm | planted: substitution
+V3-06 ok  | planted: -
+V3-07 card Possible change | planted: -
+V3-08 ok  | planted: -
+V4-01 ok  | planted: -
+V4-02 card Possible change | planted: substitution
+V4-03 card Re-confirm | planted: omission
+V4-04 ok  | planted: -
+V4-05 ok  | planted: -
+V4-06 card Re-confirm | planted: substitution
+V4-07 ok  | planted: -
+V4-08 ok  | planted: -
+V5-01 ok  | planted: -
+V5-02 ok  | planted: -
+V5-03 card Re-confirm | planted: omission
+V5-04 card Re-confirm | planted: addition
+V5-05 ok  | planted: -
+V5-06 card Possible change | planted: -
+V5-07 card Possible change | planted: substitution
+V5-08 ok  | planted: -
+V6-01 card Possible change | planted: -
+V6-02 card Re-confirm | planted: substitution
+V6-03 card Re-confirm | planted: omission
+V6-04 ok  | planted: -
+V6-05 card Re-confirm | planted: omission
+V6-06 ok  | planted: -
+V6-07 ok  | planted: -
+{
+ "asr_used": true,
+ "from_audio": {
+  "caught": 20,
+  "errors": 20,
+  "false_alarms": 4,
+  "faithful_turns": 34,
+  "patient_speech_caught": "11/11",
+  "missed": [],
+  "false_alarm_turns": [
+   "V1-02",
+   "V3-07",
+   "V5-06",
+   "V6-01"
+  ],
+  "notes_on_faithful_turns": []
+ },
+ "from_script_text": {
+  "caught": 20,
+  "errors": 20,
+  "false_alarms": 2,
+  "faithful_turns": 34,
+  "patient_speech_caught": "11/11",
+  "missed": [],
+  "false_alarm_turns": [
+   "V1-02",
+   "V5-06"
+  ],
+  "notes_on_faithful_turns": []
+ },
+ "checker_used": true,
+ "wer": {
+  "en": 0.035,
+  "es": 0.046
+ },
+ "ms_median_audio_to_card": 1332.4,
+ "ms_p95": 1848.3000000000002,
+ "by_model": {
+  "asr": {
+   "model": "nvidia/parakeet-tdt-0.6b-v3 (Nebius endpoint)",
+   "calls": 108,
+   "seconds": 80.34,
+   "cost_usd": 0.0
+  },
+  "checker": {
+   "model": "faithful-checker (Nebius endpoint)",
+   "calls": 54,
+   "seconds": 25.35,
+   "cost_usd": 0.0
+  },
+  "lightning": {
+   "model": "nvidia/Nemotron-3_5-Lightning",
+   "calls": 24,
+   "seconds": 12.55,
+   "cost_usd": 0.00049
+  },
+  "ultra": {
+   "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "calls": 6,
+   "seconds": 35.33,
+   "cost_usd": 0.0276
+  }
+ },
+ "cost_usd": 0.0281
+}

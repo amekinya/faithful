@@ -1,0 +1,60 @@
+thresholds from dev: {'base_ranker': 0.05, 'checker': 0.84, 'gate': {'confirm': 0.05, 'alone': 0.95}, 'dev_rows': 632, 'max_dev_false_alarms': 0.05, 'met_limit': {'base_ranker': False, 'checker': True, 'gate': True}}
+synth code {'turns': 400, 'errors': 128, 'caught': 64, 'recall': 0.5, 'false_alarms': 26, 'false_alarm_rate': 0.096, 'precision': 0.711, 'f1': 0.587, 'failed': 0, 'ms_median': 1.7, 'ms_p95': 1.7, 'cost_per_1000': 0.0, 'seconds': 0.7}
+synth lightning {'turns': 400, 'errors': 128, 'caught': 65, 'recall': 0.508, 'false_alarms': 4, 'false_alarm_rate': 0.015, 'precision': 0.942, 'f1': 0.66, 'failed': 0, 'ms_median': 869.2, 'ms_p95': 1552.6, 'cost_per_1000': 0.029, 'seconds': 47.6}
+synth ultra {'turns': 400, 'errors': 128, 'caught': 101, 'recall': 0.789, 'false_alarms': 2, 'false_alarm_rate': 0.007, 'precision': 0.981, 'f1': 0.874, 'failed': 0, 'ms_median': 897.3, 'ms_p95': 1877.0, 'cost_per_1000': 0.362, 'seconds': 53.9}
+synth base_ranker {'turns': 400, 'errors': 128, 'caught': 26, 'recall': 0.203, 'false_alarms': 19, 'false_alarm_rate': 0.07, 'precision': 0.578, 'f1': 0.301, 'failed': 0, 'ms_median': 464.9, 'ms_p95': 521.0, 'cost_per_1000': 0.0, 'seconds': 13.6}
+synth checker {'turns': 400, 'errors': 128, 'caught': 105, 'recall': 0.82, 'false_alarms': 9, 'false_alarm_rate': 0.033, 'precision': 0.921, 'f1': 0.868, 'failed': 0, 'ms_median': 461.5, 'ms_p95': 472.4, 'cost_per_1000': 0.0, 'seconds': 13.1}
+synth faithful {'turns': 400, 'errors': 128, 'caught': 106, 'recall': 0.828, 'false_alarms': 25, 'false_alarm_rate': 0.092, 'precision': 0.809, 'f1': 0.819, 'failed': 0, 'ms_median': 462.6, 'ms_p95': 605.7, 'cost_per_1000': 0.0, 'seconds': 14.5}
+aces code {'turns': 400, 'errors': 224, 'caught': 110, 'recall': 0.491, 'false_alarms': 9, 'false_alarm_rate': 0.051, 'precision': 0.924, 'f1': 0.641, 'failed': 0, 'ms_median': 1.5, 'ms_p95': 1.5, 'cost_per_1000': 0.0, 'seconds': 0.6}
+aces lightning {'turns': 400, 'errors': 224, 'caught': 140, 'recall': 0.625, 'false_alarms': 12, 'false_alarm_rate': 0.068, 'precision': 0.921, 'f1': 0.745, 'failed': 0, 'ms_median': 929.1, 'ms_p95': 1905.6, 'cost_per_1000': 0.031, 'seconds': 53.5}
+aces ultra {'turns': 400, 'errors': 224, 'caught': 206, 'recall': 0.92, 'false_alarms': 23, 'false_alarm_rate': 0.131, 'precision': 0.9, 'f1': 0.909, 'failed': 0, 'ms_median': 889.7, 'ms_p95': 1802.1, 'cost_per_1000': 0.38, 'seconds': 49.9}
+aces base_ranker {'turns': 400, 'errors': 224, 'caught': 29, 'recall': 0.129, 'false_alarms': 2, 'false_alarm_rate': 0.011, 'precision': 0.935, 'f1': 0.227, 'failed': 0, 'ms_median': 746.3, 'ms_p95': 800.7, 'cost_per_1000': 0.0, 'seconds': 18.9}
+aces checker {'turns': 400, 'errors': 224, 'caught': 115, 'recall': 0.513, 'false_alarms': 1, 'false_alarm_rate': 0.006, 'precision': 0.991, 'f1': 0.676, 'failed': 0, 'ms_median': 464.8, 'ms_p95': 734.2, 'cost_per_1000': 0.0, 'seconds': 14.8}
+aces faithful {'turns': 400, 'errors': 224, 'caught': 129, 'recall': 0.576, 'false_alarms': 5, 'false_alarm_rate': 0.028, 'precision': 0.963, 'f1': 0.721, 'failed': 0, 'ms_median': 464.8, 'ms_p95': 781.1, 'cost_per_1000': 0.0, 'seconds': 16.0}
+visits code {'turns': 54, 'errors': 20, 'caught': 17, 'recall': 0.85, 'false_alarms': 0, 'false_alarm_rate': 0.0, 'precision': 1.0, 'f1': 0.919, 'failed': 0, 'ms_median': 1.2, 'ms_p95': 1.2, 'cost_per_1000': 0.0, 'seconds': 0.1, 'missed': ['V3-2', 'V3-3', 'V4-2'], 'false_alarm_turns': [], 'patient_speech_caught': '10/11'}
+visits lightning {'turns': 54, 'errors': 20, 'caught': 17, 'recall': 0.85, 'false_alarms': 1, 'false_alarm_rate': 0.029, 'precision': 0.944, 'f1': 0.895, 'failed': 0, 'ms_median': 734.6, 'ms_p95': 982.6, 'cost_per_1000': 0.026, 'seconds': 5.5, 'missed': ['V4-2', 'V5-4', 'V6-5'], 'false_alarm_turns': ['V2-3'], 'patient_speech_caught': '10/11'}
+visits ultra {'turns': 54, 'errors': 20, 'caught': 19, 'recall': 0.95, 'false_alarms': 0, 'false_alarm_rate': 0.0, 'precision': 1.0, 'f1': 0.974, 'failed': 0, 'ms_median': 891.1, 'ms_p95': 1246.4, 'cost_per_1000': 0.325, 'seconds': 6.7, 'missed': ['V3-3'], 'false_alarm_turns': [], 'patient_speech_caught': '11/11'}
+visits base_ranker {'turns': 54, 'errors': 20, 'caught': 12, 'recall': 0.6, 'false_alarms': 9, 'false_alarm_rate': 0.265, 'precision': 0.571, 'f1': 0.585, 'failed': 0, 'ms_median': 464.1, 'ms_p95': 652.4, 'cost_per_1000': 0.0, 'seconds': 12.8, 'missed': ['V1-6', 'V1-8', 'V1-10', 'V3-3', 'V3-5', 'V4-2', 'V5-4', 'V6-2'], 'false_alarm_turns': ['V1-12', 'V2-3', 'V2-6', 'V3-4', 'V3-6', 'V4-5', 'V5-1', 'V5-6', 'V6-7'], 'patient_speech_caught': '10/11'}
+visits checker {'turns': 54, 'errors': 20, 'caught': 19, 'recall': 0.95, 'false_alarms': 2, 'false_alarm_rate': 0.059, 'precision': 0.905, 'f1': 0.927, 'failed': 0, 'ms_median': 465.9, 'ms_p95': 686.6, 'cost_per_1000': 0.0, 'seconds': 13.5, 'missed': ['V4-2'], 'false_alarm_turns': ['V1-2', 'V5-6'], 'patient_speech_caught': '11/11'}
+visits faithful {'turns': 54, 'errors': 20, 'caught': 20, 'recall': 1.0, 'false_alarms': 2, 'false_alarm_rate': 0.059, 'precision': 0.909, 'f1': 0.952, 'failed': 0, 'ms_median': 470.5, 'ms_p95': 737.7, 'cost_per_1000': 0.0, 'seconds': 13.7, 'missed': [], 'false_alarm_turns': ['V1-2', 'V5-6'], 'patient_speech_caught': '11/11'}
+# Faithful benchmark
+
+## Held-out synthetic visits (different writer model)
+
+400 turns (random sample of 1449), run 2026-10-28 01:51.
+
+| Method | Errors caught | False alarms | Precision | F1 | Median time / turn | Cost / 1,000 turns | Failed |
+|---|---|---|---|---|---|---|---|
+| Code slot diff only (no model) | 64/128 (50%) | 26 (9.6%) | 71% | 0.59 | 1.7 ms | $0.00 | 0 |
+| Nemotron 3.5 Lightning, prompt only | 65/128 (51%) | 4 (1.5%) | 94% | 0.66 | 869.2 ms | $0.03 | 0 |
+| Nemotron 3 Ultra, prompt only | 101/128 (79%) | 2 (0.7%) | 98% | 0.87 | 897.3 ms | $0.36 | 0 |
+| NVIDIA rerank-1b, before fine-tuning | 26/128 (20%) | 19 (7.0%) | 58% | 0.30 | 464.9 ms | $0.00 | 0 |
+| Our fine-tuned checker alone (Nebius) | 105/128 (82%) | 9 (3.3%) | 92% | 0.87 | 461.5 ms | $0.00 | 0 |
+| Faithful: code + our checker + decision rule | 106/128 (83%) | 25 (9.2%) | 81% | 0.82 | 462.6 ms | $0.00 | 0 |
+
+## ACES English-Spanish challenge set (out-of-distribution)
+
+400 turns (random sample of 1853), run 2026-10-28 01:53.
+
+| Method | Errors caught | False alarms | Precision | F1 | Median time / turn | Cost / 1,000 turns | Failed |
+|---|---|---|---|---|---|---|---|
+| Code slot diff only (no model) | 110/224 (49%) | 9 (5.1%) | 92% | 0.64 | 1.5 ms | $0.00 | 0 |
+| Nemotron 3.5 Lightning, prompt only | 140/224 (62%) | 12 (6.8%) | 92% | 0.74 | 929.1 ms | $0.03 | 0 |
+| Nemotron 3 Ultra, prompt only | 206/224 (92%) | 23 (13.1%) | 90% | 0.91 | 889.7 ms | $0.38 | 0 |
+| NVIDIA rerank-1b, before fine-tuning | 29/224 (13%) | 2 (1.1%) | 94% | 0.23 | 746.3 ms | $0.00 | 0 |
+| Our fine-tuned checker alone (Nebius) | 115/224 (51%) | 1 (0.6%) | 99% | 0.68 | 464.8 ms | $0.00 | 0 |
+| Faithful: code + our checker + decision rule | 129/224 (58%) | 5 (2.8%) | 96% | 0.72 | 464.8 ms | $0.00 | 0 |
+
+## Our 6 scripted visits (20 planted errors)
+
+54 turns, run 2026-10-28 01:56.
+
+| Method | Errors caught | False alarms | Precision | F1 | Median time / turn | Cost / 1,000 turns | Failed |
+|---|---|---|---|---|---|---|---|
+| Code slot diff only (no model) | 17/20 (85%) | 0 (0.0%) | 100% | 0.92 | 1.2 ms | $0.00 | 0 |
+| Nemotron 3.5 Lightning, prompt only | 17/20 (85%) | 1 (2.9%) | 94% | 0.90 | 734.6 ms | $0.03 | 0 |
+| Nemotron 3 Ultra, prompt only | 19/20 (95%) | 0 (0.0%) | 100% | 0.97 | 891.1 ms | $0.33 | 0 |
+| NVIDIA rerank-1b, before fine-tuning | 12/20 (60%) | 9 (26.5%) | 57% | 0.58 | 464.1 ms | $0.00 | 0 |
+| Our fine-tuned checker alone (Nebius) | 19/20 (95%) | 2 (5.9%) | 90% | 0.93 | 465.9 ms | $0.00 | 0 |
+| Faithful: code + our checker + decision rule | 20/20 (100%) | 2 (5.9%) | 91% | 0.95 | 470.5 ms | $0.00 | 0 |
+

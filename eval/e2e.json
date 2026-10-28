@@ -1,27 +1,65 @@
 {
- "asr_used": false,
- "from_audio": null,
- "from_script_text": {
-  "caught": 17,
+ "asr_used": true,
+ "from_audio": {
+  "caught": 20,
   "errors": 20,
-  "false_alarms": 0,
+  "false_alarms": 4,
   "faithful_turns": 34,
-  "patient_speech_caught": "10/11",
-  "missed": [
-   "V3-02",
-   "V3-03",
-   "V4-02"
+  "patient_speech_caught": "11/11",
+  "missed": [],
+  "false_alarm_turns": [
+   "V1-02",
+   "V3-07",
+   "V5-06",
+   "V6-01"
   ],
-  "false_alarm_turns": [],
   "notes_on_faithful_turns": []
  },
- "checker_used": false,
- "wer": {
-  "en": null,
-  "es": null
+ "from_script_text": {
+  "caught": 20,
+  "errors": 20,
+  "false_alarms": 2,
+  "faithful_turns": 34,
+  "patient_speech_caught": "11/11",
+  "missed": [],
+  "false_alarm_turns": [
+   "V1-02",
+   "V5-06"
+  ],
+  "notes_on_faithful_turns": []
  },
- "ms_median_audio_to_card": null,
- "ms_p95": null,
- "by_model": {},
- "cost_usd": 0
+ "checker_used": true,
+ "wer": {
+  "en": 0.035,
+  "es": 0.046
+ },
+ "ms_median_audio_to_card": 1332.4,
+ "ms_p95": 1848.3000000000002,
+ "by_model": {
+  "asr": {
+   "model": "nvidia/parakeet-tdt-0.6b-v3 (Nebius endpoint)",
+   "calls": 108,
+   "seconds": 80.34,
+   "cost_usd": 0.0
+  },
+  "checker": {
+   "model": "faithful-checker (Nebius endpoint)",
+   "calls": 54,
+   "seconds": 25.35,
+   "cost_usd": 0.0
+  },
+  "lightning": {
+   "model": "nvidia/Nemotron-3_5-Lightning",
+   "calls": 24,
+   "seconds": 12.55,
+   "cost_usd": 0.00049
+  },
+  "ultra": {
+   "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "calls": 6,
+   "seconds": 35.33,
+   "cost_usd": 0.0276
+  }
+ },
+ "cost_usd": 0.0281
 }

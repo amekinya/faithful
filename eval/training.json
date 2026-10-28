@@ -1,0 +1,44 @@
+{
+ "name": "faithful-checker",
+ "base": "nvidia/llama-nemotron-rerank-1b-v2",
+ "reported_class": 0,
+ "train_pairs": 3818,
+ "epochs": 2.0,
+ "lr": 1e-05,
+ "batch": 32,
+ "base_model": {
+  "dev": {
+   "auc": 0.5275,
+   "threshold": 0.05,
+   "accuracy": 0.4953,
+   "precision": 0.5859,
+   "recall": 0.2199,
+   "f1": 0.3198
+  },
+  "test_auc": 0.5962,
+  "test_at_base_dev_threshold": {
+   "precision": 0.5376,
+   "recall": 0.2017,
+   "f1": 0.2934
+  }
+ },
+ "fine_tuned": {
+  "dev": {
+   "auc": 0.9856,
+   "threshold": 0.85,
+   "accuracy": 0.943,
+   "precision": 0.958,
+   "recall": 0.9355,
+   "f1": 0.9466
+  },
+  "test_auc": 0.9494,
+  "test_at_dev_threshold": {
+   "precision": 0.88,
+   "recall": 0.8113,
+   "f1": 0.8442
+  }
+ },
+ "threshold": 0.85,
+ "seconds": 161.1,
+ "gpu": "NVIDIA L40S"
+}

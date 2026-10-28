@@ -19,9 +19,11 @@
      },
      "heard": {
       "source": "Hi, I'm Dr. Patel. What brings you in today?",
-      "rendition": "Hola, soy la doctora Patel. ¿Qué la trae por aquí hoy?",
-      "asr": false,
-      "asr_ms": null
+      "rendition": "Hola, soy la doctora Patel, que la trae por aquí hoy.",
+      "asr": true,
+      "asr_ms": 666.1,
+      "asr_ms_source": 1368.4,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V1-01-src.mp3",
@@ -33,20 +35,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.9906,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.009
       },
       "explanation": null,
       "ms": {
-       "code": 8.9,
-       "checker": 0.0,
-       "to_decision": 8.9,
-       "total": 8.9
+       "code": 15.9,
+       "checker": 492.9,
+       "to_decision": 508.9,
+       "total": 508.9
       }
      },
      "check_on_script": {
@@ -54,7 +56,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.008
       },
       "findings": []
      },
@@ -73,8 +75,10 @@
      "heard": {
       "source": "Mi hijo tiene fiebre desde hace dos días, y anoche llegó a treinta y nueve y medio.",
       "rendition": "My son has had a fever for two days, and last night it got to 39.5.",
-      "asr": false,
-      "asr_ms": null
+      "asr": true,
+      "asr_ms": 824.3,
+      "asr_ms_source": 856.3,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V1-02-src.mp3",
@@ -86,28 +90,32 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.0373,
+      "checker": "on",
       "decision": {
-       "level": "ok",
-       "title": "",
-       "why": "",
-       "p_error": null
+       "level": "card",
+       "title": "Possible change",
+       "why": "checker",
+       "p_error": 0.963
       },
-      "explanation": null,
+      "explanation": {
+       "say": "Confirm: Son has fever for two days. Last night temperature was 39.5°C.",
+       "source_quote": "Mi hijo tiene fiebre desde hace dos días, y anoche llegó a treinta y nueve y medio.",
+       "quote_ok": true
+      },
       "ms": {
-       "code": 1.0,
-       "checker": 0.0,
-       "to_decision": 1.0,
-       "total": 1.0
+       "code": 1.9,
+       "checker": 466.7,
+       "to_decision": 468.7,
+       "total": 1907.4
       }
      },
      "check_on_script": {
       "decision": {
-       "level": "ok",
-       "title": "",
-       "why": "",
-       "p_error": null
+       "level": "card",
+       "title": "Possible change",
+       "why": "checker",
+       "p_error": 0.963
       },
       "findings": []
      },
@@ -126,8 +134,10 @@
      "heard": {
       "source": "Has he had any medicine today?",
       "rendition": "¿Le ha dado alguna medicina hoy?",
-      "asr": false,
-      "asr_ms": null
+      "asr": true,
+      "asr_ms": 638.1,
+      "asr_ms_source": 700.3,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V1-03-src.mp3",
@@ -139,20 +149,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.9929,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.007
       },
       "explanation": null,
       "ms": {
-       "code": 0.4,
-       "checker": 0.0,
-       "to_decision": 0.4,
-       "total": 0.4
+       "code": 0.8,
+       "checker": 515.1,
+       "to_decision": 515.9,
+       "total": 515.9
       }
      },
      "check_on_script": {
@@ -160,7 +170,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.007
       },
       "findings": []
      },
@@ -177,10 +187,12 @@
       "rendition": "Yes, I gave him Tylenol today."
      },
      "heard": {
-      "source": "Sí, ya le di dos dosis de Tylenol hoy, la última a las diez. Y es alérgico a la penicilina.",
-      "rendition": "Yes, I gave him Tylenol today.",
-      "asr": false,
-      "asr_ms": null
+      "source": "Sí, ya le di dos dosis de tilenol hoy, la última a las diez, y es alérgico a la penicilina.",
+      "rendition": "Yes I gave him Tylenol today.",
+      "asr": true,
+      "asr_ms": 634.3,
+      "asr_ms_source": 837.1,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V1-04-src.mp3",
@@ -225,33 +237,32 @@
         "message": "Not in the interpretation: number “diez”"
        }
       ],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.0003,
+      "checker": "on",
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 1.0
       },
       "explanation": {
-       "say": "Re-confirm. Not interpreted: “alérgico”, “penicilina”, “dos”, “diez”.",
-       "source_quote": "alérgico",
-       "quote_ok": true,
-       "by": "code"
+       "say": "Yes, I gave two doses of Tylenol today. The last dose was at 10:00. He is allergic to penicillin.",
+       "source_quote": "Sí, ya le di dos dosis de tilenol hoy, la última a las diez, y es alérgico a la penicilina.",
+       "quote_ok": true
       },
       "ms": {
-       "code": 0.9,
-       "checker": 0.0,
-       "to_decision": 0.9,
-       "total": 0.9
+       "code": 1.7,
+       "checker": 453.0,
+       "to_decision": 454.7,
+       "total": 992.3
       }
      },
      "check_on_script": {
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 1.0
       },
       "findings": [
        {
@@ -305,9 +316,11 @@
      },
      "heard": {
       "source": "Is he having any trouble breathing, a rash, or is he not drinking?",
-      "rendition": "¿Tiene dificultad para respirar, algún sarpullido, o no está tomando líquidos?",
-      "asr": false,
-      "asr_ms": null
+      "rendition": "¿Tiene dificultad para respirar, algún zarpullido o no está tomando líquidos?",
+      "asr": true,
+      "asr_ms": 875.8,
+      "asr_ms_source": 652.8,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V1-05-src.mp3",
@@ -319,20 +332,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.9553,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.045
       },
       "explanation": null,
       "ms": {
-       "code": 0.7,
-       "checker": 0.0,
-       "to_decision": 0.7,
-       "total": 0.7
+       "code": 1.5,
+       "checker": 455.1,
+       "to_decision": 456.6,
+       "total": 456.6
       }
      },
      "check_on_script": {
@@ -340,7 +353,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.016
       },
       "findings": []
      },
@@ -357,10 +370,12 @@
       "rendition": "No, he's drinking well, but his left ear hurts."
      },
      "heard": {
-      "source": "No, está tomando bien, pero le duele el oído derecho.",
-      "rendition": "No, he's drinking well, but his left ear hurts.",
-      "asr": false,
-      "asr_ms": null
+      "source": "No está tomando bien, pero le duele el oído derecho.",
+      "rendition": "No he's drinking well, but his left ear hurts.",
+      "asr": true,
+      "asr_ms": 663.6,
+      "asr_ms_source": 639.9,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V1-06-src.mp3",
@@ -381,33 +396,32 @@
         "message": "Changed left/right: “derecho” became “left ear”"
        }
       ],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.0049,
+      "checker": "on",
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.995
       },
       "explanation": {
-       "say": "Re-confirm. “derecho” became “left ear”.",
-       "source_quote": "derecho",
-       "quote_ok": true,
-       "by": "code"
+       "say": "Confirm: right ear, not left ear.",
+       "source_quote": "No está tomando bien, pero le duele el oído derecho.",
+       "quote_ok": true
       },
       "ms": {
-       "code": 0.7,
-       "checker": 0.0,
-       "to_decision": 0.7,
-       "total": 0.7
+       "code": 1.4,
+       "checker": 452.8,
+       "to_decision": 454.2,
+       "total": 984.1
       }
      },
      "check_on_script": {
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.996
       },
       "findings": [
        {
@@ -436,10 +450,12 @@
       "rendition": "Tiene una infección del oído. Dele 5 mililitros de azitromicina una vez al día por cinco días."
      },
      "heard": {
-      "source": "He has an ear infection. Give him 5 milliliters of azithromycin once a day for 5 days.",
-      "rendition": "Tiene una infección del oído. Dele 5 mililitros de azitromicina una vez al día por cinco días.",
-      "asr": false,
-      "asr_ms": null
+      "source": "He has an ear infection. Give him 5 milliliters of azothermycin once a day for five days.",
+      "rendition": "Tiene una infección del oído, dele cinco mililitros de acitromicina una vez al día por cinco días.",
+      "asr": true,
+      "asr_ms": 808.9,
+      "asr_ms_source": 815.0,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V1-07-src.mp3",
@@ -451,20 +467,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.5238,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.476
       },
       "explanation": null,
       "ms": {
-       "code": 1.1,
-       "checker": 0.0,
-       "to_decision": 1.1,
-       "total": 1.1
+       "code": 2.0,
+       "checker": 468.1,
+       "to_decision": 470.1,
+       "total": 470.1
       }
      },
      "check_on_script": {
@@ -472,7 +488,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.004
       },
       "findings": []
      },
@@ -489,10 +505,12 @@
       "rendition": "Para la fiebre le puede dar ibuprofeno, 100 miligramos cada 6 horas."
      },
      "heard": {
-      "source": "For the fever you can give ibuprofen, 100 milligrams every 6 hours, but no more than 4 doses in 24 hours.",
-      "rendition": "Para la fiebre le puede dar ibuprofeno, 100 miligramos cada 6 horas.",
-      "asr": false,
-      "asr_ms": null
+      "source": "For the fever, you can give ibuprofen 100 mg every 6 hours, but no more than 4 doses in 24 hours.",
+      "rendition": "Para la fiebre le puede dar ibuprofeno cien miligramos cada seis horas.",
+      "asr": true,
+      "asr_ms": 676.7,
+      "asr_ms_source": 828.2,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V1-08-src.mp3",
@@ -529,13 +547,13 @@
         "message": "Not in the interpretation: how long “24 hours”"
        }
       ],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.0007,
+      "checker": "on",
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.999
       },
       "explanation": {
        "say": "Re-confirm. Not interpreted: “no more than”, “4”, “24 hours”.",
@@ -544,18 +562,18 @@
        "by": "code"
       },
       "ms": {
-       "code": 1.1,
-       "checker": 0.0,
-       "to_decision": 1.1,
-       "total": 1.2
+       "code": 10.4,
+       "checker": 450.6,
+       "to_decision": 461.0,
+       "total": 948.5
       }
      },
      "check_on_script": {
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.999
       },
       "findings": [
        {
@@ -600,10 +618,12 @@
       "rendition": "Can I keep giving him the Tylenol too?"
      },
      "heard": {
-      "source": "¿Le puedo seguir dando el Tylenol también?",
+      "source": "Le puedo seguir dando el telenol también.",
       "rendition": "Can I keep giving him the Tylenol too?",
-      "asr": false,
-      "asr_ms": null
+      "asr": true,
+      "asr_ms": 645.3,
+      "asr_ms_source": 656.4,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V1-09-src.mp3",
@@ -615,20 +635,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.985,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.015
       },
       "explanation": null,
       "ms": {
-       "code": 0.4,
-       "checker": 0.0,
-       "to_decision": 0.4,
-       "total": 0.4
+       "code": 1.3,
+       "checker": 467.0,
+       "to_decision": 468.3,
+       "total": 468.3
       }
      },
      "check_on_script": {
@@ -636,7 +656,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.004
       },
       "findings": []
      },
@@ -654,9 +674,11 @@
      },
      "heard": {
       "source": "Yes, but don't give the Tylenol and the ibuprofen at the same time. Alternate them.",
-      "rendition": "Sí, le puede dar el Tylenol y el ibuprofeno al mismo tiempo.",
-      "asr": false,
-      "asr_ms": null
+      "rendition": "Si le puede dar el tilenol y el ibuprofeno al mismo tiempo.",
+      "asr": true,
+      "asr_ms": 649.9,
+      "asr_ms_source": 936.9,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V1-10-src.mp3",
@@ -677,33 +699,32 @@
         "message": "Not in the interpretation: a 'no' / 'not' “don't”"
        }
       ],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.0032,
+      "checker": "on",
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.997
       },
       "explanation": {
-       "say": "Re-confirm. Not interpreted: “don't”.",
-       "source_quote": "don't",
-       "quote_ok": true,
-       "by": "code"
+       "say": "No, no los dé al mismo tiempo. Alternelos.",
+       "source_quote": "Yes, but don't give the Tylenol and the ibuprofen at the same time. Alternate them.",
+       "quote_ok": true
       },
       "ms": {
-       "code": 0.7,
-       "checker": 0.0,
-       "to_decision": 0.7,
-       "total": 0.7
+       "code": 1.4,
+       "checker": 450.6,
+       "to_decision": 452.1,
+       "total": 907.9
       }
      },
      "check_on_script": {
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.997
       },
       "findings": [
        {
@@ -734,8 +755,10 @@
      "heard": {
       "source": "Come back right away if he has trouble breathing, a stiff neck, or won't wake up.",
       "rendition": "Regrese de inmediato si tiene dificultad para respirar.",
-      "asr": false,
-      "asr_ms": null
+      "asr": true,
+      "asr_ms": 675.6,
+      "asr_ms_source": 849.5,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V1-11-src.mp3",
@@ -764,13 +787,13 @@
         "message": "Not in the interpretation: warning sign “won't wake”"
        }
       ],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.0018,
+      "checker": "on",
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.998
       },
       "explanation": {
        "say": "Re-confirm. Not interpreted: “won't”, “won't wake”.",
@@ -779,18 +802,18 @@
        "by": "code"
       },
       "ms": {
-       "code": 0.7,
-       "checker": 0.0,
-       "to_decision": 0.7,
-       "total": 0.7
+       "code": 1.5,
+       "checker": 451.7,
+       "to_decision": 453.3,
+       "total": 952.1
       }
      },
      "check_on_script": {
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.998
       },
       "findings": [
        {
@@ -828,9 +851,11 @@
      },
      "heard": {
       "source": "Muchas gracias, doctora.",
-      "rendition": "Thank you so much, doctor.",
-      "asr": false,
-      "asr_ms": null
+      "rendition": "Thank you so much, Doctor.",
+      "asr": true,
+      "asr_ms": 654.2,
+      "asr_ms_source": 637.3,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V1-12-src.mp3",
@@ -842,20 +867,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.9914,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.009
       },
       "explanation": null,
       "ms": {
-       "code": 0.3,
-       "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
+       "code": 0.7,
+       "checker": 467.7,
+       "to_decision": 468.4,
+       "total": 468.4
       }
      },
      "check_on_script": {
@@ -863,7 +888,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.008
       },
       "findings": []
      },
@@ -891,9 +916,11 @@
      },
      "heard": {
       "source": "How have your sugars been since the last visit?",
-      "rendition": "¿Cómo ha tenido el azúcar desde la última consulta?",
-      "asr": false,
-      "asr_ms": null
+      "rendition": "Como ha tenido el azúcar desde la última consulta.",
+      "asr": true,
+      "asr_ms": 727.5,
+      "asr_ms_source": 696.7,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V2-01-src.mp3",
@@ -905,20 +932,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.9826,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.017
       },
       "explanation": null,
       "ms": {
-       "code": 0.5,
-       "checker": 0.0,
-       "to_decision": 0.5,
-       "total": 0.5
+       "code": 1.0,
+       "checker": 523.7,
+       "to_decision": 524.7,
+       "total": 524.7
       }
      },
      "check_on_script": {
@@ -926,7 +953,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.014
       },
       "findings": []
      },
@@ -945,8 +972,10 @@
      "heard": {
       "source": "En la mañana sale como en ciento cuarenta, pero en la noche a veces baja a sesenta y me pongo temblorosa.",
       "rendition": "In the morning it's around 140, and at night it sometimes goes down.",
-      "asr": false,
-      "asr_ms": null
+      "asr": true,
+      "asr_ms": 894.1,
+      "asr_ms_source": 884.4,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V2-02-src.mp3",
@@ -967,33 +996,32 @@
         "message": "Not in the interpretation: number “sesenta”"
        }
       ],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.0026,
+      "checker": "on",
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.997
       },
       "explanation": {
-       "say": "Re-confirm. Not interpreted: “sesenta”.",
-       "source_quote": "sesenta",
-       "quote_ok": true,
-       "by": "code"
+       "say": "In the morning it is around 140, and at night it sometimes goes down to 60.",
+       "source_quote": "En la noche a veces baja a sesenta",
+       "quote_ok": true
       },
       "ms": {
-       "code": 0.9,
-       "checker": 0.0,
-       "to_decision": 0.9,
-       "total": 0.9
+       "code": 1.9,
+       "checker": 466.8,
+       "to_decision": 468.7,
+       "total": 922.9
       }
      },
      "check_on_script": {
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.997
       },
       "findings": [
        {
@@ -1023,9 +1051,11 @@
      },
      "heard": {
       "source": "How much insulin are you taking at night?",
-      "rendition": "¿Cuánta insulina se pone en la noche?",
-      "asr": false,
-      "asr_ms": null
+      "rendition": "Cuánta insulina se pone en la noche.",
+      "asr": true,
+      "asr_ms": 646.2,
+      "asr_ms_source": 727.0,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V2-03-src.mp3",
@@ -1037,20 +1067,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.989,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.011
       },
       "explanation": null,
       "ms": {
-       "code": 0.4,
-       "checker": 0.0,
-       "to_decision": 0.4,
-       "total": 0.4
+       "code": 1.0,
+       "checker": 511.8,
+       "to_decision": 512.8,
+       "total": 512.8
       }
      },
      "check_on_script": {
@@ -1058,7 +1088,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.009
       },
       "findings": []
      },
@@ -1075,10 +1105,12 @@
       "rendition": "I take twelve units before bed."
      },
      "heard": {
-      "source": "Me pongo veinte unidades antes de dormir.",
+      "source": "me pongo veinte unidades antes de dormir.",
       "rendition": "I take twelve units before bed.",
-      "asr": false,
-      "asr_ms": null
+      "asr": true,
+      "asr_ms": 690.7,
+      "asr_ms_source": 638.6,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V2-04-src.mp3",
@@ -1099,33 +1131,32 @@
         "message": "Changed number: “veinte” became “twelve”"
        }
       ],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.0059,
+      "checker": "on",
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.994
       },
       "explanation": {
-       "say": "Re-confirm. “veinte” became “twelve”.",
-       "source_quote": "veinte",
-       "quote_ok": true,
-       "by": "code"
+       "say": "Confirm: original Spanish 'veinte' matches English 'twelve'?",
+       "source_quote": "me pongo veinte unidades antes de dormir",
+       "quote_ok": true
       },
       "ms": {
-       "code": 0.5,
-       "checker": 0.0,
-       "to_decision": 0.5,
-       "total": 0.5
+       "code": 1.1,
+       "checker": 476.5,
+       "to_decision": 477.6,
+       "total": 998.5
       }
      },
      "check_on_script": {
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.994
       },
       "findings": [
        {
@@ -1154,10 +1185,12 @@
       "rendition": "Vamos a bajarla a 16 unidades antes de dormir, y siga tomando la metformina de 500 miligramos dos veces al día con comida."
      },
      "heard": {
-      "source": "Let's lower it to 16 units at bedtime, and keep taking metformin 500 milligrams twice a day with food.",
-      "rendition": "Vamos a bajarla a 16 unidades antes de dormir, y siga tomando la metformina de 500 miligramos dos veces al día con comida.",
-      "asr": false,
-      "asr_ms": null
+      "source": "Let's lower it to sixteen units at bedtime and keep taking metformin five hundred milligrams twice a day with food.",
+      "rendition": "Vamos a bajarla a dieciséis unidades antes de dormir, y siga tomando la metformina de quinientos miligramos dos veces al día con comida.",
+      "asr": true,
+      "asr_ms": 874.6,
+      "asr_ms_source": 911.6,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V2-05-src.mp3",
@@ -1169,20 +1202,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.8093,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.191
       },
       "explanation": null,
       "ms": {
-       "code": 1.4,
-       "checker": 0.0,
-       "to_decision": 1.4,
-       "total": 1.4
+       "code": 3.1,
+       "checker": 509.0,
+       "to_decision": 512.2,
+       "total": 512.2
       }
      },
      "check_on_script": {
@@ -1190,7 +1223,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.007
       },
       "findings": []
      },
@@ -1207,10 +1240,12 @@
       "rendition": "And what if I feel dizzy again?"
      },
      "heard": {
-      "source": "¿Y si me siento mareada otra vez?",
+      "source": "y si me siento mareada otra vez.",
       "rendition": "And what if I feel dizzy again?",
-      "asr": false,
-      "asr_ms": null
+      "asr": true,
+      "asr_ms": 632.3,
+      "asr_ms_source": 675.0,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V2-06-src.mp3",
@@ -1222,20 +1257,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.9944,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.006
       },
       "explanation": null,
       "ms": {
-       "code": 0.4,
-       "checker": 0.0,
-       "to_decision": 0.4,
-       "total": 0.4
+       "code": 0.8,
+       "checker": 457.2,
+       "to_decision": 458.1,
+       "total": 458.1
       }
      },
      "check_on_script": {
@@ -1243,7 +1278,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.005
       },
       "findings": []
      },
@@ -1260,10 +1295,12 @@
       "rendition": "Si se siente temblorosa o sudorosa, tómese media taza de jugo y vuelva a medirse el azúcar en 15 minutos."
      },
      "heard": {
-      "source": "If you feel shaky or sweaty, drink half a cup of juice and check your sugar again in 15 minutes.",
-      "rendition": "Si se siente temblorosa o sudorosa, tómese media taza de jugo y vuelva a medirse el azúcar en 15 minutos.",
-      "asr": false,
-      "asr_ms": null
+      "source": "If you feel shaky or sweaty drink half a cup of juice and check your sugar again in fifteen minutes",
+      "rendition": "Si se siente temblorosa o sudorosa, tómese media taza de jugo y vuelva a medirse el azúcar en quince minutos.",
+      "asr": true,
+      "asr_ms": 866.9,
+      "asr_ms_source": 889.4,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V2-07-src.mp3",
@@ -1275,20 +1312,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.9937,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.006
       },
       "explanation": null,
       "ms": {
-       "code": 1.0,
-       "checker": 0.0,
-       "to_decision": 1.0,
-       "total": 1.0
+       "code": 1.9,
+       "checker": 451.8,
+       "to_decision": 453.8,
+       "total": 453.8
       }
      },
      "check_on_script": {
@@ -1296,7 +1333,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.006
       },
       "findings": []
      },
@@ -1313,10 +1350,12 @@
       "rendition": "I also take an aspirin every day, another doctor gave it to me."
      },
      "heard": {
-      "source": "También tomo una aspirina diaria que me dio otro doctor.",
+      "source": "También tomo una aspirina diaria, que me dio otro doctor.",
       "rendition": "I also take an aspirin every day, another doctor gave it to me.",
-      "asr": false,
-      "asr_ms": null
+      "asr": true,
+      "asr_ms": 828.3,
+      "asr_ms_source": 665.5,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V2-08-src.mp3",
@@ -1328,20 +1367,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.997,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.003
       },
       "explanation": null,
       "ms": {
-       "code": 0.7,
-       "checker": 0.0,
-       "to_decision": 0.7,
-       "total": 0.7
+       "code": 1.4,
+       "checker": 467.0,
+       "to_decision": 468.4,
+       "total": 468.4
       }
      },
      "check_on_script": {
@@ -1349,7 +1388,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.003
       },
       "findings": []
      },
@@ -1366,10 +1405,12 @@
       "rendition": "Muy bien. No se salte la cena los días que se ponga insulina."
      },
      "heard": {
-      "source": "Okay. Don't skip dinner on the days you take insulin.",
-      "rendition": "Muy bien. No se salte la cena los días que se ponga insulina.",
-      "asr": false,
-      "asr_ms": null
+      "source": "Okay, don't skip dinner on the days you take insulin.",
+      "rendition": "Muy bien, no se salte la cena los días que se ponga insulina.",
+      "asr": true,
+      "asr_ms": 648.8,
+      "asr_ms_source": 689.2,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V2-09-src.mp3",
@@ -1381,20 +1422,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.9897,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.01
       },
       "explanation": null,
       "ms": {
-       "code": 0.6,
-       "checker": 0.0,
-       "to_decision": 0.6,
-       "total": 0.6
+       "code": 1.3,
+       "checker": 457.7,
+       "to_decision": 459.0,
+       "total": 459.0
       }
      },
      "check_on_script": {
@@ -1402,7 +1443,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.011
       },
       "findings": []
      },
@@ -1421,8 +1462,10 @@
      "heard": {
       "source": "Y tengo una herida en el pie izquierdo que no se me cierra.",
       "rendition": "And I have a sore on my foot.",
-      "asr": false,
-      "asr_ms": null
+      "asr": true,
+      "asr_ms": 666.4,
+      "asr_ms_source": 705.3,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V2-10-src.mp3",
@@ -1451,33 +1494,32 @@
         "message": "Not in the interpretation: left/right “izquierdo”"
        }
       ],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.0015,
+      "checker": "on",
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.999
       },
       "explanation": {
-       "say": "Re-confirm. Not interpreted: “no”, “izquierdo”.",
-       "source_quote": "no",
-       "quote_ok": true,
-       "by": "code"
+       "say": "And I have a sore on my left foot.",
+       "source_quote": "Y tengo una herida en el pie izquierdo que no se me cierra.",
+       "quote_ok": true
       },
       "ms": {
-       "code": 0.5,
-       "checker": 0.0,
-       "to_decision": 0.5,
-       "total": 0.5
+       "code": 1.0,
+       "checker": 464.1,
+       "to_decision": 465.2,
+       "total": 1181.9
       }
      },
      "check_on_script": {
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.999
       },
       "findings": [
        {
@@ -1515,9 +1557,11 @@
      },
      "heard": {
       "source": "I want to look at that foot today, before you leave.",
-      "rendition": "Quiero revisarle ese pie hoy, antes de que se vaya.",
-      "asr": false,
-      "asr_ms": null
+      "rendition": "Quiero revisarle ese pie hoy antes de que se vaya.",
+      "asr": true,
+      "asr_ms": 670.1,
+      "asr_ms_source": 698.9,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V2-11-src.mp3",
@@ -1529,20 +1573,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.982,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.018
       },
       "explanation": null,
       "ms": {
-       "code": 0.4,
-       "checker": 0.0,
-       "to_decision": 0.5,
-       "total": 0.5
+       "code": 0.9,
+       "checker": 455.3,
+       "to_decision": 456.3,
+       "total": 456.3
       }
      },
      "check_on_script": {
@@ -1550,7 +1594,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.017
       },
       "findings": []
      },
@@ -1578,9 +1622,11 @@
      },
      "heard": {
       "source": "How often is she using her albuterol inhaler?",
-      "rendition": "¿Qué tan seguido está usando el inhalador de albuterol?",
-      "asr": false,
-      "asr_ms": null
+      "rendition": "que tan seguido está usando el inhalador de albuterol.",
+      "asr": true,
+      "asr_ms": 678.0,
+      "asr_ms_source": 642.7,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V3-01-src.mp3",
@@ -1592,20 +1638,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.9962,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.004
       },
       "explanation": null,
       "ms": {
-       "code": 0.5,
-       "checker": 0.0,
-       "to_decision": 0.5,
-       "total": 0.5
+       "code": 1.1,
+       "checker": 452.2,
+       "to_decision": 453.3,
+       "total": 453.3
       }
      },
      "check_on_script": {
@@ -1613,7 +1659,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.003
       },
       "findings": []
      },
@@ -1632,8 +1678,10 @@
      "heard": {
       "source": "Como cuatro veces al día esta semana, y la tos la despierta en la noche.",
       "rendition": "About four times a day this week.",
-      "asr": false,
-      "asr_ms": null
+      "asr": true,
+      "asr_ms": 661.3,
+      "asr_ms_source": 823.9,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V3-02-src.mp3",
@@ -1654,28 +1702,32 @@
         "message": "Not in the interpretation: when to take it “en la noche”"
        }
       ],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.0049,
+      "checker": "on",
       "decision": {
-       "level": "ok",
-       "title": "",
-       "why": "",
-       "p_error": null
+       "level": "card",
+       "title": "Possible change",
+       "why": "checker",
+       "p_error": 0.995
       },
-      "explanation": null,
+      "explanation": {
+       "say": "About four times a day this week, and the cough wakes her at night.",
+       "source_quote": "Como cuatro veces al día esta semana, y la tos la despierta en la noche.",
+       "quote_ok": true
+      },
       "ms": {
-       "code": 0.6,
-       "checker": 0.0,
-       "to_decision": 0.6,
-       "total": 0.6
+       "code": 1.2,
+       "checker": 468.3,
+       "to_decision": 469.6,
+       "total": 988.8
       }
      },
      "check_on_script": {
       "decision": {
-       "level": "ok",
-       "title": "",
-       "why": "",
-       "p_error": null
+       "level": "card",
+       "title": "Possible change",
+       "why": "checker",
+       "p_error": 0.995
       },
       "findings": [
        {
@@ -1706,8 +1758,10 @@
      "heard": {
       "source": "Use two puffs every four hours as needed, and start this steroid inhaler every morning and every night, even when she feels fine.",
       "rendition": "Use dos inhalaciones cada cuatro horas si las necesita, y empiece este inhalador de esteroide cada mañana y cada noche.",
-      "asr": false,
-      "asr_ms": null
+      "asr": true,
+      "asr_ms": 837.0,
+      "asr_ms_source": 918.5,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V3-03-src.mp3",
@@ -1719,28 +1773,33 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.0083,
+      "checker": "on",
       "decision": {
-       "level": "ok",
-       "title": "",
-       "why": "",
-       "p_error": null
+       "level": "card",
+       "title": "Possible change",
+       "why": "checker",
+       "p_error": 0.992
       },
-      "explanation": null,
+      "explanation": {
+       "say": "Re-confirm this turn: the meaning may have changed.",
+       "source_quote": "",
+       "quote_ok": true,
+       "by": "code"
+      },
       "ms": {
-       "code": 1.4,
-       "checker": 0.0,
-       "to_decision": 1.4,
-       "total": 1.4
+       "code": 3.0,
+       "checker": 500.4,
+       "to_decision": 503.4,
+       "total": 1037.7
       }
      },
      "check_on_script": {
       "decision": {
-       "level": "ok",
-       "title": "",
-       "why": "",
-       "p_error": null
+       "level": "card",
+       "title": "Possible change",
+       "why": "checker",
+       "p_error": 0.992
       },
       "findings": []
      },
@@ -1760,10 +1819,12 @@
       "rendition": "And the new one, how many times do I give it to her?"
      },
      "heard": {
-      "source": "¿Y el nuevo, cuántas veces se lo doy?",
+      "source": "Y el nuevo, cuántas veces se lo doy.",
       "rendition": "And the new one, how many times do I give it to her?",
-      "asr": false,
-      "asr_ms": null
+      "asr": true,
+      "asr_ms": 645.5,
+      "asr_ms_source": 674.4,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V3-04-src.mp3",
@@ -1775,20 +1836,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.9836,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.016
       },
       "explanation": null,
       "ms": {
-       "code": 0.4,
-       "checker": 0.0,
-       "to_decision": 0.5,
-       "total": 0.5
+       "code": 0.9,
+       "checker": 460.4,
+       "to_decision": 461.3,
+       "total": 461.3
       }
      },
      "check_on_script": {
@@ -1796,7 +1857,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.016
       },
       "findings": []
      },
@@ -1813,10 +1874,12 @@
       "rendition": "Una inhalación, tres veces al día. Que se enjuague la boca después."
      },
      "heard": {
-      "source": "One puff, two times a day. Have her rinse her mouth afterwards.",
-      "rendition": "Una inhalación, tres veces al día. Que se enjuague la boca después.",
-      "asr": false,
-      "asr_ms": null
+      "source": "One puff, two times a day, have her rinse her mouth afterwards.",
+      "rendition": "Una inhalación tres veces al día que se enjuague la boca después.",
+      "asr": true,
+      "asr_ms": 675.3,
+      "asr_ms_source": 867.4,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V3-05-src.mp3",
@@ -1837,13 +1900,13 @@
         "message": "Changed how often: “two times a day” became “tres veces al día”"
        }
       ],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.0038,
+      "checker": "on",
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.996
       },
       "explanation": {
        "say": "Re-confirm. “two times a day” became “tres veces al día”.",
@@ -1852,18 +1915,18 @@
        "by": "code"
       },
       "ms": {
-       "code": 0.7,
-       "checker": 0.0,
-       "to_decision": 0.7,
-       "total": 0.7
+       "code": 1.5,
+       "checker": 466.8,
+       "to_decision": 468.4,
+       "total": 946.9
       }
      },
      "check_on_script": {
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.998
       },
       "findings": [
        {
@@ -1892,10 +1955,12 @@
       "rendition": "Okay. She's not allergic to anything."
      },
      "heard": {
-      "source": "Está bien. Ella no es alérgica a nada.",
-      "rendition": "Okay. She's not allergic to anything.",
-      "asr": false,
-      "asr_ms": null
+      "source": "Está bien, ella no es alérgica a nada.",
+      "rendition": "Okay, she's not allergic to anything.",
+      "asr": true,
+      "asr_ms": 660.3,
+      "asr_ms_source": 682.1,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V3-06-src.mp3",
@@ -1907,20 +1972,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.9876,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.012
       },
       "explanation": null,
       "ms": {
-       "code": 0.5,
-       "checker": 0.0,
-       "to_decision": 0.5,
-       "total": 0.5
+       "code": 1.1,
+       "checker": 457.7,
+       "to_decision": 458.8,
+       "total": 458.8
       }
      },
      "check_on_script": {
@@ -1928,7 +1993,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.015
       },
       "findings": []
      },
@@ -1945,10 +2010,12 @@
       "rendition": "Si se le ponen los labios morados o no puede terminar una frase, llame al 911."
      },
      "heard": {
-      "source": "If her lips turn blue or she can't speak in full sentences, call 911.",
-      "rendition": "Si se le ponen los labios morados o no puede terminar una frase, llame al 911.",
-      "asr": false,
-      "asr_ms": null
+      "source": "If her lips turn blue, or she can't speak in full sentences, call 911.",
+      "rendition": "Si se le ponen los labios morados o no puede terminar una frase, llame al novecientos once.",
+      "asr": true,
+      "asr_ms": 806.4,
+      "asr_ms_source": 878.9,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V3-07-src.mp3",
@@ -1960,20 +2027,25 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.0097,
+      "checker": "on",
       "decision": {
-       "level": "ok",
-       "title": "",
-       "why": "",
-       "p_error": null
+       "level": "card",
+       "title": "Possible change",
+       "why": "checker",
+       "p_error": 0.99
       },
-      "explanation": null,
+      "explanation": {
+       "say": "Re-confirm this turn: the meaning may have changed.",
+       "source_quote": "",
+       "quote_ok": true,
+       "by": "code"
+      },
       "ms": {
-       "code": 0.8,
-       "checker": 0.0,
-       "to_decision": 0.8,
-       "total": 0.8
+       "code": 1.8,
+       "checker": 454.9,
+       "to_decision": 456.8,
+       "total": 940.9
       }
      },
      "check_on_script": {
@@ -1981,7 +2053,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.057
       },
       "findings": []
      },
@@ -1999,9 +2071,11 @@
      },
      "heard": {
       "source": "Gracias, doctor.",
-      "rendition": "Thank you, doctor.",
-      "asr": false,
-      "asr_ms": null
+      "rendition": "Thank you, Doctor.",
+      "asr": true,
+      "asr_ms": 649.8,
+      "asr_ms_source": 681.5,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V3-08-src.mp3",
@@ -2013,20 +2087,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.9872,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.013
       },
       "explanation": null,
       "ms": {
-       "code": 0.3,
-       "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
+       "code": 0.6,
+       "checker": 465.7,
+       "to_decision": 466.4,
+       "total": 466.4
       }
      },
      "check_on_script": {
@@ -2034,7 +2108,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.012
       },
       "findings": []
      },
@@ -2063,8 +2137,10 @@
      "heard": {
       "source": "Your INR is high today, so we're changing your warfarin dose.",
       "rendition": "Su INR salió alto hoy, así que vamos a cambiarle la dosis de warfarina.",
-      "asr": false,
-      "asr_ms": null
+      "asr": true,
+      "asr_ms": 850.9,
+      "asr_ms_source": 802.3,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V4-01-src.mp3",
@@ -2076,20 +2152,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.9909,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.009
       },
       "explanation": null,
       "ms": {
-       "code": 0.6,
-       "checker": 0.0,
-       "to_decision": 0.6,
-       "total": 0.6
+       "code": 1.2,
+       "checker": 451.7,
+       "to_decision": 452.9,
+       "total": 452.9
       }
      },
      "check_on_script": {
@@ -2097,7 +2173,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.009
       },
       "findings": []
      },
@@ -2114,10 +2190,12 @@
       "rendition": "Tome cinco miligramos los lunes y viernes, y dos y medio miligramos los demás días."
      },
      "heard": {
-      "source": "Take 2.5 milligrams on Mondays and Fridays, and 5 milligrams on the other days.",
-      "rendition": "Tome cinco miligramos los lunes y viernes, y dos y medio miligramos los demás días.",
-      "asr": false,
-      "asr_ms": null
+      "source": "Take two point five milligrams on Mondays and Fridays, and five milligrams on the other days.",
+      "rendition": "Tome cinco miligramos los lunes y viernes y dos y medio miligramos los demás días.",
+      "asr": true,
+      "asr_ms": 834.5,
+      "asr_ms_source": 847.5,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V4-02-src.mp3",
@@ -2138,33 +2216,32 @@
         "message": "Same numbers in a different order: 2.5, 5 became 5, 2.5"
        }
       ],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.5124,
+      "checker": "on",
       "decision": {
-       "level": "note",
-       "title": "Check later",
-       "why": "code",
-       "p_error": null
+       "level": "card",
+       "title": "Possible change",
+       "why": "code+checker",
+       "p_error": 0.488
       },
       "explanation": {
-       "say": "Re-confirm. Same numbers in a different order: 2.5, 5 became 5, 2.5.",
-       "source_quote": "2.5 / 5",
-       "quote_ok": true,
-       "by": "code"
+       "say": "Take 2.5 milligrams on Mondays and Fridays, and 5 milligrams on the other days.",
+       "source_quote": "Take two point five milligrams on Mondays and Fridays, and five milligrams on the other days.",
+       "quote_ok": true
       },
       "ms": {
-       "code": 0.8,
-       "checker": 0.0,
-       "to_decision": 0.8,
-       "total": 0.8
+       "code": 2.0,
+       "checker": 468.6,
+       "to_decision": 470.6,
+       "total": 947.0
       }
      },
      "check_on_script": {
       "decision": {
-       "level": "note",
-       "title": "Check later",
-       "why": "code",
-       "p_error": null
+       "level": "card",
+       "title": "Possible change",
+       "why": "code+checker",
+       "p_error": 0.821
       },
       "findings": [
        {
@@ -2195,8 +2272,10 @@
      "heard": {
       "source": "Ayer me salió sangre de la nariz y no paraba como por media hora.",
       "rendition": "Yesterday my nose bled.",
-      "asr": false,
-      "asr_ms": null
+      "asr": true,
+      "asr_ms": 640.4,
+      "asr_ms_source": 693.3,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V4-03-src.mp3",
@@ -2233,33 +2312,32 @@
         "message": "Not in the interpretation: how long “media hora”"
        }
       ],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.0009,
+      "checker": "on",
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.999
       },
       "explanation": {
-       "say": "Re-confirm. Not interpreted: “no”; added, not said: “bled”; not interpreted: “media hora”.",
-       "source_quote": "no",
-       "quote_ok": true,
-       "by": "code"
+       "say": "Yesterday my nose bled for about 30 minutes.",
+       "source_quote": "Ayer me salió sangre de la nariz y no paraba como por media hora.",
+       "quote_ok": true
       },
       "ms": {
-       "code": 0.5,
-       "checker": 0.0,
-       "to_decision": 0.5,
-       "total": 0.5
+       "code": 1.1,
+       "checker": 450.4,
+       "to_decision": 451.6,
+       "total": 902.8
       }
      },
      "check_on_script": {
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.999
       },
       "findings": [
        {
@@ -2304,10 +2382,12 @@
       "rendition": "¿Ha visto sangre en la orina o el excremento negro?"
      },
      "heard": {
-      "source": "Any blood in your urine or black stools?",
-      "rendition": "¿Ha visto sangre en la orina o el excremento negro?",
-      "asr": false,
-      "asr_ms": null
+      "source": "Any blood in your urine, or black stools.",
+      "rendition": "Ha visto sangre en la orina o el excremento negro.",
+      "asr": true,
+      "asr_ms": 657.5,
+      "asr_ms_source": 646.1,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V4-04-src.mp3",
@@ -2319,20 +2399,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.9604,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.04
       },
       "explanation": null,
       "ms": {
-       "code": 0.5,
-       "checker": 0.0,
-       "to_decision": 0.5,
-       "total": 0.5
+       "code": 1.0,
+       "checker": 498.7,
+       "to_decision": 499.8,
+       "total": 499.8
       }
      },
      "check_on_script": {
@@ -2340,7 +2420,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.025
       },
       "findings": []
      },
@@ -2357,10 +2437,12 @@
       "rendition": "No, nothing like that."
      },
      "heard": {
-      "source": "No, nada de eso.",
-      "rendition": "No, nothing like that.",
-      "asr": false,
-      "asr_ms": null
+      "source": "No nada de eso.",
+      "rendition": "No nothing like that.",
+      "asr": true,
+      "asr_ms": 650.0,
+      "asr_ms_source": 680.9,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V4-05-src.mp3",
@@ -2372,20 +2454,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.9806,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.019
       },
       "explanation": null,
       "ms": {
-       "code": 0.3,
-       "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
+       "code": 0.8,
+       "checker": 466.7,
+       "to_decision": 467.5,
+       "total": 467.5
       }
      },
      "check_on_script": {
@@ -2393,7 +2475,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.02
       },
       "findings": []
      },
@@ -2412,8 +2494,10 @@
      "heard": {
       "source": "Para el dolor de rodilla me tomo ibuprofeno.",
       "rendition": "For my knee pain I take Tylenol.",
-      "asr": false,
-      "asr_ms": null
+      "asr": true,
+      "asr_ms": 678.7,
+      "asr_ms_source": 644.5,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V4-06-src.mp3",
@@ -2434,13 +2518,13 @@
         "message": "Changed medicine: “ibuprofeno” became “Tylenol”"
        }
       ],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.0009,
+      "checker": "on",
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.999
       },
       "explanation": {
        "say": "Re-confirm. “ibuprofeno” became “Tylenol”.",
@@ -2449,18 +2533,18 @@
        "by": "code"
       },
       "ms": {
-       "code": 0.5,
-       "checker": 0.0,
-       "to_decision": 0.5,
-       "total": 0.5
+       "code": 1.3,
+       "checker": 477.1,
+       "to_decision": 478.5,
+       "total": 1245.2
       }
      },
      "check_on_script": {
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.999
       },
       "findings": [
        {
@@ -2490,9 +2574,11 @@
      },
      "heard": {
       "source": "Please stop the ibuprofen. It raises your bleeding risk with warfarin. You can use acetaminophen instead.",
-      "rendition": "Por favor deje el ibuprofeno, porque con la warfarina aumenta el riesgo de sangrado. En su lugar puede usar acetaminofén.",
-      "asr": false,
-      "asr_ms": null
+      "rendition": "Por favor, deje el ibuprofeno, porque con la warfarina aumenta el riesgo de sangrado. En su lugar, puede usar acetaminofen.",
+      "asr": true,
+      "asr_ms": 847.5,
+      "asr_ms_source": 1022.6,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V4-07-src.mp3",
@@ -2504,20 +2590,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.9836,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.016
       },
       "explanation": null,
       "ms": {
-       "code": 1.1,
-       "checker": 0.0,
-       "to_decision": 1.1,
-       "total": 1.1
+       "code": 2.4,
+       "checker": 456.6,
+       "to_decision": 459.0,
+       "total": 459.0
       }
      },
      "check_on_script": {
@@ -2525,7 +2611,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.018
       },
       "findings": []
      },
@@ -2544,8 +2630,10 @@
      "heard": {
       "source": "Come back in one week for another blood test.",
       "rendition": "Regrese en una semana para otro análisis de sangre.",
-      "asr": false,
-      "asr_ms": null
+      "asr": true,
+      "asr_ms": 665.9,
+      "asr_ms_source": 666.9,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V4-08-src.mp3",
@@ -2557,20 +2645,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.99,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.01
       },
       "explanation": null,
       "ms": {
-       "code": 0.5,
-       "checker": 0.0,
-       "to_decision": 0.5,
-       "total": 0.5
+       "code": 1.2,
+       "checker": 494.6,
+       "to_decision": 495.8,
+       "total": 495.8
       }
      },
      "check_on_script": {
@@ -2578,7 +2666,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.01
       },
       "findings": []
      },
@@ -2607,8 +2695,10 @@
      "heard": {
       "source": "Which ankle did you twist?",
       "rendition": "¿Cuál tobillo se torció?",
-      "asr": false,
-      "asr_ms": null
+      "asr": true,
+      "asr_ms": 668.3,
+      "asr_ms_source": 635.4,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V5-01-src.mp3",
@@ -2620,20 +2710,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.5363,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.464
       },
       "explanation": null,
       "ms": {
-       "code": 0.3,
-       "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
+       "code": 0.7,
+       "checker": 451.0,
+       "to_decision": 451.8,
+       "total": 451.8
       }
      },
      "check_on_script": {
@@ -2641,7 +2731,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.464
       },
       "findings": []
      },
@@ -2658,10 +2748,12 @@
       "rendition": "The left one. I fell on the stairs on Saturday."
      },
      "heard": {
-      "source": "El izquierdo. Me caí en la escalera el sábado.",
-      "rendition": "The left one. I fell on the stairs on Saturday.",
-      "asr": false,
-      "asr_ms": null
+      "source": "El izquierdo me caí en la escalera el sábado.",
+      "rendition": "The left one I fell on the stairs on Saturday.",
+      "asr": true,
+      "asr_ms": 674.8,
+      "asr_ms_source": 665.8,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V5-02-src.mp3",
@@ -2673,20 +2765,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.997,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.003
       },
       "explanation": null,
       "ms": {
-       "code": 0.5,
-       "checker": 0.0,
-       "to_decision": 0.5,
-       "total": 0.5
+       "code": 1.0,
+       "checker": 468.7,
+       "to_decision": 469.8,
+       "total": 469.8
       }
      },
      "check_on_script": {
@@ -2694,7 +2786,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.003
       },
       "findings": []
      },
@@ -2713,8 +2805,10 @@
      "heard": {
       "source": "Me tomé dos pastillas de ibuprofeno de ochocientos.",
       "rendition": "I took two ibuprofen pills.",
-      "asr": false,
-      "asr_ms": null
+      "asr": true,
+      "asr_ms": 643.8,
+      "asr_ms_source": 685.3,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V5-03-src.mp3",
@@ -2735,33 +2829,32 @@
         "message": "Not in the interpretation: number “ochocientos”"
        }
       ],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.0145,
+      "checker": "on",
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.986
       },
       "explanation": {
-       "say": "Re-confirm. Not interpreted: “ochocientos”.",
-       "source_quote": "ochocientos",
-       "quote_ok": true,
-       "by": "code"
+       "say": "I took two ibuprofen pills of 800 mg.",
+       "source_quote": "Me tomé dos pastillas de ibuprofeno de ochocientos",
+       "quote_ok": true
       },
       "ms": {
-       "code": 0.5,
-       "checker": 0.0,
-       "to_decision": 0.5,
-       "total": 0.5
+       "code": 1.2,
+       "checker": 495.2,
+       "to_decision": 496.4,
+       "total": 1178.5
       }
      },
      "check_on_script": {
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.986
       },
       "findings": [
        {
@@ -2790,10 +2883,12 @@
       "rendition": "Es un esguince, no una fractura. Póngase hielo 20 minutos tres veces al día y tome ibuprofeno con cada comida."
      },
      "heard": {
-      "source": "It's a sprain, not a fracture. Ice it for 20 minutes three times a day.",
-      "rendition": "Es un esguince, no una fractura. Póngase hielo 20 minutos tres veces al día y tome ibuprofeno con cada comida.",
-      "asr": false,
-      "asr_ms": null
+      "source": "It's a sprain, not a fracture, ice it for twenty minutes three times a day.",
+      "rendition": "Es un esguince, no una fractura. Póngase hielo veinte minutos tres veces al día y tome ibuprofeno con cada comida.",
+      "asr": true,
+      "asr_ms": 821.8,
+      "asr_ms_source": 870.0,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V5-04-src.mp3",
@@ -2822,13 +2917,13 @@
         "message": "Added in the interpretation: when to take it “con cada comida”"
        }
       ],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.0016,
+      "checker": "on",
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.998
       },
       "explanation": {
        "say": "Re-confirm. Added, not said: “ibuprofeno”; added, not said: “con cada comida”.",
@@ -2837,18 +2932,18 @@
        "by": "code"
       },
       "ms": {
-       "code": 1.2,
-       "checker": 0.0,
-       "to_decision": 1.2,
-       "total": 1.2
+       "code": 2.4,
+       "checker": 477.0,
+       "to_decision": 479.5,
+       "total": 951.5
       }
      },
      "check_on_script": {
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.999
       },
       "findings": [
        {
@@ -2885,10 +2980,12 @@
       "rendition": "Puede tomar ibuprofeno de 400 miligramos cada 8 horas con comida, no más de 3 veces al día."
      },
      "heard": {
-      "source": "You can take ibuprofen 400 milligrams every 8 hours with food, no more than 3 times a day.",
-      "rendition": "Puede tomar ibuprofeno de 400 miligramos cada 8 horas con comida, no más de 3 veces al día.",
-      "asr": false,
-      "asr_ms": null
+      "source": "You can take ibuprofen four hundred milligrams every eight hours with food, no more than three times a day.",
+      "rendition": "Puede tomar ibuprofeno de cuatrocientos miligramos cada ocho horas con comida, no más de tres veces al día.",
+      "asr": true,
+      "asr_ms": 857.1,
+      "asr_ms_source": 843.3,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V5-05-src.mp3",
@@ -2900,20 +2997,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.9961,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.004
       },
       "explanation": null,
       "ms": {
-       "code": 1.2,
-       "checker": 0.0,
-       "to_decision": 1.2,
-       "total": 1.2
+       "code": 2.6,
+       "checker": 467.5,
+       "to_decision": 470.2,
+       "total": 470.2
       }
      },
      "check_on_script": {
@@ -2921,7 +3018,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.002
       },
       "findings": []
      },
@@ -2938,10 +3035,12 @@
       "rendition": "Can I go to work? I'm on my feet all day."
      },
      "heard": {
-      "source": "¿Puedo ir a trabajar? Trabajo parado todo el día.",
+      "source": "Puedo ir a trabajar, trabajo parado todo el día.",
       "rendition": "Can I go to work? I'm on my feet all day.",
-      "asr": false,
-      "asr_ms": null
+      "asr": true,
+      "asr_ms": 682.3,
+      "asr_ms_source": 645.8,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V5-06-src.mp3",
@@ -2953,28 +3052,32 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.0379,
+      "checker": "on",
       "decision": {
-       "level": "ok",
-       "title": "",
-       "why": "",
-       "p_error": null
+       "level": "card",
+       "title": "Possible change",
+       "why": "checker",
+       "p_error": 0.962
       },
-      "explanation": null,
+      "explanation": {
+       "say": "Can I go to work? I'm on my feet all day.",
+       "source_quote": "Puedo ir a trabajar, trabajo parado todo el día.",
+       "quote_ok": true
+      },
       "ms": {
-       "code": 0.4,
-       "checker": 0.0,
-       "to_decision": 0.4,
-       "total": 0.4
+       "code": 1.0,
+       "checker": 456.1,
+       "to_decision": 457.2,
+       "total": 869.1
       }
      },
      "check_on_script": {
       "decision": {
-       "level": "ok",
-       "title": "",
-       "why": "",
-       "p_error": null
+       "level": "card",
+       "title": "Possible change",
+       "why": "checker",
+       "p_error": 0.967
       },
       "findings": []
      },
@@ -2991,10 +3094,12 @@
       "rendition": "Esta semana sí puede. No se apoye en el pie por 3 días y use las muletas."
      },
      "heard": {
-      "source": "Not this week. Keep your weight off it for 3 days and use the crutches.",
-      "rendition": "Esta semana sí puede. No se apoye en el pie por 3 días y use las muletas.",
-      "asr": false,
-      "asr_ms": null
+      "source": "Not this week, keep your weight off it for three days and use the crutches.",
+      "rendition": "esta semana si puede, no se apoye en el pie por tres días y use las muletas.",
+      "asr": true,
+      "asr_ms": 847.2,
+      "asr_ms_source": 866.6,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V5-07-src.mp3",
@@ -3005,51 +3110,34 @@
       "ren_voice": "em_santa"
      },
      "check": {
-      "findings": [
-       {
-        "type": "omission",
-        "kind": "negation",
-        "severity": "high",
-        "source": "Not",
-        "rendition": "",
-        "message": "Not in the interpretation: a 'no' / 'not' “Not”"
-       },
-       {
-        "type": "addition",
-        "kind": "negation",
-        "severity": "high",
-        "source": "",
-        "rendition": "No",
-        "message": "Added in the interpretation: a 'no' / 'not' “No”"
-       }
-      ],
-      "p_faithful": null,
-      "checker": "off",
+      "findings": [],
+      "p_faithful": 0.1176,
+      "checker": "on",
       "decision": {
        "level": "card",
-       "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "title": "Possible change",
+       "why": "checker",
+       "p_error": 0.882
       },
       "explanation": {
-       "say": "Re-confirm. Not interpreted: “Not”; added, not said: “No”.",
-       "source_quote": "Not",
+       "say": "Re-confirm this turn: the meaning may have changed.",
+       "source_quote": "",
        "quote_ok": true,
        "by": "code"
       },
       "ms": {
-       "code": 0.7,
-       "checker": 0.0,
-       "to_decision": 0.7,
-       "total": 0.8
+       "code": 1.5,
+       "checker": 451.3,
+       "to_decision": 452.8,
+       "total": 915.2
       }
      },
      "check_on_script": {
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.863
       },
       "findings": [
        {
@@ -3087,9 +3175,11 @@
      },
      "heard": {
       "source": "If your toes get numb or cold, go to the emergency room.",
-      "rendition": "Si se le duermen los dedos o se le ponen fríos, vaya a emergencias.",
-      "asr": false,
-      "asr_ms": null
+      "rendition": "Si se le duermen los dedos o se le ponen fríos, vaya emergencias.",
+      "asr": true,
+      "asr_ms": 684.1,
+      "asr_ms_source": 671.8,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V5-08-src.mp3",
@@ -3101,20 +3191,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.939,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.061
       },
       "explanation": null,
       "ms": {
-       "code": 0.5,
-       "checker": 0.0,
-       "to_decision": 0.5,
-       "total": 0.5
+       "code": 1.2,
+       "checker": 481.8,
+       "to_decision": 483.0,
+       "total": 483.0
       }
      },
      "check_on_script": {
@@ -3122,7 +3212,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.057
       },
       "findings": []
      },
@@ -3149,10 +3239,12 @@
       "rendition": "Mantenga la herida seca por 48 horas, y después se puede bañar."
      },
      "heard": {
-      "source": "Keep the incision dry for 48 hours, then he can shower.",
-      "rendition": "Mantenga la herida seca por 48 horas, y después se puede bañar.",
-      "asr": false,
-      "asr_ms": null
+      "source": "Keep the incision dry for 48 hours, then you can shower.",
+      "rendition": "Mantenga la herida seca por cuarenta y ocho horas y después se puede bañar.",
+      "asr": true,
+      "asr_ms": 797.9,
+      "asr_ms_source": 835.1,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V6-01-src.mp3",
@@ -3164,20 +3256,25 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.015,
+      "checker": "on",
       "decision": {
-       "level": "ok",
-       "title": "",
-       "why": "",
-       "p_error": null
+       "level": "card",
+       "title": "Possible change",
+       "why": "checker",
+       "p_error": 0.985
       },
-      "explanation": null,
+      "explanation": {
+       "say": "Re-confirm this turn: the meaning may have changed.",
+       "source_quote": "",
+       "quote_ok": true,
+       "by": "code"
+      },
       "ms": {
-       "code": 0.5,
-       "checker": 0.0,
-       "to_decision": 0.6,
-       "total": 0.6
+       "code": 1.3,
+       "checker": 452.6,
+       "to_decision": 453.9,
+       "total": 919.7
       }
      },
      "check_on_script": {
@@ -3185,7 +3282,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.007
       },
       "findings": []
      },
@@ -3202,10 +3299,12 @@
       "rendition": "Que no levante nada de más de 10 libras por 2 días."
      },
      "heard": {
-      "source": "No lifting anything over 10 pounds for 2 weeks.",
-      "rendition": "Que no levante nada de más de 10 libras por 2 días.",
-      "asr": false,
-      "asr_ms": null
+      "source": "No lifting anything over 10 pounds for two weeks.",
+      "rendition": "que no levante nada de más de diez libras por dos días.",
+      "asr": true,
+      "asr_ms": 669.8,
+      "asr_ms_source": 669.9,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V6-02-src.mp3",
@@ -3221,38 +3320,38 @@
         "type": "substitution",
         "kind": "duration",
         "severity": "high",
-        "source": "2 weeks",
-        "rendition": "2 días",
-        "message": "Changed how long: “2 weeks” became “2 días”"
+        "source": "two weeks",
+        "rendition": "dos días",
+        "message": "Changed how long: “two weeks” became “dos días”"
        }
       ],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.0042,
+      "checker": "on",
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.996
       },
       "explanation": {
-       "say": "Re-confirm. “2 weeks” became “2 días”.",
-       "source_quote": "2 weeks",
+       "say": "Re-confirm. “two weeks” became “dos días”.",
+       "source_quote": "two weeks",
        "quote_ok": true,
        "by": "code"
       },
       "ms": {
-       "code": 0.7,
-       "checker": 0.0,
-       "to_decision": 0.7,
-       "total": 0.7
+       "code": 1.5,
+       "checker": 466.6,
+       "to_decision": 468.1,
+       "total": 901.5
       }
      },
      "check_on_script": {
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.998
       },
       "findings": [
        {
@@ -3281,10 +3380,12 @@
       "rendition": "And what do I give him for the pain?"
      },
      "heard": {
-      "source": "¿Y para el dolor qué le doy? Es alérgico a la codeína, le da mucha comezón.",
+      "source": "Y para el dolor que le doy, es alérgico a la codeína, le da mucha comezón.",
       "rendition": "And what do I give him for the pain?",
-      "asr": false,
-      "asr_ms": null
+      "asr": true,
+      "asr_ms": 652.6,
+      "asr_ms_source": 703.6,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V6-03-src.mp3",
@@ -3313,33 +3414,32 @@
         "message": "Not in the interpretation: medicine “codeína”"
        }
       ],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.0025,
+      "checker": "on",
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.998
       },
       "explanation": {
-       "say": "Re-confirm. Not interpreted: “alérgico”, “codeína”.",
-       "source_quote": "alérgico",
-       "quote_ok": true,
-       "by": "code"
+       "say": "And for pain, he is allergic to codeine, it gives him itching.",
+       "source_quote": "Y para el dolor que le doy, es alérgico a la codeína, le da mucha comezón.",
+       "quote_ok": true
       },
       "ms": {
-       "code": 0.8,
-       "checker": 0.0,
-       "to_decision": 0.8,
-       "total": 0.8
+       "code": 1.3,
+       "checker": 476.5,
+       "to_decision": 477.9,
+       "total": 948.1
       }
      },
      "check_on_script": {
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.997
       },
       "findings": [
        {
@@ -3376,10 +3476,12 @@
       "rendition": "Dele acetaminofén, 500 miligramos cada 6 horas si lo necesita."
      },
      "heard": {
-      "source": "Give him acetaminophen, 500 milligrams every 6 hours as needed.",
-      "rendition": "Dele acetaminofén, 500 miligramos cada 6 horas si lo necesita.",
-      "asr": false,
-      "asr_ms": null
+      "source": "Give him acetaminophen, 500 mg every six hours as needed.",
+      "rendition": "Dele acetaminofen, quinientos miligramos, cada seis horas si lo necesita.",
+      "asr": true,
+      "asr_ms": 840.1,
+      "asr_ms_source": 846.2,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V6-04-src.mp3",
@@ -3391,20 +3493,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.9962,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.004
       },
       "explanation": null,
       "ms": {
-       "code": 0.8,
-       "checker": 0.0,
-       "to_decision": 0.8,
-       "total": 0.8
+       "code": 1.7,
+       "checker": 451.7,
+       "to_decision": 453.4,
+       "total": 453.4
       }
      },
      "check_on_script": {
@@ -3412,7 +3514,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.002
       },
       "findings": []
      },
@@ -3431,8 +3533,10 @@
      "heard": {
       "source": "Anoche vomitó dos veces.",
       "rendition": "He threw up last night.",
-      "asr": false,
-      "asr_ms": null
+      "asr": true,
+      "asr_ms": 637.8,
+      "asr_ms_source": 650.2,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V6-05-src.mp3",
@@ -3453,33 +3557,32 @@
         "message": "Not in the interpretation: number “dos”"
        }
       ],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.0018,
+      "checker": "on",
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.998
       },
       "explanation": {
-       "say": "Re-confirm. Not interpreted: “dos”.",
-       "source_quote": "dos",
-       "quote_ok": true,
-       "by": "code"
+       "say": "He threw up twice last night.",
+       "source_quote": "Anoche vomitó dos veces.",
+       "quote_ok": true
       },
       "ms": {
-       "code": 0.4,
-       "checker": 0.0,
-       "to_decision": 0.4,
-       "total": 0.4
+       "code": 0.8,
+       "checker": 481.0,
+       "to_decision": 481.9,
+       "total": 878.1
       }
      },
      "check_on_script": {
       "decision": {
        "level": "card",
        "title": "Re-confirm",
-       "why": "code",
-       "p_error": null
+       "why": "code+checker",
+       "p_error": 0.998
       },
       "findings": [
        {
@@ -3509,9 +3612,11 @@
      },
      "heard": {
       "source": "If he has a fever over 101, the wound gets red or leaks pus, or the vomiting keeps up, come back.",
-      "rendition": "Si tiene fiebre de más de 101, si la herida se pone roja o le sale pus, o si sigue vomitando, regrese.",
-      "asr": false,
-      "asr_ms": null
+      "rendition": "Si tiene fiebre de más de ciento uno, si la herida se pone roja o le sale push, o si sigue vomitando, regrese.",
+      "asr": true,
+      "asr_ms": 876.2,
+      "asr_ms_source": 860.5,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V6-06-src.mp3",
@@ -3523,20 +3628,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.7098,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.29
       },
       "explanation": null,
       "ms": {
-       "code": 1.0,
-       "checker": 0.0,
-       "to_decision": 1.0,
-       "total": 1.0
+       "code": 2.1,
+       "checker": 456.4,
+       "to_decision": 458.6,
+       "total": 458.6
       }
      },
      "check_on_script": {
@@ -3544,7 +3649,7 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.009
       },
       "findings": []
      },
@@ -3563,8 +3668,10 @@
      "heard": {
       "source": "Muy bien, muchas gracias.",
       "rendition": "Very good, thank you very much.",
-      "asr": false,
-      "asr_ms": null
+      "asr": true,
+      "asr_ms": 665.8,
+      "asr_ms_source": 686.9,
+      "asr_model": "nvidia/parakeet-tdt-0.6b-v3"
      },
      "audio": {
       "src": "audio/V6-07-src.mp3",
@@ -3576,20 +3683,20 @@
      },
      "check": {
       "findings": [],
-      "p_faithful": null,
-      "checker": "off",
+      "p_faithful": 0.9912,
+      "checker": "on",
       "decision": {
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.009
       },
       "explanation": null,
       "ms": {
-       "code": 0.3,
-       "checker": 0.0,
-       "to_decision": 0.3,
-       "total": 0.3
+       "code": 0.8,
+       "checker": 450.5,
+       "to_decision": 451.4,
+       "total": 451.4
       }
      },
      "check_on_script": {
@@ -3597,41 +3704,86 @@
        "level": "ok",
        "title": "",
        "why": "",
-       "p_error": null
+       "p_error": 0.009
       },
       "findings": []
      },
      "planted": null
     }
    ],
-   "review": []
+   "review": [
+    {
+     "turn": 6,
+     "source_quote": "leaks pus",
+     "confirm": "The interpreter rendered \"pus\" as \"push\" (\"le sale push\"), altering the critical warning sign.",
+     "verified": true
+    }
+   ]
   }
  ],
  "e2e": {
-  "asr_used": false,
-  "from_audio": null,
-  "from_script_text": {
-   "caught": 17,
+  "asr_used": true,
+  "from_audio": {
+   "caught": 20,
    "errors": 20,
-   "false_alarms": 0,
+   "false_alarms": 4,
    "faithful_turns": 34,
-   "patient_speech_caught": "10/11",
-   "missed": [
-    "V3-02",
-    "V3-03",
-    "V4-02"
+   "patient_speech_caught": "11/11",
+   "missed": [],
+   "false_alarm_turns": [
+    "V1-02",
+    "V3-07",
+    "V5-06",
+    "V6-01"
    ],
-   "false_alarm_turns": [],
    "notes_on_faithful_turns": []
   },
-  "checker_used": false,
-  "wer": {
-   "en": null,
-   "es": null
+  "from_script_text": {
+   "caught": 20,
+   "errors": 20,
+   "false_alarms": 2,
+   "faithful_turns": 34,
+   "patient_speech_caught": "11/11",
+   "missed": [],
+   "false_alarm_turns": [
+    "V1-02",
+    "V5-06"
+   ],
+   "notes_on_faithful_turns": []
   },
-  "ms_median_audio_to_card": null,
-  "ms_p95": null,
-  "by_model": {},
-  "cost_usd": 0
+  "checker_used": true,
+  "wer": {
+   "en": 0.035,
+   "es": 0.046
+  },
+  "ms_median_audio_to_card": 1332.4,
+  "ms_p95": 1848.3000000000002,
+  "by_model": {
+   "asr": {
+    "model": "nvidia/parakeet-tdt-0.6b-v3 (Nebius endpoint)",
+    "calls": 108,
+    "seconds": 80.34,
+    "cost_usd": 0.0
+   },
+   "checker": {
+    "model": "faithful-checker (Nebius endpoint)",
+    "calls": 54,
+    "seconds": 25.35,
+    "cost_usd": 0.0
+   },
+   "lightning": {
+    "model": "nvidia/Nemotron-3_5-Lightning",
+    "calls": 24,
+    "seconds": 12.55,
+    "cost_usd": 0.00049
+   },
+   "ultra": {
+    "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+    "calls": 6,
+    "seconds": 35.33,
+    "cost_usd": 0.0276
+   }
+  },
+  "cost_usd": 0.0281
  }
 }
