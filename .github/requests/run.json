@@ -1,1 +1,1 @@
-{"task": "synth", "args": "--n 24 --split test --seed 202 --append --generator zai-org/GLM-5.2", "note": "add held-out test visits from a second writer family; the Qwen visits stay"}
+{"task": "report,demo,eval", "args": "--sets synth,aces,visits --methods code,lightning,ultra,base_ranker,checker,faithful --n 400", "note": "endpoint up: publish the training report, re-run the visits with speech recognition and the fine-tuned checker, and the full benchmark"}

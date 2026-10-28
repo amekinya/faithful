@@ -33,7 +33,7 @@ jobs:
             TASK="$IN_TASK"; ARGS="$IN_ARGS"
           fi
           # Only known steps, and arguments made of flags, words, numbers, commas, dots, slashes and dashes.
-          case "$TASK" in synth|synth_all|tts|demo|eval|report) ;; *) echo "unknown task: $TASK"; exit 2 ;; esac
+          for t in ${TASK//,/ }; do case "$t" in synth|synth_all|tts|demo|eval|report) ;; *) echo "unknown task: $t"; exit 2 ;; esac; done
           if ! printf '%s' "$ARGS" | grep -Eq '^[A-Za-z0-9 ,._/=-]*$'; then echo "arguments contain characters that aren't allowed"; exit 2; fi
           echo "TASK=$TASK" >> "$GITHUB_ENV"; echo "ARGS=$ARGS" >> "$GITHUB_ENV"
       - uses: actions/setup-python@v5
@@ -54,6 +54,7 @@ jobs:
         run: |
           set -o pipefail
           mkdir -p eval
+          for TASK in ${TASK//,/ }; do
           echo "step: $TASK $ARGS"
           case "$TASK" in
             synth) python -m scripts.synth $ARGS 2>&1 | tee -a eval/synth_log.txt; python -m scripts.build_pairs | tee -a eval/synth_log.txt ;;
@@ -62,28 +63,18 @@ jobs:
               python -m scripts.synth --n 24 --split test --seed 101 --generator Qwen/Qwen3-30B-A3B-Instruct-2507 2>&1 | tee -a eval/synth_log.txt
               python -m scripts.build_pairs | tee -a eval/synth_log.txt ;;
             tts)   python -m scripts.tts $ARGS 2>&1 | tee eval/tts_log.txt ;;
-            demo)  python -m scripts.build_demo $ARGS 2>&1 | tee eval/demo_log.txt ;;
+            demo)  python -m scripts.build_demo 2>&1 | tee eval/demo_log.txt ;;  # arguments go to the other steps
             eval)  python -m eval.run_eval $ARGS 2>&1 | tee eval/eval_log.txt; cat eval/RESULTS.md >> "$GITHUB_STEP_SUMMARY" ;;
-            report)  # copy the training job's report (metrics.json on the bucket) from the endpoint into eval/training.json
-              python - <<'PY'
-          import json, os, httpx
-          r = httpx.get(os.environ["ENDPOINT_URL"].rstrip("/") + "/metrics/faithful-checker", timeout=60,
-                        headers={"Authorization": f"Bearer {os.environ['ENDPOINT_TOKEN']}"} if os.environ.get("ENDPOINT_TOKEN") else {})
-          r.raise_for_status()
-          d = r.json()
-          assert d.get("name") == "faithful-checker" and "fine_tuned" in d, d
-          open("eval/training.json", "w").write(json.dumps(d, indent=1))
-          print(json.dumps({k: d[k] for k in ("train_pairs", "epochs", "gpu", "seconds", "threshold")}), "base AUC", d["base_model"]["test_auc"], "tuned AUC", d["fine_tuned"]["test_auc"])
-          PY
-              ;;
+            report) python train/report.py faithful-checker eval/training.json 2>&1 | tee eval/report_log.txt ;;
             *) echo "unknown task $TASK"; exit 2 ;;
           esac
+          done
       - name: Commit results
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           for p in eval data app/static/audio; do [ -e "$p" ] && git add "$p"; done
-          git commit -m "Pipeline step results: $TASK" || echo "No changes"
+          git commit -m "Pipeline step results: ${TASK//,/, }" || echo "No changes"
           for i in 1 2 3 4; do if git pull --rebase -q && git push; then exit 0; fi; sleep 7; done
           git log origin/main..HEAD --oneline | grep -q . && { echo "couldn't push the results"; exit 1; } || true
