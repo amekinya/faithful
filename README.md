@@ -38,15 +38,23 @@ Steps 2 and 3 cover each other's blind spots:
 
 ## Results
 
-_Filled in from `eval/RESULTS.md` and `eval/e2e.json` after the runs._
-
 ### End to end, from audio
 We wrote six scripted visits with **20 planted errors**, following the JMIR 2026 design:
 - 11 errors are in the patient's speech and 9 in the clinician's.
 - They cover omissions, substitutions and additions.
 - 34 other turns are faithful, some reworded the way interpreters normally do.
 
-The visits were voiced with Kokoro, heard by Parakeet on our Nebius endpoint, and checked.
+The visits were voiced with Kokoro, heard by Parakeet on our Nebius endpoint, and checked by the live pipeline with the thresholds chosen on practice turns ([`eval/e2e.json`](eval/e2e.json)):
+
+| | From audio | From the script text |
+|---|---|---|
+| Planted errors that got a re-confirm card | **19 of 20** | 20 of 20 |
+| Errors in the patient's own words caught | **11 of 11** | 11 of 11 |
+| Faithful turns that got a card anyway | 4 of 34 | 2 of 34 |
+| Median time from the interpreter finishing to the card (speech recognition + checks + card wording) | **1.3 s** (95th percentile 1.9 s) | |
+| Speech recognition word error rate | English 3.5%, Spanish 4.6% | |
+
+The one miss from audio is "not this week" interpreted as "esta semana sí puede": speech recognition ran the clinician's two sentences together, and the turn's meaning score fell just short. For comparison, the study we copied the design from found two ambient AI scribes carried 55–60% of these planted errors into the visit note.
 
 ### Benchmark
 From [`eval/RESULTS.md`](eval/RESULTS.md). Every method saw the same turns: a random sample of 400 per set (fixed seed), all 54 scripted turns. Thresholds were chosen on 632 held-out practice turns under one rule for every method (best F1 with no more than 5% false alarms there), never on these test sets.
