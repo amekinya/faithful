@@ -334,7 +334,7 @@ async function loadResults() {
     if (audio && e.ms_median_audio_to_card >= 50) figs.push([`${(e.ms_median_audio_to_card / 1000).toFixed(1)} s`, "median from the interpreter finishing to the card"]);
     const notes = (a.notes_on_faithful_turns || []).length;
     const how = audio
-      ? `Our six scripted visits, voiced, heard by Parakeet on our Nebius endpoint${e.checker_used ? ", checked with our fine-tuned checker" : ""}. Speech recognition word error rate: English ${e.wer && e.wer.en !== null ? pct(e.wer.en) : "n/a"}, Spanish ${e.wer && e.wer.es !== null ? pct(e.wer.es) : "n/a"}.`
+      ? `Our six scripted visits, voiced, heard by Parakeet on our Nebius endpoint${e.checker_used ? ", checked with our fine-tuned checker" : ""}. Speech recognition word error rate: English ${e.wer && e.wer.en !== null ? (e.wer.en * 100).toFixed(1) + "%" : "n/a"}, Spanish ${e.wer && e.wer.es !== null ? (e.wer.es * 100).toFixed(1) + "%" : "n/a"}.`
       : `Our six scripted visits, checked from the script text${e.checker_used ? " with our fine-tuned checker" : " by code alone (our checker wasn’t running)"}. The rules were written while looking at these visits, so this is an optimistic number; the benchmark below is the fair test.`;
     $("#e2e").innerHTML = figs.map(([b2, s2]) => `<div class="fig"><b>${esc(b2)}</b><span>${esc(s2)}</span></div>`).join("") +
       `<p class="small" style="grid-column:1/-1">${esc(how)}${notes ? ` ${notes} faithful turn${notes === 1 ? "" : "s"} also got a quiet “check later” note.` : ""} The study we copied the design from (Rabotin et al., JMIR Medical Informatics 2026) found two ambient AI scribes carried 55–60% of planted interpreter errors into the visit note.</p>`;

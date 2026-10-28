@@ -4,7 +4,7 @@
 
 > A mother says *“ya le di dos dosis de Tylenol hoy… y es alérgico a la penicilina.”* The interpreter says *“Yes, I gave him Tylenol today.”* The doctor never hears about the two earlier doses or the penicillin allergy, and nobody in the room can tell. Faithful puts a red **Re-confirm** card in front of the interpreter before the doctor writes the prescription.
 
-Live demo: _link after deploy_ · Built for the Nebius × NVIDIA Global AI Hackathon (Best Apps and Agents).
+**Live demo: [faithful-hsa8.onrender.com](https://faithful-hsa8.onrender.com)** (free hosting: the first visit after a quiet spell can take about a minute to wake up) · Built for the Nebius × NVIDIA Global AI Hackathon (Best Apps and Agents).
 
 ## Why this matters
 
