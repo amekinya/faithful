@@ -34,7 +34,7 @@ jobs:
           fi
           # Only known steps, and arguments made of flags, words, numbers, commas, dots, slashes and dashes.
           for t in ${TASK//,/ }; do case "$t" in synth|synth_all|tts|demo|eval|report) ;; *) echo "unknown task: $t"; exit 2 ;; esac; done
-          if ! printf '%s' "$ARGS" | grep -Eq '^[A-Za-z0-9 ,._/=-]*$'; then echo "arguments contain characters that aren't allowed"; exit 2; fi
+          if ! printf '%s\n' "$ARGS" | grep -Eq '^[A-Za-z0-9 ,._/=-]*$'; then echo "arguments contain characters that aren't allowed"; exit 2; fi
           echo "TASK=$TASK" >> "$GITHUB_ENV"; echo "ARGS=$ARGS" >> "$GITHUB_ENV"
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
