@@ -327,17 +327,17 @@ async function loadResults() {
     const a = e.from_audio || e.from_script_text;
     const audio = !!e.from_audio;
     const figs = [
-      [`${a.caught} of ${a.errors}`, audio ? "planted errors got a re-confirm card, from audio to card" : "planted errors got a re-confirm card (from the script text)"],
-      [`${a.false_alarms} of ${a.faithful_turns}`, "faithful turns got a card anyway (false alarms)"],
-      [`${a.patient_speech_caught}`, "errors in the patient’s own words caught, the ones ambient scribes copy most"],
+      [`${a.caught} of ${a.errors}`, audio ? "planted interpreter errors caught, straight from the audio" : "planted interpreter errors caught (from the script text)"],
+      [`${a.patient_speech_caught}`, "caught in the patient’s own words, the errors AI scribes copy most"],
+      [`${a.false_alarms} of ${a.faithful_turns}`, "correct turns flagged anyway"],
     ];
-    if (audio && e.ms_median_audio_to_card >= 50) figs.push([`${(e.ms_median_audio_to_card / 1000).toFixed(1)} s`, "median from the interpreter finishing to the card"]);
+    if (audio && e.ms_median_audio_to_card >= 50) figs.push([`${(e.ms_median_audio_to_card / 1000).toFixed(1)} s`, "from the interpreter finishing to the card"]);
     const notes = (a.notes_on_faithful_turns || []).length;
     const how = audio
       ? `Our six scripted visits, voiced, heard by Parakeet on our Nebius endpoint${e.checker_used ? ", checked with our fine-tuned checker" : ""}. Speech recognition word error rate: English ${e.wer && e.wer.en !== null ? (e.wer.en * 100).toFixed(1) + "%" : "n/a"}, Spanish ${e.wer && e.wer.es !== null ? (e.wer.es * 100).toFixed(1) + "%" : "n/a"}.`
       : `Our six scripted visits, checked from the script text${e.checker_used ? " with our fine-tuned checker" : " by code alone (our checker wasn’t running)"}. The rules were written while looking at these visits, so this is an optimistic number; the benchmark below is the fair test.`;
     $("#e2e").innerHTML = figs.map(([b2, s2]) => `<div class="fig"><b>${esc(b2)}</b><span>${esc(s2)}</span></div>`).join("") +
-      `<p class="small" style="grid-column:1/-1">${esc(how)}${notes ? ` ${notes} faithful turn${notes === 1 ? "" : "s"} also got a quiet “check later” note.` : ""} The study we copied the design from (Rabotin et al., JMIR Medical Informatics 2026) found two ambient AI scribes carried 55–60% of planted interpreter errors into the visit note.</p>`;
+      `<p class="small" style="grid-column:1/-1">For comparison, two ambient AI scribes carried 55–60% of the same kind of planted errors into the visit note (Rabotin et al., JMIR Medical Informatics 2026). ${esc(how)}${notes ? ` ${notes} correct turn${notes === 1 ? "" : "s"} also got a quiet “check later” note.` : ""}</p>`;
   } else {
     $("#e2e").innerHTML = `<p class="small">End-to-end results haven’t been recorded yet.</p>`;
   }
@@ -367,6 +367,14 @@ async function loadResults() {
       Held-out test, critical errors: AUC ${tr.base_model.test_auc} before fine-tuning, ${tr.fine_tuned.test_auc} after; F1 ${tr.base_model.test_at_base_dev_threshold.f1} before, ${tr.fine_tuned.test_at_dev_threshold.f1} after.</p></div>`;
   }
 }
+
+// The opening button scrolls to the replay and starts the first visit (a click, so sound is allowed).
+document.querySelector(".cta .primary-link")?.addEventListener("click", (ev) => {
+  ev.preventDefault();
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  $("#replay").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+  setTimeout(() => { const b = $("#play"); if (b && !b.disabled && !state.busy) b.click(); }, reduce ? 0 : 450);
+});
 
 (async function init() {
   try { state.health = await getJSON("/api/health"); } catch (_) { state.health = {}; }

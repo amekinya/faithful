@@ -28,14 +28,14 @@
 <main>
   <section class="intro" aria-labelledby="h1">
     <h1 id="h1">A second ear for the interpreter.</h1>
-    <p class="lede">When a mother says <span lang="es">“es alérgico a la penicilina”</span> and the English never mentions it, nobody in the room can tell. Faithful listens to both sides of an interpreted visit and, right after each turn, asks the interpreter to re-confirm any dose, number, allergy, left or right, medicine, warning sign or “no” that didn’t make it across.</p>
-    <p class="note">Flags go to the interpreter and the clinician only. Faithful never speaks to the patient, never scores interpreters, and stores nothing.</p>
+    <p class="lede">When a mother says <span lang="es">“es alérgico a la penicilina”</span> and the interpreter’s English leaves it out, the doctor never knows. Faithful listens to both sides and, right after each turn, flags a dose, allergy, “no” or warning sign that didn’t make it across.</p>
+    <p class="cta"><a class="primary-link" href="#replay">▶ Watch it catch errors in a visit</a> <span class="note">Six scripted visits, 20 planted errors.</span></p>
   </section>
 
   <section id="replay" class="replay" aria-labelledby="replay-h">
     <div class="replay-head">
       <h2 id="replay-h">Replay a visit</h2>
-      <p class="sub">Six scripted visits with 20 planted interpreter errors. Voices are synthetic. Each turn shows what was heard and the check that ran on it.</p>
+      <p class="sub">Pick a visit and press Play. Red cards are what Faithful asks the interpreter to re-confirm. Voices are synthetic.</p>
     </div>
     <div class="visits" role="group" aria-label="Visits" id="visits"></div>
 
@@ -96,32 +96,49 @@
   <section id="results" class="results" aria-labelledby="results-h">
     <h2 id="results-h">Results</h2>
     <div id="e2e" class="e2e"></div>
-    <div id="bench"></div>
-    <div id="training"></div>
+    <details class="fold">
+      <summary><span>Compared with asking Nemotron directly</span> 400 held-out turns and a public translation test set</summary>
+      <div class="foldbody"><div id="bench"></div></div>
+    </details>
+    <details class="fold">
+      <summary><span>Fine-tuning on Nebius</span> Our small checker before and after training</summary>
+      <div class="foldbody"><div id="training"></div></div>
+    </details>
   </section>
 
   <section id="how" class="how" aria-labelledby="how-h">
     <h2 id="how-h">How it works</h2>
-    <p class="sub">Models listen, read and explain. Plain code decides whether a card appears, so every card can point at the exact words.</p>
-    <ol class="steps">
-      <li><h3>Hear both sides</h3><p>Each turn’s audio goes to NVIDIA Parakeet TDT 0.6B v3 on our Nebius Serverless Endpoint. In remote interpreting the interpreter is on the call channel and the room is on the device microphone, so who spoke is known.</p></li>
-      <li><h3>Read the critical content</h3><p>Code pulls numbers, units, how often, how long, dose limits, allergies, left and right, medicine names, warning signs and every “no” out of both languages, and compares them. “Cada seis horas” and “every 6 hours” match; “cada ocho horas” doesn’t.</p></li>
-      <li><h3>Weigh the meaning</h3><p>Our checker, NVIDIA llama-nemotron-rerank-1b-v2 fine-tuned on a Nebius Serverless Job, scores whether the interpretation still means the same thing. It’s there for what words alone miss, like “not this week” becoming “this week you can”; the results show how often it does.</p></li>
-      <li><h3>Decide</h3><p>A fixed rule turns both into one of three outcomes: a re-confirm card, a note for after the visit, or nothing. A changed allergy, “no”, medicine, side or dose limit is always a card. The rule’s two thresholds are picked on held-out practice visits, never on the test sets.</p></li>
-      <li><h3>Say it plainly</h3><p>For cards only, Nemotron 3.5 Lightning writes one line for the interpreter and clinician. Code checks that the words it quotes were really said.</p></li>
-      <li><h3>Re-read after the visit</h3><p>Nemotron 3 Ultra reads the whole conversation once and lists anything the turn checks missed, each tied to a quote that code verifies.</p></li>
+    <ol class="three">
+      <li><b>Hear</b> both sides with NVIDIA Parakeet speech recognition on our Nebius GPU.</li>
+      <li><b>Check</b> each turn: code compares numbers, doses, allergies, sides, medicines and every “no”; our fine-tuned NVIDIA checker scores whether the meaning held.</li>
+      <li><b>Flag</b> only what matters, in one line written by Nemotron 3.5 Lightning, quoting the exact words.</li>
     </ol>
-    <div class="isnt">
-      <h3>What this is not</h3>
+    <details class="fold">
+      <summary><span>The details</span> Every step, and the decision rule</summary>
+      <div class="foldbody">
+    <ol class="steps">
+          <li><h3>Hear both sides</h3><p>Each turn’s audio goes to NVIDIA Parakeet TDT 0.6B v3 on our Nebius Serverless Endpoint. In remote interpreting the interpreter is on the call channel and the room is on the device microphone, so who spoke is known.</p></li>
+          <li><h3>Read the critical content</h3><p>Code pulls numbers, units, how often, how long, dose limits, allergies, left and right, medicine names, warning signs and every “no” out of both languages, and compares them. “Cada seis horas” and “every 6 hours” match; “cada ocho horas” doesn’t.</p></li>
+          <li><h3>Weigh the meaning</h3><p>Our checker, NVIDIA llama-nemotron-rerank-1b-v2 fine-tuned on a Nebius Serverless Job, scores whether the interpretation still means the same thing. It’s there for what words alone miss, like “not this week” becoming “this week you can”; the results show how often it does.</p></li>
+          <li><h3>Decide</h3><p>A fixed rule turns both into one of three outcomes: a re-confirm card, a note for after the visit, or nothing. A changed allergy, “no”, medicine, side or dose limit is always a card. The rule’s two thresholds are picked on held-out practice visits, never on the test sets.</p></li>
+          <li><h3>Say it plainly</h3><p>For cards only, Nemotron 3.5 Lightning writes one line for the interpreter and clinician. Code checks that the words it quotes were really said.</p></li>
+          <li><h3>Re-read after the visit</h3><p>Nemotron 3 Ultra reads the whole conversation once and lists anything the turn checks missed, each tied to a quote that code verifies.</p></li>
+        </ol>
+      </div>
+    </details>
+    <details class="fold">
+      <summary><span>What this is not</span> Not an interpreter, no medical advice, nothing stored</summary>
+      <div class="foldbody">
       <ul>
-        <li>Not an interpreter, and no substitute for a qualified one. The human interpreter does every clarification.</li>
-        <li>It never speaks to the patient and never gives medical advice.</li>
-        <li>No scores or reports on interpreters. Nothing is recorded or stored.</li>
-        <li>Spanish and English only. Speakers of Indigenous languages such as Mam or K’iche’ aren’t covered.</li>
-        <li>Built and tested on synthetic and scripted visits. Nebius Serverless isn’t HIPAA-eligible by default, so real patient audio needs a different deployment.</li>
-        <li>A speech-recognition slip can look like an interpreting error, so cards say “re-confirm”, never “wrong”.</li>
-      </ul>
-    </div>
+          <li>Not an interpreter, and no substitute for a qualified one. The human interpreter does every clarification.</li>
+          <li>It never speaks to the patient and never gives medical advice.</li>
+          <li>No scores or reports on interpreters. Nothing is recorded or stored.</li>
+          <li>Spanish and English only. Speakers of Indigenous languages such as Mam or K’iche’ aren’t covered.</li>
+          <li>Built and tested on synthetic and scripted visits. Nebius Serverless isn’t HIPAA-eligible by default, so real patient audio needs a different deployment.</li>
+          <li>A speech-recognition slip can look like an interpreting error, so cards say “re-confirm”, never “wrong”.</li>
+        </ul>
+      </div>
+    </details>
   </section>
 </main>
 
