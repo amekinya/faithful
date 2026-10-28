@@ -1,1 +1,1 @@
-{"task": "report,demo,eval", "args": "--sets synth,aces,visits --methods code,lightning,ultra,base_ranker,checker,faithful --n 400", "note": "endpoint up: publish the training report, re-run the visits with speech recognition and the fine-tuned checker, and the full benchmark (retry with the endpoint secrets added)"}
+{"task": "demo", "args": "", "note": "re-run the visits now that the decision thresholds chosen on dev (data/thresholds.json) exist, so the replay matches the live app"}
