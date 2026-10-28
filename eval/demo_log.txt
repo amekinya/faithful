@@ -43,8 +43,9 @@ V5-03 card Re-confirm | planted: omission
 V5-04 card Re-confirm | planted: addition
 V5-05 ok  | planted: -
 V5-06 card Possible change | planted: -
-V5-07 card Possible change | planted: substitution
+V5-07 ok  | planted: substitution
 V5-08 ok  | planted: -
+  review unavailable: nvidia/Nemotron-3-Ultra-550b-a55b returned no valid JSON
 V6-01 card Possible change | planted: -
 V6-02 card Re-confirm | planted: substitution
 V6-03 card Re-confirm | planted: omission
@@ -55,12 +56,14 @@ V6-07 ok  | planted: -
 {
  "asr_used": true,
  "from_audio": {
-  "caught": 20,
+  "caught": 19,
   "errors": 20,
   "false_alarms": 4,
   "faithful_turns": 34,
   "patient_speech_caught": "11/11",
-  "missed": [],
+  "missed": [
+   "V5-07"
+  ],
   "false_alarm_turns": [
    "V1-02",
    "V3-07",
@@ -87,33 +90,33 @@ V6-07 ok  | planted: -
   "en": 0.035,
   "es": 0.046
  },
- "ms_median_audio_to_card": 1332.4,
- "ms_p95": 1848.3000000000002,
+ "ms_median_audio_to_card": 1319.4,
+ "ms_p95": 1940.4,
  "by_model": {
   "asr": {
    "model": "nvidia/parakeet-tdt-0.6b-v3 (Nebius endpoint)",
    "calls": 108,
-   "seconds": 80.34,
+   "seconds": 79.03,
    "cost_usd": 0.0
   },
   "checker": {
    "model": "faithful-checker (Nebius endpoint)",
    "calls": 54,
-   "seconds": 25.35,
+   "seconds": 25.28,
    "cost_usd": 0.0
   },
   "lightning": {
    "model": "nvidia/Nemotron-3_5-Lightning",
-   "calls": 24,
-   "seconds": 12.55,
-   "cost_usd": 0.00049
+   "calls": 23,
+   "seconds": 13.32,
+   "cost_usd": 0.00047
   },
   "ultra": {
    "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-   "calls": 6,
-   "seconds": 35.33,
-   "cost_usd": 0.0276
+   "calls": 7,
+   "seconds": 55.41,
+   "cost_usd": 0.06737
   }
  },
- "cost_usd": 0.0281
+ "cost_usd": 0.0678
 }
