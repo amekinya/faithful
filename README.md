@@ -54,7 +54,7 @@ The visits were voiced with Kokoro, heard by Parakeet on our Nebius endpoint, an
 | Median time from the interpreter finishing to the card (speech recognition + checks + card wording) | **1.3 s** (95th percentile 1.9 s) | |
 | Speech recognition word error rate | English 3.5%, Spanish 4.6% | |
 
-The one miss from audio is "not this week" interpreted as "esta semana sí puede": speech recognition ran the clinician's two sentences together, and the turn's meaning score fell just short. For comparison, the study we copied the design from found two ambient AI scribes carried 55–60% of these planted errors into the visit note.
+The one miss from audio is "not this week" interpreted as "esta semana sí puede": speech recognition ran the clinician's two sentences together, so both sides still contain a "no" and code saw no change; our checker scored it 0.88 likely-changed, just under the 0.95 a card needs when code finds nothing. From the script text it is caught. For comparison, the study we copied the design from found two ambient AI scribes carried 55–60% of these planted errors into the visit note.
 
 ### Benchmark
 From [`eval/RESULTS.md`](eval/RESULTS.md). Every method saw the same turns: a random sample of 400 per set (fixed seed), all 54 scripted turns. Thresholds were chosen on 632 held-out practice turns under one rule for every method (best F1 with no more than 5% false alarms there), never on these test sets.
