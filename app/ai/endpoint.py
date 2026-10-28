@@ -12,8 +12,21 @@ from app.ai.client import CallRecord, LiveModelUnavailable
 from app.config import settings
 
 
+_down_until = 0.0  # after a failed connection, skip the endpoint for a while instead of making every turn wait
+
+
 def available() -> bool:
-    return settings.live_endpoint
+    return settings.live_endpoint and time.monotonic() >= _down_until
+
+
+def _mark_down(e: Exception | None = None) -> None:
+    """A connection failure, a timeout or a gateway error (502/503/504: a stopped endpoint) pauses the endpoint for 2 min."""
+    global _down_until
+    _down_until = time.monotonic() + 120
+
+
+def _timeout(total: float) -> httpx.Timeout:
+    return httpx.Timeout(total, connect=4.0)  # a stopped endpoint should fail fast, not after the full timeout
 
 
 def _headers() -> dict:
@@ -50,14 +63,17 @@ def score(pairs: list[tuple[str, str]], calls: list[CallRecord] | None = None, m
     t0 = time.perf_counter()
     out: list[float] = []
     try:
-        with httpx.Client(timeout=timeout) as c:
+        with httpx.Client(timeout=_timeout(timeout)) as c:
             for i in range(0, len(pairs), 2048):
                 r = c.post(settings.endpoint_url.rstrip("/") + "/score", headers=_headers(),
                            json={"model": model or settings.checker_name, "pairs": [list(p) for p in pairs[i:i + 2048]]})
                 if r.status_code != 200:
+                    if r.status_code in (502, 503, 504):
+                        _mark_down()
                     raise LiveModelUnavailable(f"checker HTTP {r.status_code}: {r.text[:200]}")
                 out += _scores(r, len(pairs[i:i + 2048]), model or settings.checker_name)
     except httpx.HTTPError as e:
+        _mark_down(e)
         raise LiveModelUnavailable(f"checker unreachable: {e}") from e
     if calls is not None:
         calls.append(CallRecord("checker", f"{model or settings.checker_name} (Nebius endpoint)", time.perf_counter() - t0, len(pairs), 0, 0, 0.0,
@@ -70,11 +86,14 @@ def asr(audio: bytes, calls: list[CallRecord] | None = None, timeout: float = 60
         raise LiveModelUnavailable("ENDPOINT_URL not set")
     t0 = time.perf_counter()
     try:
-        with httpx.Client(timeout=timeout) as c:
+        with httpx.Client(timeout=_timeout(timeout)) as c:
             r = c.post(settings.endpoint_url.rstrip("/") + "/asr", headers=_headers(), json={"audio_b64": base64.b64encode(audio).decode()})
     except httpx.HTTPError as e:
+        _mark_down(e)
         raise LiveModelUnavailable(f"speech recognition unreachable: {e}") from e
     if r.status_code != 200:
+        if r.status_code in (502, 503, 504):
+            _mark_down()
         raise LiveModelUnavailable(f"asr HTTP {r.status_code}: {r.text[:200]}")
     try:
         d = r.json()
