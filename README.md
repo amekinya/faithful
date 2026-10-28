@@ -49,14 +49,26 @@ We wrote six scripted visits with **20 planted errors**, following the JMIR 2026
 The visits were voiced with Kokoro, heard by Parakeet on our Nebius endpoint, and checked.
 
 ### Benchmark
-| Test set | What it is |
-|---|---|
-| Held-out synthetic visits | Written by a different model family, with a different seed, than the training visits. Each turn is labeled by how it was written (a planted error or a faithful rewording), and test turns are never filtered by our own code |
-| ACES English↔Spanish | A human-designed translation challenge set: numbers, units, dates, antonyms, omissions, additions, names. It is out-of-distribution, never seen in training, and downloaded at test time (CC BY-NC-SA 4.0) |
-| Our 6 scripted visits | The text, without speech recognition. The code rules were written while looking at these, so the code-only score here is optimistic |
+From [`eval/RESULTS.md`](eval/RESULTS.md). Every method saw the same turns: a random sample of 400 per set (fixed seed), all 54 scripted turns. Thresholds were chosen on 632 held-out practice turns under one rule for every method (best F1 with no more than 5% false alarms there), never on these test sets.
+
+| Method | Held-out synthetic visits: errors caught / false alarms | ACES (out-of-distribution): caught / false alarms | Time per turn | Cost per 1,000 turns |
+|---|---|---|---|---|
+| Code checks only | 50% / 9.6% | 49% / 5.1% | 2 ms | $0 |
+| Nemotron 3.5 Lightning, asked per turn | 51% / 1.5% | 62% / 6.8% | 0.9 s | $0.03 |
+| Nemotron 3 Ultra, asked per turn | 79% / 0.7% | 92% / 13.1% | 0.9 s | $0.36 |
+| NVIDIA rerank-1b before fine-tuning | 20% / 7.0% | 13% / 1.1% | 0.5 s | GPU time |
+| **Our fine-tuned checker alone** | **82% / 3.3%** | 51% / 0.6% | 0.5 s | GPU time |
+| **Faithful: code + checker + decision rule** | **83% / 9.2%** | 58% / 2.8% | 0.5 s | GPU time |
+
+What this shows:
+- **Fine-tuning made the small model useful.** Before, the reranker caught 20% of held-out errors; after, 82%, level with Nemotron 3 Ultra asked turn by turn, at half the latency and on our own GPU, with no per-call model cost. The every-turn decision never needs a large model; Lightning only words the cards that appear.
+- **The decision rule trades false alarms for safety.** It adds the code checks' always-a-card changes (an allergy, a "no", a medicine, a side, a dose limit), which lifts recall a little and false alarms from 3.3% to 9.2% on the synthetic visits. We chose that on purpose; the rule's thresholds came from the practice turns (re-confirm at a checker error score of 0.05 or more when code sees a change; a checker-only card at 0.95).
+- **Out of domain, the checker is cautious.** On ACES, general-domain sentences with traps like antonyms and named entities, it flags few (51% caught) but is almost never wrong (0.6% false alarms). Ultra catches more (92%) but false-alarms on 13%. Our training visits are medical and interpreter-shaped; ACES isn't.
+- **On our six scripted visits** (text, no speech recognition): Faithful 20 of 20 caught, 2 of 34 false alarms; Ultra 19 of 20, 0 of 34; code alone 17 of 20, 0 of 34. The code rules were written while looking at these visits, so treat this row as a demo check, not a benchmark.
+- The rerank model before fine-tuning couldn't meet the 5% false-alarm limit on the practice turns at any threshold.
 
 ### Fine-tuning on Nebius
-We report the base model against the fine-tuned model on held-out visits (AUC, and F1 at the threshold chosen on dev). The training job writes these to `metrics.json` next to the weights; a copy is published in `eval/training.json`.
+NVIDIA `llama-nemotron-rerank-1b-v2`, fine-tuned on 3,818 synthetic training pairs for 2 epochs on one L40S in a Nebius Serverless Job (161 seconds). On 1,449 held-out test pairs written by two other model families: **AUC 0.60 before fine-tuning, 0.95 after**; at the threshold chosen on dev, F1 0.29 before and 0.84 after (precision 0.88, recall 0.81). The job's report is in [`eval/training.json`](eval/training.json), copied from the endpoint.
 
 ## Honest limits
 
